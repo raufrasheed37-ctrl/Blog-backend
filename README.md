@@ -195,18 +195,6 @@ The frontend will be running at `http://localhost:3000`.
 
 ---
 
-## Team & Task Breakdown
-
-This project was built across three rounds, with each student contributing to both frontend and backend work.
-
-| Student       | Backend                                                                  | Frontend                                                               |
-| ------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
-| **Student A** | Server setup (Phase 1), Post routes (Phase 4), Auth middleware (Phase 5) | Zustand global state (Phase 2), Comments UI (Phase 5)                  |
-| **Student B** | Data modeling (Phase 2), Auth routes (Phase 3), Email/contact (Phase 6)  | Auth forms & Zod validation (Phase 3), Axios API integration (Phase 4) |
-| **Student C** | Registration & login logic (Phase 3), Comment routes (Phase 5)           | Project scaffolding (Phase 1), Dashboard & contact form (Phase 6)      |
-
----
-
 ## Testing the API
 
 You can test all backend endpoints using [Postman](https://www.postman.com/) or any REST client.
