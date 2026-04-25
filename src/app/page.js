@@ -282,7 +282,13 @@ avatarClass: "from-yellow-500 to-orange-600",
       thumbClass: "from-cyan-500 to-blue-500",
     },
   ];
+  
+  const currentPage = 1;
+const postsPerPage = 7;
 
+const start = (currentPage - 1) * postsPerPage;
+const visiblePosts = posts.slice(start, start + postsPerPage);
+  
   return (
     <div className="min-h-screen bg-[#090909] text-zinc-100">
       <div className="mx-auto flex w-full max-w-360 gap-4 px-4 py-6 lg:gap-6 lg:px-6">
@@ -354,7 +360,7 @@ avatarClass: "from-yellow-500 to-orange-600",
             </div>
           </section>
 
-          <section className="h-[780px] overflow-y-auto space-y-6 pr-2">
+          <section className="h-[1100px] overflow-y-auto space-y-6 pr-2">
   {posts.slice(0, 7).map((post) => (
     <BlogCard
       key={post.handle}
