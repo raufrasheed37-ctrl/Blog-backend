@@ -360,7 +360,7 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
             </div>
           </section>
 
-          <section className="h-[1100px] overflow-y-auto space-y-6 pr-2">
+          <section className="h-[1500px] overflow-y-auto space-y-6 pr-2">
   {posts.slice(0, 7).map((post) => (
     <BlogCard
       key={post.handle}
