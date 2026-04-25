@@ -284,7 +284,7 @@ avatarClass: "from-yellow-500 to-orange-600",
     },
   ];
   
-  const currentPage = 1;
+  const [currentPage, setCurrentPage] = useState(1);
 const postsPerPage = 7;
 
 const start = (currentPage - 1) * postsPerPage;
