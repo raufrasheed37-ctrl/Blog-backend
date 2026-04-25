@@ -1,5 +1,6 @@
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
   const navItems = [
@@ -361,7 +362,7 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
           </section>
 
           <section className="h-[1500px] overflow-y-auto space-y-6 pr-2">
-  {posts.slice(0, 7).map((post) => (
+  {visiblePosts.map((post) => (
     <BlogCard
       key={post.handle}
       post={post}
