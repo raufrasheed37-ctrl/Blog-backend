@@ -10,23 +10,137 @@ export default function Home() {
   ];
 
   const posts = [
-    {
-      name: "Ari Miles",
-      handle: "@arimiles",
-      time: "2h",
-      text:
-        "The best ideas usually come from the notes you almost threw away. I turned one rough sketch into a paid weekly newsletter and crossed my first 500 subscribers this month.",
-      avatarClass: "from-emerald-400 to-teal-500",
-    },
-    {
-      name: "Noah Chen",
-      handle: "@noahwrites",
-      time: "5h",
-      text:
-        "Creators who publish consistently for 90 days have the highest retention lift. Sharing my exact framework for drafting, editing, and shipping in under two hours.",
-      avatarClass: "from-orange-400 to-amber-500",
-    },
-  ];
+  {
+    name: "Sarah Johnson",
+    handle: "@sarahwrites",
+    time: "2h ago",
+    slug: "how-consistency-builds-online-income",
+    title: "How Consistency Builds Online Income",
+    category: "Business",
+    likes: 128,
+    comments: 24,
+    text:
+      "Consistency builds what motivation cannot. Many creators fail because they wait for perfect timing instead of building simple habits daily. Real online income comes from showing up repeatedly, improving your system, and earning trust over time.",
+    avatarClass: "from-emerald-400 to-teal-500",
+  },
+  {
+    name: "Daniel Brooks",
+    handle: "@danielmedia",
+    time: "5h ago",
+    slug: "sports-business-behind-modern-football",
+    title: "The Sports Business Behind Modern Football",
+    category: "Sports",
+    likes: 214,
+    comments: 39,
+    text:
+      "Modern football is no longer just entertainment—it is a billion-dollar business powered by branding, media rights, sponsorships, and global fan loyalty.",
+    avatarClass: "from-orange-400 to-amber-500",
+  },
+  {
+    name: "Mia Chen",
+    handle: "@miastories",
+    time: "8h ago",
+    slug: "entertainment-industry-and-audience-power",
+    title: "Entertainment Industry and Audience Power",
+    category: "Entertainment",
+    likes: 176,
+    comments: 31,
+    text:
+      "Entertainment today runs on attention. The strongest creators understand that audience trust matters more than short-term viral moments.",
+    avatarClass: "from-cyan-400 to-blue-500",
+  },
+  {
+    name: "James Carter",
+    handle: "@jamesbiz",
+    time: "10h ago",
+    slug: "startup-growth-with-small-audiences",
+    title: "Startup Growth with Small Audiences",
+    category: "Startups",
+    likes: 143,
+    comments: 19,
+    text:
+      "Small audiences can create massive businesses when trust is high. Niche communities convert faster and stay loyal longer than broad weak audiences.",
+    avatarClass: "from-violet-400 to-purple-500",
+  },
+  {
+    name: "Sophia Lee",
+    handle: "@sophiatech",
+    time: "12h ago",
+    slug: "ai-changing-digital-marketing",
+    title: "How AI Is Changing Digital Marketing",
+    category: "Technology",
+    likes: 267,
+    comments: 48,
+    text:
+      "AI is transforming how brands reach customers—from personalized campaigns to predictive analytics. Smart marketers are adapting fast.",
+    avatarClass: "from-pink-400 to-rose-500",
+  },
+  {
+    name: "Michael Stone",
+    handle: "@freelancepro",
+    time: "14h ago",
+    slug: "freelancing-without-burnout",
+    title: "Freelancing Without Burning Out",
+    category: "Freelancing",
+    likes: 189,
+    comments: 27,
+    text:
+      "Freelancing gives freedom, but without systems it becomes chaos. Boundaries, pricing, and client selection are the real survival tools.",
+    avatarClass: "from-yellow-400 to-orange-500",
+  },
+  {
+    name: "Ava Wilson",
+    handle: "@brandgrowth",
+    time: "16h ago",
+    slug: "content-marketing-that-converts",
+    title: "Content Marketing That Actually Converts",
+    category: "Marketing",
+    likes: 155,
+    comments: 22,
+    text:
+      "Posting daily is not enough. Strong content marketing solves real problems, builds trust, and creates conversion paths that feel natural.",
+    avatarClass: "from-indigo-400 to-blue-500",
+  },
+  {
+    name: "Chris Nolan",
+    handle: "@mindsetdaily",
+    time: "18h ago",
+    slug: "discipline-over-motivation",
+    title: "Discipline Will Always Beat Motivation",
+    category: "Personal Growth",
+    likes: 301,
+    comments: 57,
+    text:
+      "Motivation fades quickly. Discipline survives bad days. The people who grow long-term are the ones who build systems, not temporary excitement.",
+    avatarClass: "from-lime-400 to-green-500",
+  },
+  {
+    name: "Emma Rodriguez",
+    handle: "@futurecreator",
+    time: "20h ago",
+    slug: "creator-economy-is-the-future",
+    title: "Why the Creator Economy Is the Future",
+    category: "Creator Economy",
+    likes: 198,
+    comments: 33,
+    text:
+      "People trust people more than brands. That shift is creating a world where creators are becoming businesses and communities are becoming economies.",
+    avatarClass: "from-sky-400 to-cyan-500",
+  },
+  {
+    name: "Ryan Adams",
+    handle: "@nextfounder",
+    time: "1d ago",
+    slug: "building-business-from-zero",
+    title: "Building a Business from Absolute Zero",
+    category: "Business",
+    likes: 241,
+    comments: 41,
+    text:
+      "Most successful businesses start with clarity, not capital. Solving one painful problem well is often more powerful than chasing huge funding.",
+    avatarClass: "from-red-400 to-pink-500",
+  },
+];
 
   const upNext = [
     {
