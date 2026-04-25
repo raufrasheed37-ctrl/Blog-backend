@@ -231,14 +231,14 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="space-y-4">
-            {posts.map((post) => (
-              <BlogCard
-                key={post.handle}
-                post={post}
-              />
-            ))}
-          </section>
+          <section className="h-[700px] overflow-y-auto space-y-6 pr-2">
+  {posts.map((post) => (
+    <BlogCard
+      key={post.handle}
+      post={post}
+    />
+  ))}
+</section>
         </main>
 
         <aside className="hidden w-[320px] shrink-0 space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-5 shadow-[0_30px_70px_-45px_rgba(0,0,0,0.9)] xl:block">
