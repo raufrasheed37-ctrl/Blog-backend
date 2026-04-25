@@ -375,17 +375,26 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
     Previous
   </button>
 
-  <button className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-zinc-950">
-    1
-  </button>
+  <button
+  onClick={() => setCurrentPage(1)}
+  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+>
+  1
+</button>
 
-  <button className="rounded-xl border border-white/10 px-4 py-2 text-sm">
-    2
-  </button>
+<button
+  onClick={() => setCurrentPage(2)}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+>
+  2
+</button>
 
-  <button className="rounded-xl border border-white/10 px-4 py-2 text-sm">
-    3
-  </button>
+<button
+  onClick={() => setCurrentPage(3)}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+>
+  3
+</button>
 
   <button className="rounded-xl border border-white/10 px-4 py-2 text-sm">
     Next
