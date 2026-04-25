@@ -372,14 +372,22 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
 </section>
 
 <div className="mt-6 flex items-center justify-center gap-3">
-  <button className="rounded-xl border border-white/10 px-4 py-2 text-sm">
-    Previous
-  </button>
-
   <button
   type="button"
+  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+>
+  Previous
+</button>
+
+<button
+  type="button"
   onClick={() => setCurrentPage(1)}
-  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-zinc-950"
+  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
+    currentPage === 1
+      ? "bg-orange-500 text-zinc-950"
+      : "border border-white/10 text-white"
+  }`}
 >
   1
 </button>
@@ -387,7 +395,11 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
 <button
   type="button"
   onClick={() => setCurrentPage(2)}
-  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
+    currentPage === 2
+      ? "bg-orange-500 text-zinc-950"
+      : "border border-white/10 text-white"
+  }`}
 >
   2
 </button>
@@ -395,14 +407,22 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
 <button
   type="button"
   onClick={() => setCurrentPage(3)}
-  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
+    currentPage === 3
+      ? "bg-orange-500 text-zinc-950"
+      : "border border-white/10 text-white"
+  }`}
 >
   3
 </button>
 
-  <button className="rounded-xl border border-white/10 px-4 py-2 text-sm">
-    Next
-  </button>
+  <button
+  type="button"
+  onClick={() => currentPage < 3 && setCurrentPage(currentPage + 1)}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+>
+  Next
+</button>
 </div>
         </main>
 
