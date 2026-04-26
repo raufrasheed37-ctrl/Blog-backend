@@ -254,16 +254,17 @@ text: "AI tools are changing productivity, hiring, and collaboration across glob
 avatarClass: "from-pink-500 to-rose-500",
 },
 {
-name: "Jordan Miles",
-handle: "@freelanceflow",
-time: "1d ago",
-slug: "high-paying-clients-without-cold-dms",
-title: "Finding High-Paying Clients Without Cold DMs",
-category: "Freelancing",
-likes: 196,
-comments: 30,
-text: "Positioning and authority attract better clients faster than random outreach ever will.",
-avatarClass: "from-yellow-500 to-orange-600",
+{
+  name: "Sophie Carter",
+  handle: "@clientgrowth",
+  time: "1d ago",
+  slug: "building-client-trust-that-converts",
+  title: "Building Client Trust That Converts",
+  category: "Freelancing",
+  likes: 207,
+  comments: 34,
+  text: "Clients buy confidence before they buy services. Trust is the fastest path to premium opportunities.",
+  avatarClass: "from-amber-500 to-yellow-600",
 },
   ];
 
