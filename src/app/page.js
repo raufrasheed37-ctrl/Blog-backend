@@ -253,7 +253,7 @@ comments: 52,
 text: "AI tools are changing productivity, hiring, and collaboration across global remote teams.",
 avatarClass: "from-pink-500 to-rose-500",
 },
-{
+
 {
   name: "Sophie Carter",
   handle: "@clientgrowth",
