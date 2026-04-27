@@ -362,7 +362,7 @@ avatarClass: "from-pink-500 to-rose-500",
 </nav>
 
           <button className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400">
-            Create
+            <Link href="/register">Create</Link>
           </button>
         </aside>
 
@@ -492,11 +492,11 @@ avatarClass: "from-pink-500 to-rose-500",
 
             <div className="mt-4 space-y-2.5">
               <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
-                Get started
+                <Link href="/register">Get started</Link>
               </button>
 
               <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600">
-                Sign in
+                <Link href="/login">Sign in</Link>
               </button>
             </div>
           </section>
