@@ -1,7 +1,7 @@
 "use client";
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const navItems = [
@@ -285,12 +285,47 @@ avatarClass: "from-pink-500 to-rose-500",
       thumbClass: "from-cyan-500 to-blue-500",
     },
   ];
+
+  const heroSlides = [
+    {
+      title: "Make money doing the work you believe in.",
+      words:
+        "Turn your ideas into income with clear positioning, focused content, and consistent execution.",
+    },
+    {
+      title: "Build trust first, and revenue follows.",
+      words:
+        "People buy confidence, clarity, and outcomes. Show up with value every week and let momentum compound.",
+    },
+    {
+      title: "Create once, grow for years.",
+      words:
+        "Design systems that publish, repurpose, and distribute your best work across platforms without burning out.",
+    },
+  ];
   
   const [currentPage, setCurrentPage] = useState(1);
-const postsPerPage = 7;
+  const [activeSlide, setActiveSlide] = useState(0);
+  const postsPerPage = 7;
+  const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
+  const listRef = useRef(null);
 
-const start = (currentPage - 1) * postsPerPage;
-const visiblePosts = posts.slice(start, start + postsPerPage);
+  const start = (currentPage - 1) * postsPerPage;
+  const visiblePosts = posts.slice(start, start + postsPerPage);
+
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentPage]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4500);
+
+    return () => clearInterval(timer);
+  }, [heroSlides.length]);
   
   return (
     <div className="min-h-screen bg-[#090909] text-zinc-100">
@@ -345,8 +380,28 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
               </p>
 
               <h2 className="mt-3 text-3xl font-bold leading-tight text-[#0a0f0b] sm:text-4xl">
-                Make money doing the work you believe in.
+                {heroSlides[activeSlide].title}
               </h2>
+
+              <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-emerald-950/90 sm:text-base">
+                {heroSlides[activeSlide].words}
+              </p>
+
+              <div className="mt-4 flex items-center gap-2">
+                {heroSlides.map((slide, index) => (
+                  <button
+                    type="button"
+                    key={slide.title}
+                    onClick={() => setActiveSlide(index)}
+                    aria-label={`Show slide ${index + 1}`}
+                    className={`h-2.5 rounded-full transition-all ${
+                      activeSlide === index
+                        ? "w-9 bg-[#0a0f0b]"
+                        : "w-2.5 bg-emerald-950/40 hover:bg-emerald-950/70"
+                    }`}
+                  />
+                ))}
+              </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <button className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
@@ -363,7 +418,10 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
             </div>
           </section>
 
-          <section className="h-[1500px] overflow-y-auto space-y-6 pr-2">
+          <section
+            ref={listRef}
+            className="h-[1500px] overflow-y-auto space-y-6 pr-2"
+          >
   {visiblePosts.map((post) => (
     <BlogCard
       key={post.handle}
@@ -375,52 +433,37 @@ const visiblePosts = posts.slice(start, start + postsPerPage);
 <div className="mt-6 flex items-center justify-center gap-3">
   <button
   type="button"
-  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+  disabled={currentPage === 1}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
 >
   Previous
 </button>
 
-<button
-  type="button"
-  onClick={() => setCurrentPage(1)}
-  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
-    currentPage === 1
-      ? "bg-orange-500 text-zinc-950"
-      : "border border-white/10 text-white"
-  }`}
->
-  1
-</button>
+  {Array.from({ length: totalPages }, (_, index) => {
+    const page = index + 1;
 
-<button
-  type="button"
-  onClick={() => setCurrentPage(2)}
-  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
-    currentPage === 2
-      ? "bg-orange-500 text-zinc-950"
-      : "border border-white/10 text-white"
-  }`}
->
-  2
-</button>
-
-<button
-  type="button"
-  onClick={() => setCurrentPage(3)}
-  className={`rounded-xl px-4 py-2 text-sm font-semibold ${
-    currentPage === 3
-      ? "bg-orange-500 text-zinc-950"
-      : "border border-white/10 text-white"
-  }`}
->
-  3
-</button>
+    return (
+      <button
+        type="button"
+        key={page}
+        onClick={() => setCurrentPage(page)}
+        className={`rounded-xl px-4 py-2 text-sm font-semibold ${
+          currentPage === page
+            ? "bg-orange-500 text-zinc-950"
+            : "border border-white/10 text-white"
+        }`}
+      >
+        {page}
+      </button>
+    );
+  })}
 
   <button
   type="button"
-  onClick={() => currentPage < 3 && setCurrentPage(currentPage + 1)}
-  className="rounded-xl border border-white/10 px-4 py-2 text-sm"
+  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+  disabled={currentPage === totalPages}
+  className="rounded-xl border border-white/10 px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
 >
   Next
 </button>
