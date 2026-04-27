@@ -4,7 +4,6 @@ import Link from "next/link";
 
 export default function BlogListPage() {
   const posts = [
-    ,
     {
       name: "Noah Chen",
       handle: "@noahwrites",
