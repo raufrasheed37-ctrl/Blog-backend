@@ -258,7 +258,7 @@ avatarClass: "from-pink-500 to-rose-500",
 },
 ];
 
-  const slug = params.slug;
+  const slug = params?.slug;
 
 const post = posts.find((item) => item.slug === slug);
 
