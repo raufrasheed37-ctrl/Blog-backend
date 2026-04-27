@@ -288,12 +288,12 @@ avatarClass: "from-pink-500 to-rose-500",
 
   const heroSlides = [
     {
-      title: "Make money doing the work you believe in.",
+      title: "Make money with purpose.",
       words:
         "Turn your ideas into income with clear positioning, focused content, and consistent execution.",
     },
     {
-      title: "Build trust first, and revenue follows.",
+      title: "Build trust first.",
       words:
         "People buy confidence, clarity, and outcomes. Show up with value every week and let momentum compound.",
     },
