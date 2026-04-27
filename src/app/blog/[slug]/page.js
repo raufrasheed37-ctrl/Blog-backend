@@ -256,9 +256,17 @@ export default function SinglePostPage({ params }) {
   },
 ];
 
-  const post =
-    posts.find((item) => item.slug === params?.slug) || posts[0];
+  const slug = params.slug;
 
+const post = posts.find((item) => item.slug === slug);
+
+if (!post) {
+  return (
+    <main className="min-h-screen bg-[#090909] p-10 text-white">
+      <h1>Post not found</h1>
+    </main>
+  );
+}
   return (
     <main className="min-h-screen bg-[#090909] px-4 py-8 text-zinc-100">
       <div className="mx-auto max-w-5xl">
