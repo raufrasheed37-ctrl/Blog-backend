@@ -258,9 +258,11 @@ avatarClass: "from-pink-500 to-rose-500",
 },
 ];
 
-  const slug = params?.slug;
+  const slug = decodeURIComponent(params?.slug || "");
 
-const post = posts.find((item) => item.slug === slug);
+const post = posts.find(
+  (item) => item.slug.trim().toLowerCase() === slug.trim().toLowerCase()
+);
 
 if (!post) {
   return (
