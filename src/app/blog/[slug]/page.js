@@ -290,17 +290,17 @@ if (!post) {
             </h1>
 
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-emerald-950">
-              <span>{post.name}</span>
-              <span>• {post.published}</span>
-              <span>• {post.readTime}</span>
-              <span>• {post.category}</span>
-              <span>• ❤️ {post.likes}</span>
-              <span>• 💬 {post.comments}</span>
+                 <span>{post.name}</span>
+                 <span>• {post.time}</span>
+                 <span>• 7 min read</span>
+                <span>• {post.category}</span>
+                <span>• ❤️ {post.likes}</span>
+                 <span>• 💬 {post.comments}</span>
             </div>
           </div>
 
           <div className="p-8 space-y-8 text-zinc-300 leading-8">
-            <p>{post.content}</p>
+            <p>{post.text}</p>
 
             <h2 className="text-2xl font-semibold text-white">
               Why This Matters
