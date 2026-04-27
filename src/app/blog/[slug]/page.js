@@ -1,32 +1,6 @@
-export async function generateStaticParams() {
-  return [
-    { slug: "how-consistency-builds-online-income" },
-    { slug: "sports-business-behind-modern-football" },
-    { slug: "why-small-brands-win-online" },
-    { slug: "athletes-as-global-brands" },
-    { slug: "streaming-platforms-changing-hollywood" },
-    { slug: "startup-founders-and-focus" },
-    { slug: "celebrity-culture-and-digital-power" },
-    { slug: "launch-fast-learn-faster" },
-    { slug: "automation-is-the-new-advantage" },
-    { slug: "raising-prices-without-losing-clients" },
-    { slug: "why-simple-offers-convert-more" },
-    { slug: "protecting-focus-in-a-distracted-world" },
-    { slug: "community-first-business-models" },
-    { slug: "solving-small-problems-for-big-profit" },
-    { slug: "high-paying-clients-without-cold-dms" },
-    { slug: "storytelling-sells-better-than-ads" },
-    { slug: "daily-systems-for-high-performance" },
-    { slug: "monetizing-trust-in-the-creator-economy" },
-    { slug: "profitable-business-before-scaling" },
-    { slug: "future-of-remote-work-with-ai" },
-    { slug: "building-client-trust-that-converts" },
-  ];
-}
-
 import Link from "next/link";
 
-export default function SinglePostPage({ params }) {
+
   const posts = [
   {
       name: "Sarah Johnson",
@@ -283,20 +257,31 @@ avatarClass: "from-pink-500 to-rose-500",
   avatarClass: "from-amber-500 to-yellow-600",
 },
 ];
+    
 
+export async function generateStaticParams() {
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+export default function SinglePostPage({ params }) {
   const slug = decodeURIComponent(params?.slug || "");
 
-const post = posts.find(
-  (item) => item.slug.trim().toLowerCase() === slug.trim().toLowerCase()
-);
-
-if (!post) {
-  return (
-    <main className="min-h-screen bg-[#090909] p-10 text-white">
-      <h1>Post not found</h1>
-    </main>
+  const post = posts.find(
+    (item) =>
+      item.slug.trim().toLowerCase() ===
+      slug.trim().toLowerCase()
   );
-}
+
+  if (!post) {
+    return (
+      <main className="min-h-screen bg-[#090909] p-10 text-white">
+        <h1>Post not found</h1>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-[#090909] px-4 py-8 text-zinc-100">
       <div className="mx-auto max-w-5xl">
@@ -318,12 +303,12 @@ if (!post) {
             </h1>
 
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-emerald-950">
-                 <span>{post.name}</span>
-                 <span>• {post.time}</span>
-                 <span>• 7 min read</span>
-                <span>• {post.category}</span>
-                <span>• ❤️ {post.likes}</span>
-                 <span>• 💬 {post.comments}</span>
+              <span>{post.name}</span>
+              <span>• {post.time}</span>
+              <span>• 7 min read</span>
+              <span>• {post.category}</span>
+              <span>• ❤️ {post.likes}</span>
+              <span>• 💬 {post.comments}</span>
             </div>
           </div>
 
