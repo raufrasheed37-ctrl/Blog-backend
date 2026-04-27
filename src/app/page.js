@@ -424,7 +424,7 @@ avatarClass: "from-pink-500 to-rose-500",
           >
   {visiblePosts.map((post) => (
     <BlogCard
-      key={post.handle}
+      key={post.slug}
       post={post}
     />
   ))}
