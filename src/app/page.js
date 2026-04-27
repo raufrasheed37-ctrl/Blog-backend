@@ -329,8 +329,8 @@ avatarClass: "from-pink-500 to-rose-500",
   
   return (
     <div className="min-h-screen bg-[#090909] text-zinc-100">
-      <div className="mx-auto flex w-full max-w-360 gap-4 px-4 py-6 lg:gap-6 lg:px-6">
-        <aside className="hidden min-h-[92vh] w-62.5 flex-col rounded-3xl border border-white/10 bg-linear-to-b from-[#121212] via-[#0d0d0d] to-[#111111] p-5 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.9)] md:flex">
+      <div className="mx-auto flex w-full max-w-360 items-start gap-4 px-4 py-6 lg:gap-6 lg:px-6">
+        <aside className="hidden min-h-[92vh] w-62.5 flex-col rounded-3xl border border-white/10 bg-linear-to-b from-[#121212] via-[#0d0d0d] to-[#111111] p-5 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.9)] md:sticky md:top-6 md:flex">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-400">
               Pulse
@@ -420,7 +420,7 @@ avatarClass: "from-pink-500 to-rose-500",
 
           <section
             ref={listRef}
-            className="h-[1500px] overflow-y-auto space-y-6 pr-2"
+            className="h-375 overflow-y-auto space-y-6 pr-2"
           >
   {visiblePosts.map((post) => (
     <BlogCard
@@ -470,7 +470,7 @@ avatarClass: "from-pink-500 to-rose-500",
 </div>
         </main>
 
-        <aside className="hidden w-[320px] shrink-0 space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-5 shadow-[0_30px_70px_-45px_rgba(0,0,0,0.9)] xl:block">
+        <aside className="hidden w-[320px] shrink-0 space-y-4 rounded-3xl border border-white/10 bg-[#101010] p-5 shadow-[0_30px_70px_-45px_rgba(0,0,0,0.9)] xl:sticky xl:top-6 xl:block">
           <label className="flex items-center gap-2 rounded-2xl border border-white/10 bg-zinc-900/80 px-3 py-2.5">
             <SearchIcon />
 
