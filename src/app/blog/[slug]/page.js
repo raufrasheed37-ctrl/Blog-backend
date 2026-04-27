@@ -1,3 +1,29 @@
+export async function generateStaticParams() {
+  return [
+    { slug: "how-consistency-builds-online-income" },
+    { slug: "sports-business-behind-modern-football" },
+    { slug: "why-small-brands-win-online" },
+    { slug: "athletes-as-global-brands" },
+    { slug: "streaming-platforms-changing-hollywood" },
+    { slug: "startup-founders-and-focus" },
+    { slug: "celebrity-culture-and-digital-power" },
+    { slug: "launch-fast-learn-faster" },
+    { slug: "automation-is-the-new-advantage" },
+    { slug: "raising-prices-without-losing-clients" },
+    { slug: "why-simple-offers-convert-more" },
+    { slug: "protecting-focus-in-a-distracted-world" },
+    { slug: "community-first-business-models" },
+    { slug: "solving-small-problems-for-big-profit" },
+    { slug: "high-paying-clients-without-cold-dms" },
+    { slug: "storytelling-sells-better-than-ads" },
+    { slug: "daily-systems-for-high-performance" },
+    { slug: "monetizing-trust-in-the-creator-economy" },
+    { slug: "profitable-business-before-scaling" },
+    { slug: "future-of-remote-work-with-ai" },
+    { slug: "building-client-trust-that-converts" },
+  ];
+}
+
 import Link from "next/link";
 
 export default function SinglePostPage({ params }) {
