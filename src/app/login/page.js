@@ -22,7 +22,7 @@ export default function LoginPage() {
                   href="/register"
                   className="font-medium text-orange-500 hover:text-orange-400"
                 >
-                  Create new your account
+                  Create new account
                 </Link>
               </p>
             </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
                   href="/"
                   className="font-medium text-orange-500 hover:text-orange-400"
                 >
-                  Back to Homepage
+                  ← Back to Homepage
                 </Link>
               </p>
           </div>

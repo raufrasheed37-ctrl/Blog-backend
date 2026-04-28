@@ -491,13 +491,21 @@ avatarClass: "from-pink-500 to-rose-500",
             </p>
 
             <div className="mt-4 space-y-2.5">
-              <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
-                <Link href="/register">Get started</Link>
-              </button>
+              <div>
+                <Link href="/register">
+                  <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
+                    Get started
+                  </button>
+                </Link>
+              </div>
+              <div>
+                <Link href="/login">
+                  <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600">
+                    Sign in
+                  </button>
+                </Link>
+              </div>
 
-              <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600">
-                <Link href="/login">Sign in</Link>
-              </button>
             </div>
           </section>
 
