@@ -54,13 +54,12 @@ export default function BlogCard({ post }) {
 
           {/* Right Side */}
           <div className="flex flex-col items-end gap-3">
-            <button
-              onClick={(e) => e.preventDefault()}
-              className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400"
-            >
-              Subscribe
-            </button>
-
+            
+<button
+  className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400"
+>
+  Subscribe
+</button>
             <span className="text-xs text-zinc-500">
               {post.category}
             </span>
