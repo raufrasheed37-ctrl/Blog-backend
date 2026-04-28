@@ -283,63 +283,135 @@ export default async function SinglePostPage({ params }) {
   } 
 
   return (
-    <main className="min-h-screen bg-[#090909] px-4 py-8 text-zinc-100">
-      <div className="mx-auto max-w-5xl">
-        <Link
-          href="/"
-          className="text-sm font-medium text-emerald-400 hover:underline"
-        >
-          ← Back to Articles
-        </Link> 
+  <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-8">
+    <div className="mx-auto max-w-3xl">
 
-        <section className="mt-6 rounded-3xl border border-white/10 bg-[#111111] overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-500 p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-100">
-              Featured Article
-            </p> 
+      {/* Back */}
+      <Link
+        href="/"
+        className="text-sm text-zinc-400 transition hover:text-white"
+      >
+        ← Back to Home
+      </Link>
 
-            <h1 className="mt-4 text-4xl font-bold text-[#07110b]">
-              {post.title}
-            </h1> 
+      {/* Main Article */}
+      <section className="mt-8">
 
-            <div className="mt-6 flex flex-wrap gap-4 text-sm text-emerald-950">
-              <span>{post.name}</span>
-              <span>• {post.time}</span>
-              <span>• 7 min read</span>
-              <span>• {post.category}</span>
-              <span>• ❤️ {post.likes}</span>
-              <span>• 💬 {post.comments}</span>
-            </div>
-          </div> 
+        {/* Author Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div
+              className={`h-12 w-12 rounded-full bg-gradient-to-br ${post.avatarClass}`}
+            />
 
-          <div className="p-8 space-y-8 text-zinc-300 leading-8">
-            <p>{post.text}</p> 
+            <div>
+              <h3 className="font-semibold text-white">
+                {post.name}
+              </h3>
 
-            <h2 className="text-2xl font-semibold text-white">
-              Why This Matters
-            </h2> 
+              <p className="text-sm text-zinc-500">
+                {post.handle} • {post.time}
+              </p>
+            </div>
+          </div>
 
-            <p>
-              Long-term success comes from trust, consistency, and strong
-              systems. Professionals win by building what lasts instead of
-              chasing temporary hype.
-            </p> 
+          <button className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400">
+            Subscribe
+          </button>
+        </div>
 
-            <blockquote className="rounded-2xl border border-white/10 bg-[#161616] p-5 italic text-zinc-200">
-              “The goal is not perfection. The goal is momentum.”
-            </blockquote> 
+        {/* Title */}
+        <h1 className="mt-8 text-4xl font-bold leading-tight text-white">
+          {post.title}
+        </h1>
 
-            <h2 className="text-2xl font-semibold text-white">
-              Final Thoughts
-            </h2> 
+        {/* Article Content */}
+        <div className="mt-8 space-y-6 text-[17px] leading-8 text-zinc-300">
+          <p>{post.text}</p>
 
-            <p>
-              Start small. Improve fast. Let your work compound over time.
-              Consistency always beats temporary hype.
-            </p>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
+          <p>
+            Long-term success comes from trust, consistency, and strong
+            systems. Professionals win by building what lasts instead of
+            chasing temporary hype.
+          </p>
+
+          <p>
+            In the digital world, consistency creates trust. People remember
+            those who continue showing up and delivering value over time.
+          </p>
+
+          <blockquote className="border-l-4 border-orange-500 pl-4 italic text-zinc-200">
+            “The goal is not perfection. The goal is momentum.”
+          </blockquote>
+
+          <p>
+            Start small. Improve fast. Let your work compound over time.
+            Consistency always beats temporary hype.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="mt-10 flex items-center gap-8 border-y border-white/10 py-5 text-sm text-zinc-400">
+          <button className="transition hover:text-red-400">
+            ♡ {post.likes}
+          </button>
+
+          <button className="transition hover:text-white">
+            💬 {post.comments}
+          </button>
+
+          <button className="transition hover:text-white">
+            ↻ 4
+          </button>
+
+          <button className="transition hover:text-white">
+            ↗ Share
+          </button>
+        </div>
+
+        {/* Stats Row */}
+        <div className="mt-6 flex flex-wrap justify-between gap-4 border-b border-white/10 pb-6 text-sm text-zinc-500">
+          <div>
+            {post.likes} Likes • {post.comments} Replies • 4 Restacks
+          </div>
+
+          <div>
+            Apr 27 at 7:26 PM
+          </div>
+        </div>
+
+        {/* Comment Box */}
+        <div className="mt-8 rounded-2xl border border-white/10 bg-[#141414] p-5">
+          <p className="text-zinc-500">
+            Be the first to comment...
+          </p>
+        </div>
+
+        {/* Demo Reply */}
+        <div className="mt-10 border-t border-white/10 pt-8">
+          <div className="flex gap-3">
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zinc-500 to-zinc-700" />
+
+            <div>
+              <h4 className="font-semibold text-white">
+                Reader Comment
+              </h4>
+
+              <p className="text-sm text-zinc-500">
+                2h ago
+              </p>
+
+              <p className="mt-3 leading-7 text-zinc-300">
+                This article was excellent. Consistency really is the
+                competitive advantage for long-term growth.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+);
+    
   }
