@@ -92,7 +92,7 @@ export default function RegisterPage() {
                 href="/"
                 className="font-medium text-orange-500 hover:text-orange-400"
               >
-                Back to Homepage
+                ← Back to Homepage
               </Link>
             </p>
           </div>
