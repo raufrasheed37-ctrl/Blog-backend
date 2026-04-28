@@ -1,32 +1,32 @@
 import Link from "next/link";
 
 
-  const posts = [
-  {
-      name: "Sarah Johnson",
-      handle: "@sarahwrites",
-      time: "2h ago",
-      slug: "how-consistency-builds-online-income",
-      title: "How Consistency Builds Online Income",
-      category: "Business",
-      likes: 128,
-      comments: 24,
-      text: "Consistency builds what motivation cannot. Real online income comes from showing up repeatedly and earning trust over time.",
-      avatarClass: "from-emerald-400 to-teal-500",
-    },
-    {
-      name: "Daniel Brooks",
-      handle: "@danielmedia",
-      time: "5h ago",
-      slug: "sports-business-behind-modern-football",
-      title: "The Sports Business Behind Modern Football",
-      category: "Sports",
-      likes: 214,
-      comments: 39,
-      text: "Modern football is now a billion-dollar business powered by branding and global media rights.",
-      avatarClass: "from-orange-400 to-amber-500",
-    },
-    {
+  const posts = [
+  {
+      name: "Sarah Johnson",
+      handle: "@sarahwrites",
+      time: "2h ago",
+      slug: "how-consistency-builds-online-income",
+      title: "How Consistency Builds Online Income",
+      category: "Business",
+      likes: 128,
+      comments: 24,
+      text: "Consistency builds what motivation cannot. Real online income comes from showing up repeatedly and earning trust over time.",
+      avatarClass: "from-emerald-400 to-teal-500",
+    },
+    {
+      name: "Daniel Brooks",
+      handle: "@danielmedia",
+      time: "5h ago",
+      slug: "sports-business-behind-modern-football",
+      title: "The Sports Business Behind Modern Football",
+      category: "Sports",
+      likes: 214,
+      comments: 39,
+      text: "Modern football is now a billion-dollar business powered by branding and global media rights.",
+      avatarClass: "from-orange-400 to-amber-500",
+    },
+    {
 name: "Olivia Grant",
 handle: "@oliviabuilds",
 time: "1d ago",
@@ -73,9 +73,9 @@ likes: 149,
 comments: 21,
 text: "Most founders fail from distraction, not lack of ideas. Focus is the real competitive advantage.",
 avatarClass: "from-violet-500 to-purple-600",
-},
+}, 
 
-    {
+    {
 name: "Ella Monroe",
 handle: "@showbizdaily",
 time: "2d ago",
@@ -123,7 +123,7 @@ comments: 32,
 text: "Clients pay for confidence and outcomes, not just hours. Better positioning supports premium pricing.",
 avatarClass: "from-yellow-600 to-orange-700",
 },
-    {
+    {
 name: "Clara James",
 handle: "@conversionlab",
 time: "3d ago",
@@ -170,8 +170,8 @@ likes: 248,
 comments: 40,
 text: "Massive companies often begin by solving one simple painful problem better than everyone else.",
 avatarClass: "from-red-600 to-pink-700",
-},  
-    {
+},  
+    {
 name: "Jordan Miles",
 handle: "@freelanceflow",
 time: "1d ago",
@@ -231,7 +231,7 @@ comments: 42,
 text: "Scaling a broken model only creates bigger problems. Profitability should come before expansion.",
 avatarClass: "from-red-500 to-pink-600",
 },
-    {
+    {
 name: "Nina Park",
 handle: "@futuretech",
 time: "1d ago",
@@ -242,104 +242,104 @@ likes: 288,
 comments: 52,
 text: "AI tools are changing productivity, hiring, and collaboration across global remote teams.",
 avatarClass: "from-pink-500 to-rose-500",
-},
+}, 
 
 {
-  name: "Sophie Carter",
-  handle: "@clientgrowth",
-  time: "1d ago",
-  slug: "building-client-trust-that-converts",
-  title: "Building Client Trust That Converts",
-  category: "Freelancing",
-  likes: 207,
-  comments: 34,
-  text: "Clients buy confidence before they buy services. Trust is the fastest path to premium opportunities.",
-  avatarClass: "from-amber-500 to-yellow-600",
+  name: "Sophie Carter",
+  handle: "@clientgrowth",
+  time: "1d ago",
+  slug: "building-client-trust-that-converts",
+  title: "Building Client Trust That Converts",
+  category: "Freelancing",
+  likes: 207,
+  comments: 34,
+  text: "Clients buy confidence before they buy services. Trust is the fastest path to premium opportunities.",
+  avatarClass: "from-amber-500 to-yellow-600",
 },
 ];
-    
+    
 
 export async function generateStaticParams() {
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+} 
 
-export default function SinglePostPage({ params }) {
-  const slug = decodeURIComponent(params?.slug || "");
+export default async function SinglePostPage({ params }) {
+  const resolvedParams = await params;
+  const slug = decodeURIComponent(resolvedParams?.slug || ""); 
 
-  const post = posts.find(
-    (item) =>
-      item.slug.trim().toLowerCase() ===
-      slug.trim().toLowerCase()
-  );
+  const post = posts.find(
+    (item) =>
+      item.slug.trim().toLowerCase() ===
+      slug.trim().toLowerCase()
+  );
+  if (!post) {
+    return (
+      <main className="min-h-screen bg-[#090909] p-10 text-white">
+        <h1>Post not found</h1>
+      </main>
+    );
+  } 
 
-  if (!post) {
-    return (
-      <main className="min-h-screen bg-[#090909] p-10 text-white">
-        <h1>Post not found</h1>
-      </main>
-    );
+  return (
+    <main className="min-h-screen bg-[#090909] px-4 py-8 text-zinc-100">
+      <div className="mx-auto max-w-5xl">
+        <Link
+          href="/"
+          className="text-sm font-medium text-emerald-400 hover:underline"
+        >
+          ← Back to Articles
+        </Link> 
+
+        <section className="mt-6 rounded-3xl border border-white/10 bg-[#111111] overflow-hidden">
+          <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-500 p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-100">
+              Featured Article
+            </p> 
+
+            <h1 className="mt-4 text-4xl font-bold text-[#07110b]">
+              {post.title}
+            </h1> 
+
+            <div className="mt-6 flex flex-wrap gap-4 text-sm text-emerald-950">
+              <span>{post.name}</span>
+              <span>• {post.time}</span>
+              <span>• 7 min read</span>
+              <span>• {post.category}</span>
+              <span>• ❤️ {post.likes}</span>
+              <span>• 💬 {post.comments}</span>
+            </div>
+          </div> 
+
+          <div className="p-8 space-y-8 text-zinc-300 leading-8">
+            <p>{post.text}</p> 
+
+            <h2 className="text-2xl font-semibold text-white">
+              Why This Matters
+            </h2> 
+
+            <p>
+              Long-term success comes from trust, consistency, and strong
+              systems. Professionals win by building what lasts instead of
+              chasing temporary hype.
+            </p> 
+
+            <blockquote className="rounded-2xl border border-white/10 bg-[#161616] p-5 italic text-zinc-200">
+              “The goal is not perfection. The goal is momentum.”
+            </blockquote> 
+
+            <h2 className="text-2xl font-semibold text-white">
+              Final Thoughts
+            </h2> 
+
+            <p>
+              Start small. Improve fast. Let your work compound over time.
+              Consistency always beats temporary hype.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
   }
-
-  return (
-    <main className="min-h-screen bg-[#090909] px-4 py-8 text-zinc-100">
-      <div className="mx-auto max-w-5xl">
-        <Link
-          href="/"
-          className="text-sm font-medium text-emerald-400 hover:underline"
-        >
-          ← Back to Articles
-        </Link>
-
-        <section className="mt-6 rounded-3xl border border-white/10 bg-[#111111] overflow-hidden">
-          <div className="bg-gradient-to-r from-emerald-600 via-emerald-500 to-lime-500 p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-100">
-              Featured Article
-            </p>
-
-            <h1 className="mt-4 text-4xl font-bold text-[#07110b]">
-              {post.title}
-            </h1>
-
-            <div className="mt-6 flex flex-wrap gap-4 text-sm text-emerald-950">
-              <span>{post.name}</span>
-              <span>• {post.time}</span>
-              <span>• 7 min read</span>
-              <span>• {post.category}</span>
-              <span>• ❤️ {post.likes}</span>
-              <span>• 💬 {post.comments}</span>
-            </div>
-          </div>
-
-          <div className="p-8 space-y-8 text-zinc-300 leading-8">
-            <p>{post.text}</p>
-
-            <h2 className="text-2xl font-semibold text-white">
-              Why This Matters
-            </h2>
-
-            <p>
-              Long-term success comes from trust, consistency, and strong
-              systems. Professionals win by building what lasts instead of
-              chasing temporary hype.
-            </p>
-
-            <blockquote className="rounded-2xl border border-white/10 bg-[#161616] p-5 italic text-zinc-200">
-              “The goal is not perfection. The goal is momentum.”
-            </blockquote>
-
-            <h2 className="text-2xl font-semibold text-white">
-              Final Thoughts
-            </h2>
-
-            <p>
-              Start small. Improve fast. Let your work compound over time.
-              Consistency always beats temporary hype.
-            </p>
-          </div>
-        </section>
-      </div>
-    </main>
-  );
-}
