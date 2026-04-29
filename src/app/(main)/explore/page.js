@@ -1,43 +1,104 @@
 export default function ExplorePage() {
-  const topics = [
+  const categories = [
+    "Explore",
+    "Culture",
     "Technology",
     "Business",
-    "AI",
-    "Freelancing",
-    "Startups",
-    "Marketing",
-    "Writing",
-    "Design",
+    "Sports",
+    "Entertainment",
   ];
 
+  const tabs = ["Top", "Recent", "Posts"];
+
+  const posts = [1, 2, 3];
+
   return (
-    <main className="min-h-screen bg-[#090909] p-6 text-zinc-100">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-4xl font-bold">Explore Topics</h1>
+    <div className="min-h-screen text-white">
+      <div className="mx-auto max-w-6xl px-6 py-6">
 
-        <p className="mt-3 text-zinc-400">
-          Discover trending topics, creators, and popular blog posts.
-        </p>
+        {/* Categories */}
+        <div className="flex gap-3 overflow-x-auto pb-4">
+          {categories.map((item, index) => (
+            <button
+              key={item}
+              className={`rounded-xl px-5 py-2 text-sm font-medium whitespace-nowrap ${
+                index === 0
+                  ? "bg-white text-black"
+                  : "bg-zinc-900 text-zinc-300"
+              }`}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
 
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Trending Topics</h2>
+        {/* Top / Recent / Posts */}
+        <div className="mt-6 flex justify-center gap-16 border-b border-white/10 pb-4">
+          {tabs.map((tab, index) => (
+            <button
+              key={tab}
+              className={`text-sm font-semibold ${
+                index === 0
+                  ? "text-white border-b-2 border-white pb-2"
+                  : "text-zinc-500"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {topics.map((topic) => (
-              <div
-                key={topic}
-                className="rounded-2xl border border-white/10 bg-[#161616] p-5 shadow-[0_20px_40px_-30px_rgba(0,0,0,0.9)] transition hover:border-white/20"
-              >
-                <h3 className="text-lg font-semibold">{topic}</h3>
+        {/* Feed */}
+        <div className="mt-8 space-y-8">
+          {posts.map((post) => (
+            <article
+              key={post}
+              className="border-b border-white/10 pb-10"
+            >
+              {/* Header */}
+              <div className="flex items-start justify-between">
+                <div className="flex gap-4">
+                  <div className="h-12 w-12 rounded-full bg-zinc-700" />
 
-                <p className="mt-2 text-sm text-zinc-400">
-                  Explore articles and insights about {topic}.
+                  <div>
+                    <h3 className="font-semibold text-lg">
+                      Creator Name
+                    </h3>
+
+                    <p className="text-sm text-zinc-400">
+                      3h ago
+                    </p>
+                  </div>
+                </div>
+
+                <button className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black">
+                  Subscribe
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="mt-5">
+                <p className="text-lg leading-8 text-zinc-200">
+                  This is where the real explore content will show.
+                  Backend will later load actual user posts, images,
+                  and creator content here exactly like Substack.
                 </p>
               </div>
-            ))}
-          </div>
-        </section>
+
+              {/* Image Placeholder */}
+              <div className="mt-6 h-72 rounded-3xl bg-zinc-800" />
+
+              {/* Actions */}
+              <div className="mt-6 flex items-center gap-8 text-sm text-zinc-400">
+                <button>❤️ 25 Likes</button>
+                <button>💬 4 Replies</button>
+                <button>🔁 2 Restacks</button>
+              </div>
+            </article>
+          ))}
+        </div>
+
       </div>
-    </main>
+    </div>
   );
 }
