@@ -470,22 +470,40 @@ export default function Home() {
           </label>
 
           <section className="rounded-3xl border border-white/10 bg-[#161616] p-5 shadow-[0_25px_40px_-32px_rgba(0,0,0,0.95)]">
-            <h3 className="text-xl font-semibold text-zinc-100">Log in or sign up</h3>
+  <h3 className="text-xl font-semibold text-zinc-100">
+    Log in or sign up
+  </h3>
 
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
-              Join creators and readers building profitable communities.
-            </p>
+  <p className="mt-2 text-sm leading-6 text-zinc-400">
+    Join creators and readers building profitable communities.
+  </p>
 
-            <div className="mt-4 space-y-2.5">
-              <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
-                Get started
-              </button>
+  <div className="mt-4 space-y-2.5">
+    <div>
+      <Link href="/register">
+        <button
+          className="w-full rounded-xl bg-orange-500 px-4
+          py-2.5 text-sm font-semibold text-zinc-950 transition
+          hover:bg-orange-400"
+        >
+          Get started
+        </button>
+      </Link>
+    </div>
 
-              <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600">
-                Sign in
-              </button>
-            </div>
-          </section>
+    <div>
+      <Link href="/login">
+        <button
+          className="w-full rounded-xl bg-zinc-700 px-4
+          py-2.5 text-sm font-semibold text-zinc-100 transition
+          hover:bg-zinc-600"
+        >
+          Sign in
+        </button>
+      </Link>
+    </div>
+  </div>
+</section>
 
           <section className="rounded-3xl border border-white/10 bg-[#161616] p-5 shadow-[0_25px_40px_-32px_rgba(0,0,0,0.95)]">
             <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-400">
