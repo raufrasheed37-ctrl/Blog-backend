@@ -344,6 +344,8 @@ export default function Home() {
                     ? "/explore"
                     : item.label === "Profile"
                       ? "/dashboard"
+                      : item.label === "Activity"
+                        ? "/activity"
                       : item.label === "Home"
                         ? "/"
                         : "#"
@@ -481,10 +483,7 @@ export default function Home() {
   <div className="mt-4 space-y-2.5">
     <div>
       <Link href="/register">
-        <button
-          className="w-full rounded-xl bg-orange-500 px-4
-          py-2.5 text-sm font-semibold text-zinc-950 transition
-          hover:bg-orange-400"
+        <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400"
         >
           Get started
         </button>
@@ -493,10 +492,7 @@ export default function Home() {
 
     <div>
       <Link href="/login">
-        <button
-          className="w-full rounded-xl bg-zinc-700 px-4
-          py-2.5 text-sm font-semibold text-zinc-100 transition
-          hover:bg-zinc-600"
+        <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600"
         >
           Sign in
         </button>

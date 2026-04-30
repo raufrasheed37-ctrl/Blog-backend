@@ -1,4 +1,5 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 
 const data = [
   {
@@ -46,31 +47,30 @@ const data = [
         type: "reply",
         user: "Maria Garcia",
         time: "Yesterday",
-        content:
-          "This framework is so helpful—saving this one!",
+        content: "This framework is so helpful—saving this one!",
       },
     ],
   },
 ];
 
-const Icon = ({ type }) => {
-  const map = {
-    like: "❤️",
-    restack: "🔁",
-    reply: "💬",
-    subscribe: "⭐",
-  };
+const TYPE_META = {
+  like: { label: "liked your post", icon: "❤️" },
+  restack: { label: "restacked your post", icon: "🔁" },
+  reply: { label: "replied to your post", icon: "💬" },
+  subscribe: { label: "subscribed to your blog", icon: "⭐" },
+};
 
+const Icon = ({ type }) => {
   return (
     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1a1a1a] text-xl border border-white/10">
-      {map[type] || "🔔"}
+      {TYPE_META[type]?.icon || "🔔"}
     </div>
   );
 };
 
 const NotificationItem = ({ item }) => {
   return (
-    <article className="rounded-3xl border border-white/10 bg-[#111111] p-6 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.95)]">
+    <article className="rounded-3xl border border-white/10 bg-[#111111] p-6 transition hover:-translate-y-0.5 hover:shadow-[0_25px_70px_-30px_rgba(0,0,0,1)]">
       <div className="flex items-start gap-4">
         <Icon type={item.type} />
 
@@ -81,10 +81,7 @@ const NotificationItem = ({ item }) => {
             </span>
 
             <span className="text-zinc-400 text-sm">
-              {item.type === "like" && "liked your post"}
-              {item.type === "restack" && "restacked your post"}
-              {item.type === "reply" && "replied to your post"}
-              {item.type === "subscribe" && "subscribed to your blog"}
+              {TYPE_META[item.type]?.label}
             </span>
           </div>
 
@@ -116,6 +113,8 @@ const NotificationItem = ({ item }) => {
 };
 
 export default function ActivityPage() {
+  const [activeFilter, setActiveFilter] = useState("All");
+
   const filters = [
     "All",
     "Likes",
@@ -123,6 +122,25 @@ export default function ActivityPage() {
     "Restacks",
     "Subscriptions",
   ];
+
+  const filterMap = {
+    Likes: "like",
+    Replies: "reply",
+    Restacks: "restack",
+    Subscriptions: "subscribe",
+  };
+
+  const filteredData = data
+    .map((section) => ({
+      ...section,
+      items:
+        activeFilter === "All"
+          ? section.items
+          : section.items.filter(
+              (item) => item.type === filterMap[activeFilter]
+            ),
+    }))
+    .filter((section) => section.items.length > 0);
 
   return (
     <div className="min-h-screen text-white">
@@ -144,11 +162,12 @@ export default function ActivityPage() {
 
           {/* Filters */}
           <div className="mt-6 flex flex-wrap gap-3">
-            {filters.map((filter, index) => (
+            {filters.map((filter) => (
               <button
                 key={filter}
+                onClick={() => setActiveFilter(filter)}
                 className={`rounded-xl px-5 py-2 text-sm font-medium transition ${
-                  index === 0
+                  activeFilter === filter
                     ? "bg-orange-500 text-black"
                     : "border border-white/10 text-zinc-300 hover:bg-[#1a1a1a]"
                 }`}
@@ -161,22 +180,28 @@ export default function ActivityPage() {
 
         {/* Feed */}
         <div className="mt-8 space-y-8">
-          {data.map((section, idx) => (
-            <div key={idx}>
-              <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
-                {section.section}
-              </p>
+          {filteredData.length === 0 ? (
+            <p className="text-center text-zinc-500 mt-10">
+              No activity in this category.
+            </p>
+          ) : (
+            filteredData.map((section, idx) => (
+              <div key={idx}>
+                <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
+                  {section.section}
+                </p>
 
-              <div className="space-y-5">
-                {section.items.map((item, i) => (
-                  <NotificationItem
-                    key={i}
-                    item={item}
-                  />
-                ))}
+                <div className="space-y-5">
+                  {section.items.map((item, i) => (
+                    <NotificationItem
+                      key={`${item.user}-${item.time}-${i}`}
+                      item={item}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Load More */}
