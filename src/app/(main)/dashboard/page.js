@@ -57,15 +57,7 @@ export default function DashboardPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0f1115] px-4 py-8 text-white sm:px-6 lg:px-8 lg:py-10">
-      <div className="absolute left-4 top-4 z-10">
-        <Link
-          href="/"
-          className="inline-flex items-center rounded-full border border-white/10 bg-white/4 px-4 py-2 text-sm font-medium text-white/80 transition hover:bg-white/7"
-        >
-          Back to home
-        </Link>
-      </div>
-
+      
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,106,0,0.12),transparent_34%),radial-gradient(circle_at_80%_0%,rgba(255,255,255,0.06),transparent_30%),linear-gradient(to_bottom,rgba(255,255,255,0.02),transparent_36%)]" />
 
       <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center">
