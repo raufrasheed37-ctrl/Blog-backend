@@ -2,6 +2,8 @@
 
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@/store/authstore";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -305,6 +307,8 @@ export default function Home() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSlide, setActiveSlide] = useState(0);
+  const router = useRouter();
+  const token = useAuthStore((s) => s.token);
   const postsPerPage = 7;
   const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
   const listRef = useRef(null);
@@ -337,31 +341,37 @@ export default function Home() {
           </div>
 
           <nav className="mt-8 flex flex-col gap-1">
-            {navItems.map((item, index) => (
-              <Link
-                href={
-                  item.label === "Explore"
-                    ? "/explore"
-                    : item.label === "Profile"
-                      ? "/dashboard"
+            {navItems.map((item, index) => {
+              if (item.label === "Profile") {
+                return (
+                  <ProfileNavButton key={item.label} item={item} index={index} />
+                );
+              }
+
+              return (
+                <Link
+                  href={
+                    item.label === "Explore"
+                      ? "/explore"
                       : item.label === "Activity"
                         ? "/activity"
                       : item.label === "Home"
                         ? "/"
                         : "#"
-                }
-                key={item.label}
-                className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
-                  index === 0
-                    ? "bg-zinc-800/80 text-zinc-100"
-                    : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
-                }`}
-              >
-                <span className="text-zinc-300 transition group-hover:text-zinc-100">{item.icon}</span>
+                  }
+                  key={item.label}
+                  className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
+                    index === 0
+                      ? "bg-zinc-800/80 text-zinc-100"
+                      : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                  }`}
+                >
+                  <span className="text-zinc-300 transition group-hover:text-zinc-100">{item.icon}</span>
 
-                <span>{item.label}</span>
-              </Link>
-            ))}
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
 
           <button className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400">
@@ -405,9 +415,19 @@ export default function Home() {
               </div>
 
               <div className="mt-6 flex flex-wrap items-center gap-4">
-                <Link href="/dashboard" className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400">
-                  Open profile dashboard
-                </Link>
+                <button
+                    type="button"
+                    onClick={() => {
+                        if (token) {
+                          router.push('/dashboard');
+                        } else {
+                          router.push('/login?next=/dashboard');
+                        }
+                      }}
+                    className="rounded-xl bg-orange-500 px-5 py-3 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400"
+                  >
+                    Open profile dashboard
+                  </button>
 
                 <a href="#" className="text-sm font-semibold text-emerald-950 underline-offset-4 transition hover:underline">
                   Learn more
@@ -580,5 +600,30 @@ function SearchIcon() {
       <circle cx="11" cy="11" r="6.5" stroke="currentColor" strokeWidth="1.7" />
       <path d="m16.2 16.2 4 4" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
     </svg>
+  );
+}
+
+function ProfileNavButton({ item, index }) {
+  const router = useRouter();
+  const token = useAuthStore((s) => s.token);
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        if (token) {
+          router.push("/dashboard");
+        } else {
+          router.push("/login?next=/dashboard");
+        }
+      }}
+      className={`group flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
+        index === 0 ? "bg-zinc-800/80 text-zinc-100" : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+      }`}
+    >
+      <span className="text-zinc-300 transition group-hover:text-zinc-100">{item.icon}</span>
+
+      <span>{item.label}</span>
+    </button>
   );
 }

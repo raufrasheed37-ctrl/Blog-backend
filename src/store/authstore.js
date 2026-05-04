@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { clearAuthTokenCookie, readAuthTokenCookie, setAuthTokenCookie } from '@/utils/auth-cookie';
 
 const useAuthStore = create((set) => ({
   // State
@@ -27,6 +28,7 @@ const useAuthStore = create((set) => ({
 
       set({ user: data.user, token: data.token, isLoading: false });
       localStorage.setItem('token', data.token);
+      setAuthTokenCookie(data.token);
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
@@ -46,6 +48,7 @@ const useAuthStore = create((set) => ({
 
       set({ user: data.user, token: data.token, isLoading: false });
       localStorage.setItem('token', data.token);
+      setAuthTokenCookie(data.token);
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
@@ -55,13 +58,31 @@ const useAuthStore = create((set) => ({
   logout: () => {
     set({ user: null, token: null });
     localStorage.removeItem('token');
+    clearAuthTokenCookie();
   },
 
   // Load from localStorage on app start
   hydrate: () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token') || readAuthTokenCookie();
     if (token) set({ token });
+    if (token) setAuthTokenCookie(token);
   },
 }));
 
 export default useAuthStore;
+
+export function getClientAuthToken() {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  return (
+    useAuthStore.getState().token ||
+    localStorage.getItem("token") ||
+    readAuthTokenCookie()
+  );
+}
+
+export function isClientAuthenticated() {
+  return Boolean(getClientAuthToken());
+}

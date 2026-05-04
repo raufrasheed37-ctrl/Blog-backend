@@ -3,6 +3,7 @@ import React from 'react'
 import Link from "next/link";
 import { useState } from "react"
 import { z } from 'zod';
+import { useRouter, useSearchParams } from "next/navigation";
 import useAuthStore from '@/store/authstore';
 
 const registerSchema = z.object({
@@ -28,6 +29,9 @@ export default function RegisterPage() {
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { register } = useAuthStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get("next") || "/dashboard";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,6 +72,12 @@ export default function RegisterPage() {
       }
 
       await register(result.data.email, result.data.password, result.data.name);
+
+      if (useAuthStore.getState().token) {
+        router.push(nextPath);
+      } else {
+        setErrors({ form: useAuthStore.getState().error || "Registration failed" });
+      }
     } catch (error) {
       setErrors({ form: error?.message || 'Something went wrong' });
     } finally {
@@ -85,7 +95,7 @@ export default function RegisterPage() {
               <p className="mt-2 text-center text-sm">
                 Or{" "}
                 <Link
-                  href="/login"
+                  href={`/login?next=${encodeURIComponent(nextPath)}`}
                   className="font-medium text-orange-500 hover:text-orange-400"
                 >
                   sign in to your existing account

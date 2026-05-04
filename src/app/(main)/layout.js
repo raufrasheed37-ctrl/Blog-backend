@@ -1,12 +1,51 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
+import useAuthStore from "@/store/authstore";
 
 export default function MainLayout({ children }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const token = useAuthStore((state) => state.token);
+  const hydrate = useAuthStore((state) => state.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
   const navItems = [
-    { label: "Home" },
-    { label: "Activity" },
-    { label: "Explore" },
-    { label: "Profile" },
+    { label: "Home", href: "/" },
+    { label: "Activity", href: "/activity" },
+    { label: "Explore", href: "/explore" },
+    { label: "Profile", href: "/dashboard" },
   ];
+
+  const isActive = (href) => {
+    if (href === "/") {
+      return pathname === "/" || pathname === "/explore" || pathname === "/activity" || pathname === "/dashboard" ? false : true;
+    }
+    return pathname.startsWith(href);
+  };
+
+  const handleCreateClick = () => {
+    if (token) {
+      router.push("/blog/create");
+      return;
+    }
+
+    router.push("/login?next=/blog/create");
+  };
+
+  const handleProfileClick = () => {
+    if (token) {
+      router.push("/dashboard");
+      return;
+    }
+
+    router.push("/login?next=/dashboard");
+  };
 
   return (
     <div className="min-h-screen bg-[#090909] text-zinc-100">
@@ -24,35 +63,46 @@ export default function MainLayout({ children }) {
           </div>
 
           <nav className="mt-8 flex flex-col gap-1">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.label}
-                href={
-                  item.label === "Explore"
-                    ? "/explore"
-                    : item.label === "Activity"
-                    ? "/activity"
-                    : item.label === "Profile"
-                    ? "/dashboard"
-                    : item.label === "Home"
-                    ? "/"
-                    : "#"
-                }
-                className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
-                  item.label === "Home"
-                    ? "bg-zinc-800/80 text-zinc-100"
-                    : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
-                }`}
-              >
-                <span>{item.label}</span>
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              if (item.label === "Profile") {
+                return (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={handleProfileClick}
+                    className={`group flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
+                      isActive(item.href)
+                        ? "bg-zinc-800/80 text-zinc-100"
+                        : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                  </button>
+                );
+              }
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`group flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition ${
+                    isActive(item.href)
+                      ? "bg-zinc-800/80 text-zinc-100"
+                      : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                  }`}
+                >
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
 
-          <button className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400">
-            <Link href="/register">
-              Create
-            </Link>
+          <button
+            type="button"
+            onClick={handleCreateClick}
+            className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400"
+          >
+            Create
           </button>
         </aside>
 
