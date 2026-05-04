@@ -1,73 +1,59 @@
+import axios from 'axios';
 import useAuthStore from '@/store/authstore';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 /**
- * Fetch wrapper with automatic auth token injection
- * @param {string} endpoint - API endpoint (e.g., '/blogs')
- * @param {object} options - Fetch options
- * @returns {Promise} JSON response
+ * Axios instance with automatic auth token injection
  */
-export const fetchWithAuth = async (endpoint, options = {}) => {
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to add auth token
+api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
 
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
-
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  return config;
+});
 
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'API Error');
+// Response interceptor for error handling
+api.interceptors.response.use(
+  (response) => response.data,
+  (error) => {
+    const message = error.response?.data?.message || error.message || 'API Error';
+    throw new Error(message);
   }
-
-  return res.json();
-};
+);
 
 // Auth endpoints
 export const authAPI = {
   login: (email, password) =>
-    fetchWithAuth('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    }),
+    api.post('/auth/login', { email, password }),
 
   register: (email, password, name) =>
-    fetchWithAuth('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ email, password, name }),
-    }),
+    api.post('/auth/register', { email, password, name }),
 };
 
 // Blog endpoints
 export const blogAPI = {
-  getAll: () => fetchWithAuth('/blogs'),
+  getAll: () => api.get('/blogs'),
 
-  getById: (id) => fetchWithAuth(`/blogs/${id}`),
+  getById: (id) => api.get(`/blogs/${id}`),
 
   create: (title, content, excerpt) =>
-    fetchWithAuth('/blogs', {
-      method: 'POST',
-      body: JSON.stringify({ title, content, excerpt }),
-    }),
+    api.post('/blogs', { title, content, excerpt }),
 
   update: (id, title, content, excerpt) =>
-    fetchWithAuth(`/blogs/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ title, content, excerpt }),
-    }),
+    api.put(`/blogs/${id}`, { title, content, excerpt }),
 
   delete: (id) =>
-    fetchWithAuth(`/blogs/${id}`, {
-      method: 'DELETE',
-    }),
+    api.delete(`/blogs/${id}`),
 };
