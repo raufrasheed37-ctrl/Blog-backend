@@ -5,6 +5,7 @@ import { useState } from "react";
 import useAuthStore from "@/store/authstore";
 import { getLoginRedirect } from "@/utils/auth";
 import { isClientAuthenticated } from "@/store/authstore";
+import CommentSection from "@/components/CommentSection";
 
 export default function ExplorePage() {
   const pathname = usePathname();
@@ -59,12 +60,16 @@ export default function ExplorePage() {
   ];
 
   const ExplorePostCard = ({ post }) => {
+    // ✅ future-proof id
+    const postId = post._id || post.id;
+
     const [actions, setActions] = useState({
       liked: false,
-      replied: false,
       restacked: false,
       subscribed: false,
     });
+
+    const [showComments, setShowComments] = useState(false);
 
     const requireAuth = () => {
       if (token || isClientAuthenticated()) {
@@ -76,9 +81,7 @@ export default function ExplorePage() {
     };
 
     const toggleAction = (action) => {
-      if (!requireAuth()) {
-        return;
-      }
+      if (!requireAuth()) return;
 
       setActions((current) => ({
         ...current,
@@ -87,7 +90,6 @@ export default function ExplorePage() {
     };
 
     const likeCount = post.likes + (actions.liked ? 1 : 0);
-    const replyCount = post.replies + (actions.replied ? 1 : 0);
     const restackCount = post.restacks + (actions.restacked ? 1 : 0);
 
     return (
@@ -98,9 +100,7 @@ export default function ExplorePage() {
 
             <div>
               <h3 className="text-lg font-semibold">{post.name}</h3>
-
               <p className="text-sm text-zinc-400">{post.handle}</p>
-
               <p className="text-sm text-zinc-400">{post.time}</p>
             </div>
           </div>
@@ -124,7 +124,10 @@ export default function ExplorePage() {
 
         <div className="mt-6 h-72 rounded-3xl bg-zinc-800" />
 
+        {/* ACTION BUTTONS */}
         <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+
+          {/* LIKE */}
           <button
             type="button"
             onClick={() => toggleAction("liked")}
@@ -137,18 +140,19 @@ export default function ExplorePage() {
             ❤️ {likeCount} Likes
           </button>
 
+          {/* COMMENT */}
           <button
             type="button"
-            onClick={() => toggleAction("replied")}
-            className={`rounded-full border px-4 py-2 transition ${
-              actions.replied
-                ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-            }`}
+            onClick={() => {
+              if (!requireAuth()) return;
+              setShowComments((prev) => !prev);
+            }}
+            className="rounded-full border px-4 py-2 transition border-white/10 hover:border-orange-500/40 hover:text-orange-400"
           >
-            💬 {replyCount} Replies
+            💬 {post.replies} Replies
           </button>
 
+          {/* RESTACK */}
           <button
             type="button"
             onClick={() => toggleAction("restacked")}
@@ -161,6 +165,14 @@ export default function ExplorePage() {
             🔁 {restackCount} Restacks
           </button>
         </div>
+
+        {/* COMMENT SECTION */}
+        {showComments && (
+          <CommentSection
+            postId={postId}
+            requireAuth={requireAuth}
+          />
+        )}
       </article>
     );
   };
@@ -185,7 +197,7 @@ export default function ExplorePage() {
           ))}
         </div>
 
-        {/* Top / Recent / Posts */}
+        {/* Tabs */}
         <div className="mt-6 flex justify-center gap-16 border-b border-white/10 pb-4">
           {tabs.map((tab, index) => (
             <button
@@ -204,7 +216,7 @@ export default function ExplorePage() {
         {/* Feed */}
         <div className="mt-8 space-y-8">
           {posts.map((post) => (
-            <ExplorePostCard key={post.id} post={post} />
+            <ExplorePostCard key={post._id || post.id} post={post} />
           ))}
         </div>
 
