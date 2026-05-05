@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { Suspense } from 'react'
 import Link from "next/link";
 import { useState } from "react"
 import { z } from 'zod';
@@ -11,9 +11,7 @@ const loginSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
-
-export default function LoginPage() {
-
+function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({ email: '', password: '' })
   const [errors, setErrors] = useState({})
@@ -164,5 +162,19 @@ export default function LoginPage() {
           </div>
 
         </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-22 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 rounded-2xl border border-zinc-500 bg-zinc-900 shadow-sm backdrop-blur-xl p-8">
+          <p className="text-center text-zinc-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginFormContent />
+    </Suspense>
   );
 }

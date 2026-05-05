@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { Suspense } from 'react'
 import Link from "next/link";
 import { useState } from "react"
 import { z } from 'zod';
@@ -16,9 +16,7 @@ const registerSchema = z.object({
   path: ['confirmPassword'],
 });
 
-
-export default function RegisterPage() {
-
+function RegisterFormContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -208,5 +206,19 @@ export default function RegisterPage() {
             </p>
           </div>
         </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 rounded-2xl border border-zinc-500 bg-zinc-900 shadow-sm p-8">
+          <p className="text-center text-zinc-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <RegisterFormContent />
+    </Suspense>
   );
 }
