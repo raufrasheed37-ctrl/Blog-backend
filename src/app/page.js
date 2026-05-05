@@ -529,7 +529,7 @@ export default function Home() {
             <div className="mt-4 space-y-3">
               {upNext.map((item) => (
                 <article key={item.title} className="flex gap-3 rounded-2xl border border-white/10 bg-[#1d1d1d] p-3 transition hover:border-white/20">
-                  <div className={`h-16 w-16 rounded-xl bg-linear-to-br ${item.thumbClass}`} />
+                  <div className={`mt-1 h-10 w-10 shrink-0 rounded-full bg-linear-to-br ${item.thumbClass}`} />
 
                   <div className="min-w-0">
                     <p className="text-sm font-medium leading-5 text-zinc-200">{item.title}</p>
