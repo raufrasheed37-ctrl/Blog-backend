@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
+import contactRoutes from "./routes/contact.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/contact", contactRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { saveContact } from '../controllers/contactController.js';
+
 const router = express.Router();
-// const contactController = require('../controllers/contactController');
 
-// Define your contact routes here
-// router.post('/', contactController.sendContactEmail);
+// Save contact route
+router.post("/", saveContact);
 
-module.exports = router;
+export default router;
+
