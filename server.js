@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/auth.js";
+import postRoutes from "./routes/posts.js";
 
 dotenv.config();
 
@@ -12,10 +13,10 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
-
-
 app.use("/api/auth", authRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/posts", postRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req, res) => {
