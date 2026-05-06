@@ -83,12 +83,14 @@ export default function DashboardPage() {
                 <ChevronDownIcon />
               </Link>
 
-              <button
-                type="button"
-                className="rounded-full border border-white/10 bg-white/4 px-5 py-3 text-sm font-medium text-white/90 transition hover:bg-white/7"
-              >
-                Edit profile
-              </button>
+              <Link href="/contact">
+                <button
+                  type="button"
+                  className="rounded-full border border-white/10 bg-white/4 px-5 py-3 text-sm font-medium text-white/90 transition hover:bg-white/7"
+                >
+                  Edit profile
+                </button>
+              </Link>
 
               <button
                 type="button"
