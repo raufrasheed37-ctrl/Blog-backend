@@ -58,10 +58,13 @@ const useAuthStore = create((set) => ({
 
   // Logout action
   logout: () => {
-    set({ user: null, token: null });
-    localStorage.removeItem('token');
-    clearAuthTokenCookie();
-  },
+  set({ user: null, token: null });
+
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+
+  clearAuthTokenCookie();
+},
 
   // Load from localStorage on app start
   hydrate: () => {
