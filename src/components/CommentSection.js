@@ -11,6 +11,7 @@ export default function CommentSection({
   const [commentText, setCommentText] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
+  const [expandedReplies, setExpandedReplies] = useState({});
 
   // edit states
   const [editingId, setEditingId] = useState(null);
@@ -244,9 +245,17 @@ export default function CommentSection({
     ❤️ {comment.likes || 0}
   </button>
 
-  <button className="transition hover:text-orange-400">
-    💬 {comment.replyCount || 0} replies
-  </button>
+<button
+  onClick={() =>
+    setExpandedReplies((prev) => ({
+      ...prev,
+      [comment._id]: !prev[comment._id],
+    }))
+  }
+  className="transition hover:text-orange-400"
+>
+  💬 {comment.replyCount || 0} replies
+</button>
 
   <button
     onClick={() =>
@@ -267,7 +276,29 @@ export default function CommentSection({
   </button>
 
 </div>
-                  </>
+
+      {expandedReplies[comment._id] && (
+  <div className="mt-5 ml-10 space-y-4 border-l border-white/10 pl-5">
+
+    {comment.replies?.map((reply) => (
+      <div
+        key={reply._id}
+        className="rounded-2xl border border-white/10 bg-[#111] p-4"
+      >
+        <p className="font-semibold text-white">
+          {reply.user?.name}
+        </p>
+
+        <p className="mt-2 text-sm text-zinc-300">
+          {reply.text}
+        </p>
+      </div>
+    ))}
+
+  </div>
+)}
+  
+        </>
                 )}
               </div>
             </div>
