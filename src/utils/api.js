@@ -59,7 +59,7 @@ export const blogAPI = {
       excerpt,
       coverImage,
       published: true,
-      author: user?._id,
+      author: user?.id,
     });
   },
 
