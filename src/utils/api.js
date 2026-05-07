@@ -49,7 +49,7 @@ export const blogAPI = {
   getById: (id) => api.get(`/posts/${id}`),
 
   create: (title, content, excerpt) =>
-    api.post('/posts', {
+    api.post('/blogs', {
       title,
       content,
       excerpt,
