@@ -65,10 +65,20 @@ const useAuthStore = create((set) => ({
 
   // Load from localStorage on app start
   hydrate: () => {
-    const token = localStorage.getItem('token') || readAuthTokenCookie();
-    if (token) set({ token });
-    if (token) setAuthTokenCookie(token);
-  },
+  const token =
+    localStorage.getItem('token') || readAuthTokenCookie();
+
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  if (token) {
+    set({
+      token,
+      user,
+    });
+
+    setAuthTokenCookie(token);
+  }
+},
 }));
 
 export default useAuthStore;
