@@ -3,6 +3,7 @@
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { API_URL } from "@/lib/api";
 import useAuthStore from "@/store/authstore";
 import { useEffect, useRef, useState } from "react";
 
