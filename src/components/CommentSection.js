@@ -117,29 +117,37 @@ export default function CommentSection({ postId, requireAuth: requireAuthProp })
   };
 
   return (
-    <div className="mt-5 space-y-4 border-t border-white/10 pt-4">
+    <div className="mt-8 border-t border-white/10 pt-8">
 
       {/* INPUT */}
-      <div className="flex gap-2">
-        <input
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleComment();
-          }}
-          disabled={loading}
-          placeholder="Write a comment..."
-          className="flex-1 rounded-xl bg-zinc-900 p-3 text-sm text-white outline-none"
-        />
+<div className="rounded-[28px] border border-white/10 bg-[#151515] p-4">
 
-        <button
-          onClick={handleComment}
-          disabled={loading}
-          className="rounded-xl bg-orange-500 px-4 text-sm font-semibold text-black"
-        >
-          {loading ? "Posting..." : "Post"}
-        </button>
-      </div>
+  <textarea
+    value={commentText}
+    onChange={(e) => setCommentText(e.target.value)}
+    placeholder="Share your thoughts..."
+    rows={4}
+    disabled={loading}
+    className="w-full resize-none bg-transparent text-[15px] leading-7 text-white outline-none placeholder:text-zinc-500"
+  />
+
+  <div className="mt-4 flex items-center justify-between">
+
+    <p className="text-xs text-zinc-500">
+      Join the discussion respectfully.
+    </p>
+
+    <button
+      onClick={handleComment}
+      disabled={loading}
+      className="rounded-full bg-orange-500 px-5 py-2 text-sm font-semibold text-black transition hover:bg-orange-400 disabled:opacity-50"
+    >
+      {loading ? "Posting..." : "Reply"}
+    </button>
+
+  </div>
+
+</div>
 
       {/* LOADING */}
       {fetching && (
@@ -147,17 +155,18 @@ export default function CommentSection({ postId, requireAuth: requireAuthProp })
       )}
 
       {/* COMMENTS */}
-      <div className="space-y-3">
+      <div className="space-y-5">
         {!fetching && comments.length === 0 && (
           <p className="text-sm text-zinc-500">No comments yet</p>
         )}
 
         {comments.map((comment) => (
           <div
-            key={comment._id}
-            className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#111111] p-3"
-          >
-            <div className="flex-1">
+  key={comment._id}
+  className="rounded-[28px] border border-white/10 bg-[#151515] p-5 transition hover:border-white/20"
+>
+            <div className="flex items-start gap-4">
+    <div className="h-11 w-11 shrink-0 rounded-full bg-gradient-to-br from-orange-400 to-amber-500" />
 
               {/* EDIT OR TEXT */}
               {editingId === comment._id ? (
@@ -165,12 +174,12 @@ export default function CommentSection({ postId, requireAuth: requireAuthProp })
                   autoFocus
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="w-full rounded bg-zinc-800 p-2 text-sm text-white"
+                  className="w-full rounded-2xl border border-white/10 bg-[#101010] p-3 text-[15px] text-white outline-none"
                 />
               ) : (
                 <>
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="font-semibold text-white">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="text-[15px] font-semibold text-white">
                       {comment.user?.name || "User"}
                     </span>
                     <span className="text-xs text-zinc-500">
@@ -178,50 +187,49 @@ export default function CommentSection({ postId, requireAuth: requireAuthProp })
                     </span>
                   </div>
 
-                  <p className="mt-1 text-sm text-zinc-300">
+                  <p className="mt-3 text-[15px] leading-7 text-zinc-300">
                     {comment.text}
                   </p>
-                </>
-              )}
-            </div>
-
-            {/* ACTIONS */}
-            <div className="flex gap-2 ml-3">
+                             <div className="mt-4 flex items-center gap-4 text-sm text-zinc-500">
 
               {editingId === comment._id ? (
                 <>
                   <button
                     onClick={() => handleSaveEdit(comment._id)}
-                    className="text-xs text-green-400"
+                    className="rounded-full border border-white/10 px-3 py-1 transition hover:border-green-400 hover:text-green-400"
                   >
                     Save
                   </button>
 
                   <button
-                    onClick={handleCancelEdit}
-                    className="text-xs text-gray-400"
-                  >
-                    Cancel
-                  </button>
+  onClick={handleCancelEdit}
+  className="rounded-full border border-white/10 px-3 py-1 transition hover:text-white"
+>
+  Cancel
+</button>
                 </>
               ) : (
                 <button
-                  onClick={() => handleEdit(comment)}
-                  className="text-xs text-blue-400"
-                >
-                  Edit
-                </button>
+  onClick={() => handleEdit(comment)}
+  className="transition hover:text-white"
+>
+  Edit
+</button>
               )}
 
               <button
                 onClick={() => handleDelete(comment._id)}
-                className="text-xs text-red-400"
+                className="transition hover:text-red-400"
               >
                 Delete
               </button>
 
             </div>
           </div>
+                </>
+              )}
+            </div>
+
         ))}
       </div>
     </div>
