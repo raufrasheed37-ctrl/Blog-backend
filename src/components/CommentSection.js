@@ -81,6 +81,39 @@ export default function CommentSection({
     }
   };
 
+  const handleReply = async (parentCommentId) => {
+  if (!requireAuth()) return;
+  if (!replyText.trim()) return;
+
+  try {
+    const res = await fetch(
+      "http://localhost:5000/api/comments",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: replyText,
+          postId,
+          parentComment: parentCommentId,
+        }),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to reply");
+    }
+
+    setReplyText("");
+    setReplyingTo(null);
+
+    fetchComments();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
   // Delete comment
   const handleDelete = async (id) => {
     try {
