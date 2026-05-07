@@ -1,4 +1,6 @@
 import Link from "next/link";
+import PostActions from "@/components/PostActions";
+import CommentSection from "@/components/CommentSection";
 
 
   const posts = [
@@ -283,41 +285,45 @@ export default async function SinglePostPage({ params }) {
   } 
 
   return (
-  <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-8">
-    <div className="mx-auto max-w-3xl">
+  <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-10">
+    <div className="mx-auto max-w-2xl">
 
       {/* Back */}
       <Link
-        href="/"
-        className="text-sm text-zinc-400 transition hover:text-white"
-      >
-        ← Back to Home
+  href="/"
+  className="inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
+>
+        ←
       </Link>
 
       {/* Main Article */}
-      <section className="mt-8">
+      <section className="mt-8 overflow-hidden rounded-[32px] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.95)]">
 
         {/* Author Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-5">
           <div className="flex items-center gap-3">
             <div
-              className={`h-12 w-12 rounded-full bg-gradient-to-br ${post.avatarClass}`}
-            />
+  className={`h-12 w-12 shrink-0 rounded-full bg-gradient-to-br shadow-[0_12px_35px_-14px_rgba(255,255,255,0.25)] ${post.avatarClass}`}
+/>
 
             <div>
-              <h3 className="font-semibold text-white">
+              <h3 className="text-[15px] font-semibold text-white">
                 {post.name}
               </h3>
 
-              <p className="text-sm text-zinc-500">
-                {post.handle} • {post.time}
-              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+  <span>{post.handle}</span>
+  <span>·</span>
+  <span>{post.time}</span>
+  <span>·</span>
+  <span>{post.category}</span>
+</div>
             </div>
           </div>
 
-          <button className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400">
-            Subscribe
-          </button>
+          <div className="flex gap-2">
+            <PostActions post={post} />
+          </div>
         </div>
 
         {/* Title */}
@@ -328,6 +334,11 @@ export default async function SinglePostPage({ params }) {
         {/* Article Content */}
         <div className="mt-8 space-y-6 text-[17px] leading-8 text-zinc-300">
           <p>{post.text}</p>
+          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-zinc-800">
+  <div className="flex h-[420px] items-center justify-center text-sm text-zinc-500">
+    Featured Visual
+  </div>
+</div>
 
           <p>
             Long-term success comes from trust, consistency, and strong
@@ -340,9 +351,11 @@ export default async function SinglePostPage({ params }) {
             those who continue showing up and delivering value over time.
           </p>
 
-          <blockquote className="border-l-4 border-orange-500 pl-4 italic text-zinc-200">
-            “The goal is not perfection. The goal is momentum.”
-          </blockquote>
+          <div className="rounded-[28px] border border-orange-500/20 bg-orange-500/5 px-6 py-6">
+  <p className="text-[22px] italic leading-10 text-zinc-100">
+    “The goal is not perfection. The goal is momentum.”
+  </p>
+</div>
 
           <p>
             Start small. Improve fast. Let your work compound over time.
@@ -351,52 +364,45 @@ export default async function SinglePostPage({ params }) {
         </div>
 
         {/* Actions */}
-        <div className="mt-10 flex items-center gap-8 border-y border-white/10 py-5 text-sm text-zinc-400">
-          <button className="transition hover:text-red-400">
-            ♡ {post.likes}
-          </button>
+         
+          <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-white/10 pt-6 text-sm text-zinc-500">
 
-          <button className="transition hover:text-white">
-            💬 {post.comments}
-          </button>
+  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
+    ❤️ {post.likes}
+  </button>
 
-          <button className="transition hover:text-white">
-            ↻ 4
-          </button>
+  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
+    💬 {post.comments}
+  </button>
 
-          <button className="transition hover:text-white">
-            ↗ Share
-          </button>
-        </div>
+  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
+    🔁 4
+  </button>
 
-        {/* Stats Row */}
-        <div className="mt-6 flex flex-wrap justify-between gap-4 border-b border-white/10 pb-6 text-sm text-zinc-500">
-          <div>
-            {post.likes} Likes • {post.comments} Replies • 4 Restacks
-          </div>
+  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
+    Share
+  </button>
 
-          <div>
-            Apr 27 at 7:26 PM
-          </div>
-        </div>
+</div>
 
-        {/* Comment Box */}
-        {/* <div className="mt-8 rounded-2xl border border-white/10 bg-[#141414] p-5">
-          <p className="text-zinc-500">
-            Be the first to comment...
-          </p>
-        </div> */}
-        <div className="mt-8 rounded-2xl border border-white/10 bg-[#141414] p-3 flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="Be the first to comment..."
-              className="flex-1 bg-transparent text-zinc-300 placeholder:text-zinc-500 outline-none"
-            />
+        
 
-            <button className="shrink-0 rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-zinc-200 transition">
-              Send
-            </button>
-        </div>
+        {/* Comments (client) */}
+        <div className="mt-12 border-t border-white/10 pt-8">
+
+  <div className="mb-6">
+    <h3 className="text-xl font-semibold text-white">
+      Discussion
+    </h3>
+
+    <p className="mt-1 text-sm text-zinc-500">
+      Join the conversation around this post.
+    </p>
+  </div>
+
+  <CommentSection postId={post.slug} />
+
+</div>
 
         {/* Demo Reply */}
         <div className="mt-10 border-t border-white/10 pt-8">

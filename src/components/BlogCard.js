@@ -43,102 +43,146 @@ export default function BlogCard({ post }) {
   const restackCount = (post.restacks ?? 0) + (actions.restacked ? 1 : 0);
 
   return (
-    <article className="border-b border-white/10 py-6 transition hover:bg-white/2">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-1 gap-3">
-          <div
-            className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br ${post.avatarClass}`}
-          />
+  <article className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-[#111111] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-[#151515] hover:shadow-[0_30px_80px_-40px_rgba(0,0,0,0.98)]">
 
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-semibold text-white">
-                {post.name}
-              </p>
+    <div className="flex items-start justify-between gap-4">
 
-              <p className="text-xs text-zinc-500">
-                {post.handle}
-              </p>
+      <div className="flex flex-1 gap-3">
 
-              <span className="text-xs text-zinc-600">•</span>
+        <div
+          className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br shadow-[0_10px_30px_-12px_rgba(255,255,255,0.25)] ${post.avatarClass}`}
+        />
 
-              <p className="text-xs text-zinc-500">
-                {post.time}
-              </p>
-            </div>
+        <Link
+          href={`/blog/${post.slug}`}
+          className="min-w-0 flex-1 block"
+        >
 
-            <Link href={`/blog/${post.slug}`} className="inline-block">
-              <h2 className="mt-3 text-lg font-semibold leading-7 text-white transition hover:text-orange-400">
-                {post.title}
-              </h2>
-            </Link>
+          <div className="flex flex-wrap items-center gap-2">
 
-            <p className="mt-3 text-sm leading-7 text-zinc-300">
-              {post.text}
+            <p className="text-sm font-semibold text-white">
+              {post.name}
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
-              <button
-                type="button"
-                onClick={() => toggleAction("liked")}
-                className={`rounded-full border px-3 py-1.5 transition ${
-                  actions.liked
-                    ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                    : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-                }`}
-              >
-                ♡ {likeCount}
-              </button>
+            <p className="text-xs text-zinc-500">
+              {post.handle}
+            </p>
 
-              <button
-                type="button"
-                onClick={() => toggleAction("commented")}
-                className={`rounded-full border px-3 py-1.5 transition ${
-                  actions.commented
-                    ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                    : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-                }`}
-              >
-                💬 {commentCount}
-              </button>
+            <span className="text-xs text-zinc-600">
+              •
+            </span>
 
-              <button
-                type="button"
-                onClick={() => toggleAction("restacked")}
-                className={`rounded-full border px-3 py-1.5 transition ${
-                  actions.restacked
-                    ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                    : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-                }`}
-              >
-                ↻ {restackCount}
-              </button>
+            <p className="text-xs text-zinc-500">
+              {post.time}
+            </p>
 
-              <span className="rounded-full border border-white/10 px-3 py-1.5">
-                Share
-              </span>
+          </div>
+
+          <h2 className="mt-3 text-[22px] font-semibold leading-8 tracking-tight text-white transition group-hover:text-orange-300">
+            {post.title}
+          </h2>
+
+          <p className="mt-3 text-[15px] leading-7 text-zinc-300">
+            {post.text}
+          </p>
+
+          <div className="mt-5 overflow-hidden rounded-3xl border border-white/10 bg-zinc-800">
+            <div className="flex h-72 items-center justify-center text-sm text-zinc-500">
+              Featured Visual
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-col items-end gap-3">
-          <button
-            type="button"
-            onClick={() => toggleAction("subscribed")}
-            className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
-              actions.subscribed
-                ? "bg-zinc-800 text-zinc-100"
-                : "bg-orange-500 text-black hover:bg-orange-400"
-            }`}
-          >
-            {actions.subscribed ? "Subscribed" : "Subscribe"}
-          </button>
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
 
-          <span className="text-xs text-zinc-500">
-            {post.category}
-          </span>
-        </div>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleAction("liked");
+              }}
+              className={`rounded-full border px-3 py-1.5 transition ${
+                actions.liked
+                  ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
+                  : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
+              }`}
+            >
+              ❤️ {likeCount}
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleAction("commented");
+              }}
+              className={`rounded-full border px-3 py-1.5 transition ${
+                actions.commented
+                  ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
+                  : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
+              }`}
+            >
+              💬 {commentCount}
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleAction("restacked");
+              }}
+              className={`rounded-full border px-3 py-1.5 transition ${
+                actions.restacked
+                  ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
+                  : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
+              }`}
+            >
+              🔁 {restackCount}
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
+            >
+              Share
+            </button>
+
+          </div>
+
+        </Link>
+
       </div>
-    </article>
-  );
+
+      <div className="flex flex-col items-end gap-3">
+
+        <button
+          type="button"
+          onClick={() => toggleAction("subscribed")}
+          className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
+            actions.subscribed
+              ? "bg-zinc-800 text-zinc-100"
+              : "bg-orange-500 text-black hover:bg-orange-400"
+          }`}
+        >
+          {actions.subscribed
+            ? "Subscribed"
+            : "Subscribe"}
+        </button>
+
+        <span className="text-xs text-zinc-500">
+          {post.category}
+        </span>
+
+      </div>
+
+    </div>
+
+  </article>
+);
 }

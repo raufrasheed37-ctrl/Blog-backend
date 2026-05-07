@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { z } from "zod";
+import { blogAPI } from "@/utils/api";
 
 const postSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(200, "Title must be less than 200 characters"),
@@ -10,13 +12,34 @@ const postSchema = z.object({
 });
 
 export default function EditPostPage({ params }) {
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    title: `Editing ${params.slug}`,
-    excerpt: "Update the summary for this post",
-    content: "Write the updated blog content here. Make sure it is long enough to pass validation.",
+    title: "",
+    excerpt: "",
+    content: "",
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const post = await blogAPI.getById(params.slug);
+        setFormData({
+          title: post.title,
+          excerpt: post.excerpt,
+          content: post.content,
+        });
+      } catch (error) {
+        setErrors({ form: error?.message || "Failed to load post" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [params.slug]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -57,7 +80,8 @@ export default function EditPostPage({ params }) {
         return;
       }
 
-      console.log("Edit post payload:", params.slug, result.data);
+      await blogAPI.update(params.slug, result.data.title, result.data.content, result.data.excerpt);
+      router.push(`/blog/${params.slug}`);
     } catch (error) {
       setErrors({ form: error?.message || "Something went wrong" });
     } finally {
@@ -69,7 +93,10 @@ export default function EditPostPage({ params }) {
     <main className="mx-auto max-w-3xl px-4 py-10 text-white">
       <h1 className="mb-6 text-3xl font-bold text-orange-500">Edit Post</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-zinc-700 bg-zinc-900 p-6">
+      {isLoading && <p className="text-center text-zinc-400">Loading post...</p>}
+
+      {!isLoading && (
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-zinc-700 bg-zinc-900 p-6">
         <div>
           <label className="mb-2 block text-sm font-medium">Title</label>
           <input
@@ -117,6 +144,7 @@ export default function EditPostPage({ params }) {
           {isSubmitting ? "Saving..." : "Save Changes"}
         </button>
       </form>
+      )}
     </main>
   );
 }

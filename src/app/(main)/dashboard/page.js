@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import useAuthStore from "@/store/authstore";
 
-function AvatarMark() {
+function AvatarMark({ user }) {
   return (
     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-orange-400 via-amber-500 to-rose-500 p-0.5 shadow-[0_18px_60px_rgba(255,106,0,0.25)]">
       <div className="flex h-full w-full items-center justify-center rounded-full border border-white/10 bg-[#12161d] text-xl font-semibold text-white">
-        D
-      </div>
+  {user?.name?.charAt(0).toUpperCase() || "U"}
+</div>
     </div>
   );
 }
@@ -48,6 +50,22 @@ function PencilNoteIcon() {
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("Activity");
 
+  const router = useRouter();
+
+  const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, [token, router]);
+
   const tabs = [
     { label: "Activity", count: null },
     { label: "Posts", count: null },
@@ -63,14 +81,18 @@ export default function DashboardPage() {
       <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center">
         <section className="w-full rounded-4xl border border-white/8 bg-white/3 px-5 py-6 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-8 sm:py-8">
           <div className="flex flex-col items-center gap-5 text-center">
-            <AvatarMark />
+            <AvatarMark user={user} />
 
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/4 px-3 py-1 text-xs font-medium text-white/80">
-                David
+                {user?.name || "User"}
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">David</h1>
-              <p className="text-sm text-white/60">@david144609</p>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+  {user?.name || "User"}
+</h1>
+              <p className="text-sm text-white/60">
+  @{user?.name?.toLowerCase().replace(/\s+/g, "") || "user"}
+</p>
               <p className="text-sm text-white/70">1 subscriber</p>
             </div>
 
@@ -135,8 +157,8 @@ export default function DashboardPage() {
         <section className="mt-6 w-full max-w-3xl rounded-4xl border border-white/8 bg-[#151922] px-4 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.24)] sm:px-5 sm:py-5">
           <div className="flex items-start gap-3">
             <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-orange-400 to-amber-500 text-sm font-semibold text-black shadow-[0_10px_30px_rgba(255,106,0,0.25)]">
-              D
-            </div>
+  {user?.name?.charAt(0).toUpperCase() || "U"}
+</div>
 
             <textarea
               aria-label="What’s on your mind?"
