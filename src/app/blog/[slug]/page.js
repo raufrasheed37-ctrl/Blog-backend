@@ -1,4 +1,6 @@
 import Link from "next/link";
+import PostActions from "@/components/PostActions";
+import CommentSection from "@/components/CommentSection";
 
 
   const posts = [
@@ -315,9 +317,9 @@ export default async function SinglePostPage({ params }) {
             </div>
           </div>
 
-          <button className="rounded-xl bg-orange-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-orange-400">
-            Subscribe
-          </button>
+          <div className="flex gap-2">
+            <PostActions post={post} />
+          </div>
         </div>
 
         {/* Title */}
@@ -380,22 +382,9 @@ export default async function SinglePostPage({ params }) {
           </div>
         </div>
 
-        {/* Comment Box */}
-        {/* <div className="mt-8 rounded-2xl border border-white/10 bg-[#141414] p-5">
-          <p className="text-zinc-500">
-            Be the first to comment...
-          </p>
-        </div> */}
-        <div className="mt-8 rounded-2xl border border-white/10 bg-[#141414] p-3 flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="Be the first to comment..."
-              className="flex-1 bg-transparent text-zinc-300 placeholder:text-zinc-500 outline-none"
-            />
-
-            <button className="shrink-0 rounded-xl bg-white text-black px-4 py-2 text-sm font-medium hover:bg-zinc-200 transition">
-              Send
-            </button>
+        {/* Comments (client) */}
+        <div className="mt-8">
+          <CommentSection postId={post.slug} />
         </div>
 
         {/* Demo Reply */}

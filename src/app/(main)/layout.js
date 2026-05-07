@@ -13,7 +13,7 @@ export default function MainLayout({ children }) {
 
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
+  }, []);
 
   const navItems = [
     { label: "Home", href: "/" },
@@ -30,7 +30,8 @@ export default function MainLayout({ children }) {
   };
 
   const handleCreateClick = () => {
-    if (token) {
+    const currentToken = token || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
+    if (currentToken) {
       router.push("/blog/create");
       return;
     }
@@ -45,6 +46,11 @@ export default function MainLayout({ children }) {
     }
 
     router.push("/login?next=/dashboard");
+  };
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    router.push("/");
   };
 
   return (
@@ -104,6 +110,16 @@ export default function MainLayout({ children }) {
           >
             Create
           </button>
+
+          {token && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-2xl bg-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600"
+            >
+              Logout
+            </button>
+          )}
         </aside>
 
         <main className="flex-1">

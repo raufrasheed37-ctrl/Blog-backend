@@ -309,12 +309,32 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
+  const hydrate = useAuthStore((s) => s.hydrate);
   const postsPerPage = 7;
   const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
   const listRef = useRef(null);
 
   const start = (currentPage - 1) * postsPerPage;
   const visiblePosts = posts.slice(start, start + postsPerPage);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  const handleCreateClick = () => {
+    const currentToken = token || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
+    if (currentToken) {
+      router.push("/blog/create");
+      return;
+    }
+
+    router.push("/login?next=/blog/create");
+  };
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    router.push("/");
+  };
 
   useEffect(() => {
     if (listRef.current) {
@@ -374,9 +394,23 @@ export default function Home() {
             })}
           </nav>
 
-          <button className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400">
+          <button
+            type="button"
+            onClick={handleCreateClick}
+            className="mt-auto rounded-2xl bg-orange-500 px-4 py-3 text-sm font-semibold text-zinc-950 shadow-[0_14px_35px_-20px_rgba(249,115,22,0.9)] transition hover:bg-orange-400"
+          >
             Create
           </button>
+
+          {token && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-2xl bg-zinc-700 px-4 py-3 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600"
+            >
+              Logout
+            </button>
+          )}
         </aside>
 
         <main className="w-full min-w-0 flex-1 space-y-5 rounded-3xl border border-white/10 bg-[#0f0f0f] p-4 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.95)] sm:p-5 lg:p-6">
