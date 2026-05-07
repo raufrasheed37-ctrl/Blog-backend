@@ -12,6 +12,8 @@ export default function CommentSection({
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [expandedReplies, setExpandedReplies] = useState({});
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState("");
 
   // edit states
   const [editingId, setEditingId] = useState(null);
