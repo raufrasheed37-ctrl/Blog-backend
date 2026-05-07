@@ -151,14 +151,25 @@ function LoginFormContent() {
             {errors.form && (
               <p className="text-sm text-red-400">{errors.form}</p>
             )}
-            <p className="mt-2 text-sm">
-                <Link
-                  href="/"
-                  className="font-medium text-orange-500 hover:text-orange-400"
-                >
-                  ← Back to Homepage
-                </Link>
+
+            <div className="mt-2 flex justify-between">
+              <p className="text-sm">
+                  <Link
+                    href="/"
+                    className="font-medium text-orange-500 hover:text-orange-400"
+                  >
+                    Back to Homepage
+                  </Link>
               </p>
+              <p className="text-sm">
+                <Link
+                    href="/forget-password"
+                    className="font-medium text-orange-500 hover:text-orange-400"
+                  >
+                    Forget Password?
+                  </Link>
+              </p>
+            </div>
           </div>
 
         </div>
