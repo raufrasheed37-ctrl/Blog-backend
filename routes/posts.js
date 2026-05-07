@@ -1,4 +1,5 @@
 import express from 'express';
+import authMiddleware from "../middleware/authMiddleware.js";
 import {
   createPost,
   getAllPosts,
@@ -12,7 +13,7 @@ import {
 const router = express.Router();
 
 // CREATE POST
-router.post('/', createPost);
+router.post('/', authMiddleware, createPost);
 
 // GET ALL POSTS (published)
 router.get('/', getAllPosts);
