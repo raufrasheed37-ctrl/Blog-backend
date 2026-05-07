@@ -109,6 +109,10 @@ export default function CommentSection({
     setReplyingTo(null);
 
     fetchComments();
+    setExpandedReplies((prev) => ({
+  ...prev,
+  [parentCommentId]: true,
+}));
   } catch (err) {
     console.log(err);
   }
