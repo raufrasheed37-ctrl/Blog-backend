@@ -238,27 +238,35 @@ export default function CommentSection({
                     </p>
 
                     {/* ACTIONS */}
-                    <div className="mt-4 flex items-center gap-4 text-sm text-zinc-500">
+                    <div className="mt-4 flex items-center gap-5 text-sm text-zinc-500">
 
-                      <button
-                        onClick={() =>
-                          handleEdit(comment)
-                        }
-                        className="transition hover:text-white"
-                      >
-                        Edit
-                      </button>
+  <button className="transition hover:text-orange-400">
+    ❤️ {comment.likes || 0}
+  </button>
 
-                      <button
-                        onClick={() =>
-                          handleDelete(comment._id)
-                        }
-                        className="transition hover:text-red-400"
-                      >
-                        Delete
-                      </button>
+  <button className="transition hover:text-orange-400">
+    💬 {comment.replyCount || 0} replies
+  </button>
 
-                    </div>
+  <button
+    onClick={() =>
+      handleEdit(comment)
+    }
+    className="transition hover:text-white"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() =>
+      handleDelete(comment._id)
+    }
+    className="transition hover:text-red-400"
+  >
+    Delete
+  </button>
+
+</div>
                   </>
                 )}
               </div>
