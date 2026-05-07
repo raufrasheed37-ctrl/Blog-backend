@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authstore";
 
 function AvatarMark({ user }) {
@@ -48,7 +49,22 @@ function PencilNoteIcon() {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("Activity");
+
+  const router = useRouter();
+
   const user = useAuthStore((s) => s.user);
+  const token = useAuthStore((s) => s.token);
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, [token, router]);
 
   const tabs = [
     { label: "Activity", count: null },
