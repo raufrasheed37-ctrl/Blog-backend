@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import useAuthStore from "@/store/authstore";
 
-function AvatarMark() {
+function AvatarMark({ user }) {
   return (
     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-orange-400 via-amber-500 to-rose-500 p-0.5 shadow-[0_18px_60px_rgba(255,106,0,0.25)]">
       <div className="flex h-full w-full items-center justify-center rounded-full border border-white/10 bg-[#12161d] text-xl font-semibold text-white">
@@ -65,7 +65,7 @@ export default function DashboardPage() {
       <div className="relative mx-auto flex w-full max-w-5xl flex-col items-center">
         <section className="w-full rounded-4xl border border-white/8 bg-white/3 px-5 py-6 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:px-8 sm:py-8">
           <div className="flex flex-col items-center gap-5 text-center">
-            <AvatarMark />
+            <AvatarMark user={user} />
 
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/4 px-3 py-1 text-xs font-medium text-white/80">
