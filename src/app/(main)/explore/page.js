@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useAuthStore from "@/store/authstore";
 import { getLoginRedirect } from "@/utils/auth";
 import { isClientAuthenticated } from "@/store/authstore";
@@ -23,41 +23,28 @@ export default function ExplorePage() {
 
   const tabs = ["Top", "Recent", "Posts"];
 
-  const posts = [
-    {
-      id: 1,
-      name: "Creator Name",
-      handle: "@creatorname",
-      time: "3h ago",
-      likes: 25,
-      replies: 4,
-      restacks: 2,
-      text:
-        "This is where the real explore content will show. Backend will later load actual user posts, images, and creator content here exactly like Substack.",
-    },
-    {
-      id: 2,
-      name: "Builder Studio",
-      handle: "@builderstudio",
-      time: "6h ago",
-      likes: 18,
-      replies: 7,
-      restacks: 3,
-      text:
-        "Explore is a discovery surface for fresh posts, trending creators, and community conversations.",
-    },
-    {
-      id: 3,
-      name: "Daily Notes",
-      handle: "@dailynotes",
-      time: "1d ago",
-      likes: 41,
-      replies: 9,
-      restacks: 5,
-      text:
-        "Clicking the engagement actions should feel immediate and stay on this page instead of navigating away.",
-    },
-  ];
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/posts"
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch posts");
+      }
+
+      const data = await res.json();
+
+      setPosts(data.posts || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchPosts();
+}, []);
 
   const ExplorePostCard = ({ post }) => {
     // ✅ future-proof id
