@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import Link from "next/link";
+import axios from "axios"
 
 const contactSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  phoneNo: z.string().min(1, "Phone Number only"),
+  phoneNo: z.string().regex(/^[0-9+]+$/, "Only numbers allowed").min(7, "Phone number too short"),
   email: z.string().email("Invalid email address"),
   address: z.string().min(10, "Address must be at least 10 characters"),
 });
@@ -26,6 +27,7 @@ export default function ContactPage() {
       [name]: value,
     }));
 
+    // Clear field error when typing
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -54,11 +56,36 @@ export default function ContactPage() {
         });
 
         setErrors(newErrors);
+        setIsSubmitting(false);
         return;
       }
 
+      // 🔐 GET TOKEN FROM STORAGE
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setErrors({ form: "You must be logged in" });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Send data to backend
+      await axios.post(
+        "http://localhost:5000/api/contacts",
+        result.data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+
       console.log("Contact form payload:", result.data);
+
+       // Reset form
       setFormData({ name: "", phoneNo: "", email: "", address: ""});
+
       router.push("/dashboard");
     } catch (error) {
       setErrors({ form: error?.message || "Something went wrong" });
@@ -68,9 +95,9 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10 text-white">
+    <main className="mx-auto max-w-2xl px-4 py-8 text-white">
       <h1 className="mb-3 text-3xl font-bold text-orange-500">Contact Address</h1>
-      <p className="text-orange-500 mb-6">
+      <p className="text-orange-500 mb-4">
           Please fill in the details below to add a new address to your profile.
       </p>
 
