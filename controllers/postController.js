@@ -3,8 +3,10 @@ import Post from "../models/Post.js";
 // ✅ CREATE POST
 export const createPost = async (req, res) => {
   try {
-    const { title, content, excerpt, coverImage, tags, author, published } =
-      req.body;
+    const { title, content, excerpt, coverImage, tags, published } =
+  req.body;
+
+const author = req.user.id;
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
@@ -14,9 +16,6 @@ export const createPost = async (req, res) => {
       return res.status(400).json({ message: "Content is required" });
     }
 
-    if (!author) {
-      return res.status(400).json({ message: "Author is required" });
-    }
 
     const post = await Post.create({
       title,
