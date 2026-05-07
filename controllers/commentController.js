@@ -3,17 +3,27 @@ import Comment from "../models/Comment.js";
 //  CREATE COMMENT
 export const createComment = async (req, res) => {
   try {
-    const { text, postId } = req.body;
+    const { text, postId, parentComment } = req.body;
 
     if (!text || !text.trim()) {
       return res.status(400).json({ message: "Comment cannot be empty" });
     }
 
     const comment = await Comment.create({
-      text,
-      postId,
-      user: req.user.id,
-    });
+  text,
+  postId,
+  user: req.user.id,
+  parentComment: parentComment || null,
+});
+
+    if (parentComment) {
+  await Comment.findByIdAndUpdate(
+    parentComment,
+    {
+      $inc: { replyCount: 1 },
+    }
+  );
+}
 
     res.status(201).json(comment);
   } catch (error) {
@@ -24,12 +34,29 @@ export const createComment = async (req, res) => {
 //  GET COMMENTS BY POST
 export const getComments = async (req, res) => {
   try {
-   const comments = await 
-   Comment.find({ post: req.params.postId })
-   .populate("user", "name")
-   .sort({ createdAt: -1 });
+   const comments = await Comment.find({
+  postId: req.params.postId,
+  parentComment: null,
+})
+  .populate("user", "name")
+  .sort({ createdAt: -1 });
 
-    res.json(comments);
+    const commentsWithReplies = await Promise.all(
+  comments.map(async (comment) => {
+    const replies = await Comment.find({
+      parentComment: comment._id,
+    })
+      .populate("user", "name")
+      .sort({ createdAt: 1 });
+
+    return {
+      ...comment.toObject(),
+      replies,
+    };
+  })
+);
+
+    res.json(commentsWithReplies);
   } 
   catch (error) {
     res.status(500).json({ message: error.message });
