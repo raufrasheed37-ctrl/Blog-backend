@@ -139,7 +139,6 @@ export default function BlogCard({ post }) {
                 Share
               </span>
             </div>
-          </div>
         </Link>
 
         <div className="flex flex-col items-end gap-3">
