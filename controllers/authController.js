@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Contact from "../models/Contact.js"
 
 const createToken = (userId) =>
   jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -95,11 +96,17 @@ export const getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
 
+    const contact = await Contact.findOne({
+    userId: req.user.id,
+});
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(buildUserResponse(user));
+    res.json(buildUserResponse(user), 
+    contact
+  );
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
