@@ -141,8 +141,8 @@ export default function DashboardPage() {
         <section className="mt-6 w-full max-w-3xl rounded-4xl border border-white/8 bg-[#151922] px-4 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.24)] sm:px-5 sm:py-5">
           <div className="flex items-start gap-3">
             <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-orange-400 to-amber-500 text-sm font-semibold text-black shadow-[0_10px_30px_rgba(255,106,0,0.25)]">
-              D
-            </div>
+  {user?.name?.charAt(0).toUpperCase() || "U"}
+</div>
 
             <textarea
               aria-label="What’s on your mind?"
