@@ -344,10 +344,13 @@ export default function CommentSection({
 
     <div className="mt-3 flex justify-end">
       <button
-        className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-black"
-      >
-        Reply
-      </button>
+  onClick={() =>
+    handleReply(comment._id)
+  }
+  className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-black"
+>
+  Reply
+</button>
     </div>
 
   </div>
