@@ -9,17 +9,19 @@ const commentSchema = new mongoose.Schema(
     },
 
     postId: {
-      type: String, // later can be ObjectId
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Post",
       required: true,
     },
 
     user: {
-      type: String,
-      default: "temp-user",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {
-    timestamps: true, // adds createdAt & updatedAt
+    timestamps: true, 
   }
 );
 

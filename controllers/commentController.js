@@ -1,6 +1,6 @@
 import Comment from "../models/Comment.js";
 
-// ✅ CREATE COMMENT
+//  CREATE COMMENT
 export const createComment = async (req, res) => {
   try {
     const { text, postId } = req.body;
@@ -12,7 +12,7 @@ export const createComment = async (req, res) => {
     const comment = await Comment.create({
       text,
       postId,
-      user: "temp-user", // later replace with real user
+      user: req.user.id,
     });
 
     res.status(201).json(comment);
@@ -21,15 +21,17 @@ export const createComment = async (req, res) => {
   }
 };
 
-// ✅ GET COMMENTS BY POST
+//  GET COMMENTS BY POST
 export const getComments = async (req, res) => {
   try {
-    const comments = await Comment.find({
-      postId: req.params.postId,
-    }).sort({ createdAt: -1 });
+   const comments = await 
+   Comment.find({ post: req.params.postId })
+   .populate("user", "name")
+   .sort({ createdAt: -1 });
 
     res.json(comments);
-  } catch (error) {
+  } 
+  catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
@@ -51,7 +53,7 @@ export const deleteComment = async (req, res) => {
   }
 };
 
-// ✅ UPDATE COMMENT (EDIT)
+//  UPDATE COMMENT (EDIT)
 export const updateComment = async (req, res) => {
   try {
     const { text } = req.body;

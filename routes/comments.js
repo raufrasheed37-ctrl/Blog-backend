@@ -1,4 +1,5 @@
 import express from "express";
+import authMiddleware from "../middleWare/authMiddleware.js";
 import {
   createComment,
   getComments,
@@ -9,7 +10,7 @@ import {
 const router = express.Router();
 
 // CREATE
-router.post("/", createComment);
+router.post("/", authMiddleware, createComment);
 
 // GET BY POST
 router.get("/:postId", getComments);
