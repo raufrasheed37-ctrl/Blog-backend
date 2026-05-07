@@ -28,9 +28,12 @@ export const createPost = async (req, res) => {
       published: published || false,
     });
 
-    await post.populate("author", "name email");
+    const populatedPost = await post.populate(
+      "author",
+      "name email"
+    );
 
-    res.status(201).json(post);
+    res.status(201).json(populatedPost);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
