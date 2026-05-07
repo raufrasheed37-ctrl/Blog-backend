@@ -118,11 +118,16 @@ export default function ExplorePage() {
           </button>
         </div>
 
-        <div className="mt-5">
+        <div
+  className="mt-5 cursor-pointer"
+  onClick={() =>
+    router.push(`/blog/${post.slug || post._id || post.id}`)
+  }
+>
           <p className="text-lg leading-8 text-zinc-200">{post.text}</p>
         </div>
 
-        <div className="mt-6 h-72 rounded-3xl bg-zinc-800" />
+  
 
         {/* ACTION BUTTONS */}
         <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
@@ -166,13 +171,7 @@ export default function ExplorePage() {
           </button>
         </div>
 
-        {/* COMMENT SECTION */}
-        {showComments && (
-          <CommentSection
-            postId={postId}
-            requireAuth={requireAuth}
-          />
-        )}
+        
       </article>
     );
   };
