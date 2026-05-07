@@ -280,26 +280,7 @@ export default function CreatePostPage() {
         contentHtml,
       ].join("");
 
-      const created = await blogAPI.create(
-  payloadTitle,
-  payloadContent,
-  payloadExcerpt
-);
-
-console.log(created);
-
-const nextSlug =
-  created?.slug ||
-  created?._id ||
-  created?.id ||
-  created?.post?.slug ||
-  created?.post?._id ||
-  created?.post?.id;
-
-      if (nextSlug) {
-        router.push(`/blog/${nextSlug}`);
-        return;
-      }
+      console.log(created)
 
       router.push("/blog");
     } catch (error) {
