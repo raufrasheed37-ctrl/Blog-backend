@@ -245,13 +245,15 @@ export default function CommentSection({
     ❤️ {comment.likes || 0}
   </button>
 
-<button
-  onClick={() =>
+    <button
+  onClick={() => {
+    if (comment.replyCount < 1) return;
+
     setExpandedReplies((prev) => ({
       ...prev,
       [comment._id]: !prev[comment._id],
-    }))
-  }
+    }));
+  }}
   className="transition hover:text-orange-400"
 >
   💬 {comment.replyCount || 0} replies
