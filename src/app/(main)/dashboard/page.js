@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import useAuthStore from "@/store/authstore";
 
 function AvatarMark() {
   return (
     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-orange-400 via-amber-500 to-rose-500 p-0.5 shadow-[0_18px_60px_rgba(255,106,0,0.25)]">
       <div className="flex h-full w-full items-center justify-center rounded-full border border-white/10 bg-[#12161d] text-xl font-semibold text-white">
-        D
-      </div>
+  {user?.name?.charAt(0).toUpperCase() || "U"}
+</div>
     </div>
   );
 }
@@ -47,6 +48,7 @@ function PencilNoteIcon() {
 
 export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState("Activity");
+  const user = useAuthStore((s) => s.user);
 
   const tabs = [
     { label: "Activity", count: null },
@@ -67,10 +69,14 @@ export default function DashboardPage() {
 
             <div className="space-y-2">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/4 px-3 py-1 text-xs font-medium text-white/80">
-                David
+                {user?.name || "User"}
               </div>
-              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">David</h1>
-              <p className="text-sm text-white/60">@david144609</p>
+              <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+  {user?.name || "User"}
+</h1>
+              <p className="text-sm text-white/60">
+  @{user?.name?.toLowerCase().replace(/\s+/g, "") || "user"}
+</p>
               <p className="text-sm text-white/70">1 subscriber</p>
             </div>
 
