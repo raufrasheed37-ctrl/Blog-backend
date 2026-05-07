@@ -43,14 +43,17 @@ export default function BlogCard({ post }) {
   const restackCount = (post.restacks ?? 0) + (actions.restacked ? 1 : 0);
 
   return (
-    <article className="border-b border-white/10 py-6 transition hover:bg-white/2">
+    <article className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#111111] p-5 transition-all duration-300 hover:border-white/20 hover:bg-[#151515] hover:shadow-[0_20px_60px_-35px_rgba(0,0,0,0.95)]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-1 gap-3">
-          <div
-            className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br ${post.avatarClass}`}
-          />
+        <div
+  className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br shadow-[0_10px_30px_-12px_rgba(255,255,255,0.25)] ${post.avatarClass}`}
+/>
 
-          <div className="min-w-0 flex-1">
+          <Link
+  href={`/blog/${post.slug}`}
+  className="min-w-0 flex-1 block"
+>
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-sm font-semibold text-white">
                 {post.name}
@@ -67,32 +70,46 @@ export default function BlogCard({ post }) {
               </p>
             </div>
 
-            <Link href={`/blog/${post.slug}`} className="inline-block">
+            
               <h2 className="mt-3 text-lg font-semibold leading-7 text-white transition hover:text-orange-400">
                 {post.title}
               </h2>
-            </Link>
+            
 
             <p className="mt-3 text-sm leading-7 text-zinc-300">
               {post.text}
             </p>
-
-            <div className="mt-5 flex flex-wrap items-center gap-3 text-sm text-zinc-500">
+    
+             <div className="mt-5 overflow-hidden rounded-3xl border border-white/10 bg-zinc-800">
+  <div className="flex h-72 items-center justify-center text-sm text-zinc-500">
+    Featured Visual
+  </div>
+</div>
+    
+            <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
               <button
                 type="button"
-                onClick={() => toggleAction("liked")}
+                onClick={(e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleAction("liked");
+}}
                 className={`rounded-full border px-3 py-1.5 transition ${
                   actions.liked
                     ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
                     : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
                 }`}
               >
-                ♡ {likeCount}
+                ❤️ {likeCount}
               </button>
 
               <button
                 type="button"
-                onClick={() => toggleAction("commented")}
+                onClick={(e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleAction("commented");
+}}
                 className={`rounded-full border px-3 py-1.5 transition ${
                   actions.commented
                     ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
@@ -104,14 +121,18 @@ export default function BlogCard({ post }) {
 
               <button
                 type="button"
-                onClick={() => toggleAction("restacked")}
+                onClick={(e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  toggleAction("restacked");
+}}
                 className={`rounded-full border px-3 py-1.5 transition ${
                   actions.restacked
                     ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
                     : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
                 }`}
               >
-                ↻ {restackCount}
+                🔁 {restackCount}
               </button>
 
               <span className="rounded-full border border-white/10 px-3 py-1.5">
@@ -119,7 +140,7 @@ export default function BlogCard({ post }) {
               </span>
             </div>
           </div>
-        </div>
+        </Link>
 
         <div className="flex flex-col items-end gap-3">
           <button
