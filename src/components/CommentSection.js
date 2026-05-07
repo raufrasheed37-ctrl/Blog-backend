@@ -296,6 +296,30 @@ export default function CommentSection({
 
 </div>
 
+    {replyingTo === comment._id && (
+  <div className="mt-4">
+
+    <textarea
+      value={replyText}
+      onChange={(e) =>
+        setReplyText(e.target.value)
+      }
+      placeholder="Write a reply..."
+      rows={3}
+      className="w-full rounded-2xl border border-white/10 bg-[#101010] p-3 text-sm text-white outline-none"
+    />
+
+    <div className="mt-3 flex justify-end">
+      <button
+        className="rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-black"
+      >
+        Reply
+      </button>
+    </div>
+
+  </div>
+)}
+
       {expandedReplies[comment._id] && (
   <div className="mt-5 ml-10 space-y-4 border-l border-white/10 pl-5">
 
