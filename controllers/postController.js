@@ -1,4 +1,5 @@
 import Post from "../models/Post.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 // ✅ CREATE POST
 export const createPost = async (req, res) => {
