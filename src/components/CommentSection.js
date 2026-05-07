@@ -249,6 +249,21 @@ export default function CommentSection({
 
     <button
   onClick={() => {
+    if (!requireAuth()) return;
+
+    setReplyingTo(
+      replyingTo === comment._id
+        ? null
+        : comment._id
+    );
+  }}
+  className="transition hover:text-orange-400"
+>
+  Reply
+</button>
+
+    <button
+  onClick={() => {
     if (comment.replyCount < 1) return;
 
     setExpandedReplies((prev) => ({
