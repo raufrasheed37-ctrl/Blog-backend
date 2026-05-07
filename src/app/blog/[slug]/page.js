@@ -286,7 +286,7 @@ export default async function SinglePostPage({ params }) {
 
   return (
   <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-8">
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-2xl">
 
       {/* Back */}
       <Link
@@ -297,23 +297,27 @@ export default async function SinglePostPage({ params }) {
       </Link>
 
       {/* Main Article */}
-      <section className="mt-8">
+      <section className="mt-8 overflow-hidden rounded-[32px] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.95)]">
 
         {/* Author Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-5">
           <div className="flex items-center gap-3">
             <div
-              className={`h-12 w-12 rounded-full bg-gradient-to-br ${post.avatarClass}`}
-            />
+  className={`h-12 w-12 shrink-0 rounded-full bg-gradient-to-br shadow-[0_12px_35px_-14px_rgba(255,255,255,0.25)] ${post.avatarClass}`}
+/>
 
             <div>
-              <h3 className="font-semibold text-white">
+              <h3 className="text-[15px] font-semibold text-white">
                 {post.name}
               </h3>
 
-              <p className="text-sm text-zinc-500">
-                {post.handle} • {post.time}
-              </p>
+              <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+  <span>{post.handle}</span>
+  <span>·</span>
+  <span>{post.time}</span>
+  <span>·</span>
+  <span>{post.category}</span>
+</div>
             </div>
           </div>
 
