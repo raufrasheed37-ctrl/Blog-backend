@@ -29,14 +29,20 @@ export const createPost = async (req, res) => {
     });
 
     const populatedPost = await post.populate(
-      "author",
-      "name email"
-    );
+  "author",
+  "name email"
+);
 
-    res.status(201).json(populatedPost);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+res.status(201).json(populatedPost);
+
+} catch (error) {
+  console.error(error);
+
+  res.status(500).json({
+    message: error.message,
+    stack: error.stack,
+  });
+}
 };
 
 // ✅ GET ALL PUBLISHED POSTS
