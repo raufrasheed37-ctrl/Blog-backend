@@ -43,25 +43,23 @@ export const authAPI = {
 };
 
 // Blog endpoints
+// Blog endpoints
 export const blogAPI = {
   getAll: () => api.get('/posts'),
 
   getById: (id) => api.get(`/posts/${id}`),
 
-  create: (title, content, excerpt) =>
-    api.post('/blogs', {
+  create: (title, content, excerpt, coverImage) =>
+    api.post('/posts', {
       title,
       content,
       excerpt,
+      coverImage,
       published: true,
     }),
 
   update: (id, title, content, excerpt) =>
-    api.put(`/posts/${id}`, {
-      title,
-      content,
-      excerpt,
-    }),
+    api.put(`/posts/${id}`, { title, content, excerpt }),
 
   delete: (id) =>
     api.delete(`/posts/${id}`),
