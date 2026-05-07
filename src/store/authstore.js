@@ -29,6 +29,7 @@ const useAuthStore = create((set) => ({
 
       set({ user: data.user, token: data.token, isLoading: false });
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
       setAuthTokenCookie(data.token);
     } catch (error) {
       set({ error: error.message, isLoading: false });
