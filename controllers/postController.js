@@ -8,7 +8,8 @@ export const createPost = async (req, res) => {
   req.body;
 
 const author = req.user.id;
-
+    
+console.log(req.user);
     if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
     }
