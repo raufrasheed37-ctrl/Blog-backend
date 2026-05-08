@@ -217,7 +217,7 @@ export const getFeaturedPosts = async (req, res) => {
 };
 
    // ✅ LIKE POST
-    export const likePost = async (
+export const likePost = async (
   req,
   res
 ) => {
@@ -233,6 +233,10 @@ export const getFeaturedPosts = async (req, res) => {
     }
 
     const userId = req.user.id;
+
+    // MAKE SURE ARRAY EXISTS
+    post.likedBy =
+      post.likedBy || [];
 
     const alreadyLiked =
       post.likedBy.some(
@@ -272,7 +276,7 @@ export const getFeaturedPosts = async (req, res) => {
 };
 
 // ✅ RESTACK POST
-  export const restackPost = async (
+export const restackPost = async (
   req,
   res
 ) => {
@@ -288,6 +292,10 @@ export const getFeaturedPosts = async (req, res) => {
     }
 
     const userId = req.user.id;
+
+    // MAKE SURE ARRAY EXISTS
+    post.restackedBy =
+      post.restackedBy || [];
 
     const alreadyRestacked =
       post.restackedBy.some(
