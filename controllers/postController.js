@@ -61,7 +61,7 @@ export const getAllPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(parseInt(skip))
-      .populate("author", "name email");
+      .populate("author", "name email")
       .lean();
 
        const total = await Post.countDocuments(query);
