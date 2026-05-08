@@ -118,148 +118,155 @@ export default function BlogCard({ post }) {
             }`}
           />
 
-          <Link
-            href={`/blog/${post.slug}`}
-            className="min-w-0 flex-1 block"
-          >
+             <div
+  className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br shadow-[0_10px_30px_-12px_rgba(255,255,255,0.25)] ${
+    post.avatarClass ||
+    "from-orange-400 to-amber-500"
+  }`}
+/>
 
-            {/* HEADER */}
-            <div className="flex flex-wrap items-center gap-2">
+<div className="min-w-0 flex-1">
 
-              <p className="text-sm font-semibold text-white">
-                {post.name}
-              </p>
+  {/* HEADER */}
+  <div className="flex flex-wrap items-center gap-2">
 
-              <p className="text-xs text-zinc-500">
-                {post.handle}
-              </p>
+    <p className="text-sm font-semibold text-white">
+      {post.name}
+    </p>
 
-              <span className="text-xs text-zinc-600">
-                •
-              </span>
+    <p className="text-xs text-zinc-500">
+      {post.handle}
+    </p>
 
-              <p className="text-xs text-zinc-500">
-                {post.time}
-              </p>
+    <span className="text-xs text-zinc-600">
+      •
+    </span>
 
-            </div>
+    <p className="text-xs text-zinc-500">
+      {post.time}
+    </p>
 
-            {/* TITLE */}
-            <h2 className="mt-3 text-[22px] font-semibold leading-8 tracking-tight text-white transition group-hover:text-orange-300">
+  </div>
 
-              {post.title}
+  {/* CLICKABLE CONTENT */}
+  <Link href={`/blog/${post.slug}`}>
 
-            </h2>
+    {/* TITLE */}
+    <h2 className="mt-3 text-[22px] font-semibold leading-8 tracking-tight text-white transition group-hover:text-orange-300">
 
-            {/* CONTENT */}
-            <p className="mt-3 text-[15px] leading-7 text-zinc-300">
+      {post.title}
 
-              {post.text}
+    </h2>
 
-            </p>
+    {/* CONTENT */}
+    <p className="mt-3 text-[15px] leading-7 text-zinc-300">
 
-            {/* IMAGE */}
-            {post.coverImage && (
-              <div className="mt-5 overflow-hidden rounded-3xl border border-white/10">
+      {post.text}
 
-                <img
-                  src={post.coverImage}
-                  alt={post.title}
-                  className="h-auto w-full object-cover"
-                />
+    </p>
 
-              </div>
-            )}
+    {/* IMAGE */}
+    {post.coverImage && (
+      <div className="mt-5 overflow-hidden rounded-3xl border border-white/10">
 
-            {/* ACTIONS */}
-            <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
+        <img
+          src={post.coverImage}
+          alt={post.title}
+          className="h-auto w-full object-cover"
+        />
 
-              {/* LIKE */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+      </div>
+    )}
 
-                  handleLike();
-                }}
-                className={`rounded-full border px-3 py-1.5 transition ${
-                  liked
-                    ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                    : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-                }`}
-              >
-                ❤️ {likes}
-              </button>
+  </Link>
 
-              {/* COMMENTS */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+  {/* ACTIONS */}
+  <div className="mt-5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
 
-                  if (!requireAuth())
-                    return;
+    {/* LIKE */}
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-                  setShowComments(
-                    (prev) => !prev
-                  );
-                }}
-                className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
-              >
-                💬 {post.commentCount || 0}
-              </button>
+        handleLike();
+      }}
+      className={`rounded-full border px-3 py-1.5 transition ${
+        liked
+          ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
+          : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
+      }`}
+    >
+      ❤️ {likes}
+    </button>
 
-              {/* RESTACK */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+    {/* COMMENTS */}
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-                  handleRestack();
-                }}
-                className={`rounded-full border px-3 py-1.5 transition ${
-                  restacked
-                    ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
-                    : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
-                }`}
-              >
-                🔁 {restacks}
-              </button>
+        if (!requireAuth())
+          return;
 
-              {/* SHARE */}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+        setShowComments(
+          (prev) => !prev
+        );
+      }}
+      className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
+    >
+      💬 {post.commentCount || 0}
+    </button>
 
-                  navigator.share?.({
-                    title: post.title,
-                    url: `${window.location.origin}/blog/${post.slug}`,
-                  });
-                }}
-                className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
-              >
-                Share
-              </button>
+    {/* RESTACK */}
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-            </div>
+        handleRestack();
+      }}
+      className={`rounded-full border px-3 py-1.5 transition ${
+        restacked
+          ? "border-orange-500/60 bg-orange-500/10 text-orange-400"
+          : "border-white/10 hover:border-orange-500/40 hover:text-orange-400"
+      }`}
+    >
+      🔁 {restacks}
+    </button>
 
-            {/* COMMENT SECTION */}
-            {showComments && (
-              <div className="mt-6">
-                <CommentSection
-                  postId={post._id}
-                />
-              </div>
-            )}
+    {/* SHARE */}
+    <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
 
-          </Link>
+        navigator.share?.({
+          title: post.title,
+          url: `${window.location.origin}/blog/${post.slug}`,
+        });
+      }}
+      className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
+    >
+      Share
+    </button>
 
-        </div>
+  </div>
+
+  {/* COMMENT SECTION */}
+  {showComments && (
+    <div className="mt-6">
+      <CommentSection
+        postId={post._id}
+      />
+    </div>
+  )}
+
+</div>
 
         {/* RIGHT SIDE */}
         <div className="flex flex-col items-end gap-3">
