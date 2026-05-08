@@ -48,6 +48,21 @@ const postSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+
+		likes: {
+  type: Number,
+  default: 0,
+},
+
+restacks: {
+  type: Number,
+  default: 0,
+},
+
+commentCount: {
+  type: Number,
+  default: 0,
+},
 		publishedAt: {
 			type: Date,
 		},
