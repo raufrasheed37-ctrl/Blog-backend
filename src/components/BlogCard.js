@@ -7,6 +7,7 @@ import useAuthStore from "@/store/authstore";
 import { getLoginRedirect } from "@/utils/auth";
 import { isClientAuthenticated } from "@/store/authstore";
 import { API_URL } from "@/lib/api";
+import CommentSection from "@/components/CommentSection";
 
 export default function BlogCard({ post }) {
   const pathname = usePathname();
@@ -23,6 +24,9 @@ export default function BlogCard({ post }) {
     useState(false);
 
   const [subscribed, setSubscribed] =
+    useState(false);
+
+  const [showComments, setShowComments] =
     useState(false);
 
   const [likes, setLikes] = useState(
@@ -154,7 +158,7 @@ export default function BlogCard({ post }) {
 
             </p>
 
-            {/* REAL IMAGE */}
+            {/* IMAGE */}
             {post.coverImage && (
               <div className="mt-5 overflow-hidden rounded-3xl border border-white/10">
 
@@ -195,8 +199,11 @@ export default function BlogCard({ post }) {
                   e.preventDefault();
                   e.stopPropagation();
 
-                  router.push(
-                    `/blog/${post.slug}`
+                  if (!requireAuth())
+                    return;
+
+                  setShowComments(
+                    (prev) => !prev
                   );
                 }}
                 className="rounded-full border border-white/10 px-3 py-1.5 transition hover:border-orange-500/40 hover:text-orange-400"
@@ -240,6 +247,15 @@ export default function BlogCard({ post }) {
               </button>
 
             </div>
+
+            {/* COMMENT SECTION */}
+            {showComments && (
+              <div className="mt-6">
+                <CommentSection
+                  postId={post._id}
+                />
+              </div>
+            )}
 
           </Link>
 
