@@ -1,17 +1,19 @@
 import axios from 'axios';
 import useAuthStore from '@/store/authstore';
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+/**
+ * Axios instance with automatic auth token injection
+ */
 const api = axios.create({
-  baseURL: `${API_BASE_URL}/api`,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add auth token automatically
+// Request interceptor to add auth token
 api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().token;
 
@@ -22,54 +24,46 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle errors
+// Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    const message =
-      error.response?.data?.message ||
-      error.message ||
-      'API Error';
-
+    const message = error.response?.data?.message || error.message || 'API Error';
     throw new Error(message);
   }
 );
 
-// AUTH API
+// Auth endpoints
 export const authAPI = {
   login: (email, password) =>
     api.post('/auth/login', { email, password }),
 
   register: (email, password, name) =>
     api.post('/auth/register', { email, password, name }),
+
+  getMe: () =>
+    api.get('/auth/me'),
 };
 
-// BLOG API
+// Blog endpoints
 export const blogAPI = {
   getAll: () => api.get('/posts'),
 
   getById: (id) => api.get(`/posts/${id}`),
 
-  create: (title, content, excerpt, coverImage) => {
-    const user = useAuthStore.getState().user;
+  getByAuthor: (authorId) => api.get(`/posts/author/${authorId}`),
 
-    return api.post('/posts', {
-      title,
-      content,
-      excerpt,
-      coverImage,
-      published: true,
-      author: user?.id,
-    });
-  },
+  create: (title, content, excerpt, author) =>
+    api.post('/posts', { title, content, excerpt, author }),
 
   update: (id, title, content, excerpt) =>
-    api.put(`/posts/${id}`, {
-      title,
-      content,
-      excerpt,
-    }),
+    api.put(`/posts/${id}`, { title, content, excerpt }),
 
   delete: (id) =>
     api.delete(`/posts/${id}`),
+};
+
+// Subscribe endpoints
+export const subscribeAPI = {
+  toggle: (authorId) => api.post('/subscribe', { authorId }),
 };

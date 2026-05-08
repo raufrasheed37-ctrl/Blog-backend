@@ -3,9 +3,9 @@
 import BlogCard from "@/components/BlogCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { API_URL } from "@/lib/api";
 import useAuthStore from "@/store/authstore";
 import { useEffect, useRef, useState } from "react";
+import { blogAPI } from "@/utils/api";
 
 export default function Home() {
   const navItems = [
@@ -15,8 +15,9 @@ export default function Home() {
     { label: "Profile", icon: <ProfileIcon /> },
   ];
 
+  const samplePosts = [];
   const [posts, setPosts] = useState([]);
-const [loadingPosts, setLoadingPosts] = useState(true);
+  const [postsLoading, setPostsLoading] = useState(true);
 
   const upNext = [
     {
@@ -56,9 +57,12 @@ const [loadingPosts, setLoadingPosts] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   const token = useAuthStore((s) => s.token);
+  const user = useAuthStore((s) => s.user);
   const hydrate = useAuthStore((s) => s.hydrate);
+  const hasSession = Boolean(isMounted && (token || user || localStorage.getItem("token")));
   const postsPerPage = 7;
   const totalPages = Math.max(1, Math.ceil(posts.length / postsPerPage));
   const listRef = useRef(null);
@@ -67,41 +71,55 @@ const [loadingPosts, setLoadingPosts] = useState(true);
   const visiblePosts = posts.slice(start, start + postsPerPage);
 
   useEffect(() => {
-  hydrate();
-}, []);
+    const frame = window.requestAnimationFrame(() => setIsMounted(true));
+    hydrate();
 
-useEffect(() => {
-  const fetchPosts = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/posts`);
+    return () => window.cancelAnimationFrame(frame);
+  }, [hydrate]);
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch posts");
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      setPostsLoading(true);
+      try {
+        const response = await blogAPI.getAll();
+        const livePosts = Array.isArray(response?.posts) ? response.posts : [];
+
+        if (cancelled) return;
+
+        const mappedPosts = livePosts.map((post) => ({
+          name: post.author?.name || "Anonymous",
+          handle: post.author?.email ? `@${post.author.email.split("@")[0]}` : "@anonymous",
+          time: post.createdAt ? new Date(post.createdAt).toLocaleDateString() : "just now",
+          slug: post.slug || post._id,
+          title: post.title,
+          category: post.tags?.[0] || "General",
+          likes: post.likes ?? 0,
+          comments: post.comments ?? 0,
+          text: post.excerpt || "",
+          avatarClass: "from-orange-400 to-amber-500",
+          author: post.author,
+          authorId: post.author?._id || post.author?.id,
+        }));
+
+        setPosts(mappedPosts);
+      } catch (error) {
+        if (!cancelled) {
+          setPosts([]);
+          console.debug("Home feed failed to load:", error?.message || error);
+        }
+      } finally {
+        if (!cancelled) {
+          setPostsLoading(false);
+        }
       }
+    })();
 
-      const data = await res.json();
-
-      const formattedPosts = data.posts.map((post) => ({
-        ...post,
-        name: post.author?.name || "Unknown",
-        handle: "@creator",
-        time: new Date(post.createdAt).toLocaleDateString(),
-        text: post.excerpt || post.content,
-        likes: 0,
-        comments: 0,
-        avatarClass: "from-orange-400 to-amber-500",
-      }));
-
-      setPosts(formattedPosts);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingPosts(false);
-    }
-  };
-
-  fetchPosts();
-}, []);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleCreateClick = () => {
     const currentToken = token || (typeof window !== 'undefined' ? localStorage.getItem('token') : null);
@@ -252,16 +270,22 @@ useEffect(() => {
             </div>
           </section>
 
-                     {loadingPosts && (
-  <p className="text-sm text-zinc-500">
-    Loading posts...
-  </p>
-)} 
-
           <section ref={listRef} className="h-375 space-y-6 overflow-y-auto pr-2">
-            {visiblePosts.map((post) => (
-              <BlogCard key={post._id} post={post} />
-            ))}
+            {postsLoading ? (
+              <div className="space-y-6">
+                {[...Array(4)].map((_, index) => (
+                  <div key={index} className="h-28 animate-pulse rounded-3xl border border-white/10 bg-white/4" />
+                ))}
+              </div>
+            ) : visiblePosts.length > 0 ? (
+              visiblePosts.map((post) => (
+                <BlogCard key={post.slug || post._id || post.id || post.handle} post={post} />
+              ))
+            ) : (
+              <div className="rounded-3xl border border-white/10 bg-white/4 p-8 text-center text-sm text-zinc-400">
+                No posts yet.
+              </div>
+            )}
           </section>
 
           <div className="mt-6 flex items-center justify-center gap-3">
@@ -313,35 +337,37 @@ useEffect(() => {
             />
           </label>
 
-          <section className="rounded-3xl border border-white/10 bg-[#161616] p-5 shadow-[0_25px_40px_-32px_rgba(0,0,0,0.95)]">
-  <h3 className="text-xl font-semibold text-zinc-100">
-    Log in or sign up
-  </h3>
+          {!hasSession && (
+            <section className="rounded-3xl border border-white/10 bg-[#161616] p-5 shadow-[0_25px_40px_-32px_rgba(0,0,0,0.95)]">
+      <h3 className="text-xl font-semibold text-zinc-100">
+        Log in or sign up
+      </h3>
 
-  <p className="mt-2 text-sm leading-6 text-zinc-400">
-    Join creators and readers building profitable communities.
-  </p>
+      <p className="mt-2 text-sm leading-6 text-zinc-400">
+        Join creators and readers building profitable communities.
+      </p>
 
-  <div className="mt-4 space-y-2.5">
-    <div>
-      <Link href="/register">
-        <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400"
-        >
-          Get started
-        </button>
-      </Link>
-    </div>
+      <div className="mt-4 space-y-2.5">
+        <div>
+          <Link href="/register">
+            <button className="w-full rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-orange-400"
+            >
+              Get started
+            </button>
+          </Link>
+        </div>
 
-    <div>
-      <Link href="/login">
-        <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600"
-        >
-          Sign in
-        </button>
-      </Link>
-    </div>
-  </div>
-</section>
+        <div>
+          <Link href="/login">
+            <button className="w-full rounded-xl bg-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-100 transition hover:bg-zinc-600"
+            >
+              Sign in
+            </button>
+          </Link>
+        </div>
+      </div>
+    </section>
+          )}
 
           <section className="rounded-3xl border border-white/10 bg-[#161616] p-5 shadow-[0_25px_40px_-32px_rgba(0,0,0,0.95)]">
             <h4 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-400">

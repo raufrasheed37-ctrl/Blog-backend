@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { blogAPI } from "@/utils/api";
+import useAuthStore from "@/store/authstore";
 
 function Icon({ name, className = "h-4 w-4" }) {
   const icons = {
@@ -70,8 +71,10 @@ export default function CreatePostPage() {
   const [newTag, setNewTag] = useState("");
   const [isPreview, setIsPreview] = useState(false);
   const [hasBodyContent, setHasBodyContent] = useState(false);
+  const [contentHtml, setContentHtml] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const user = useAuthStore((s) => s.user);
   const [isBoldActive, setIsBoldActive] = useState(false);
   const [isItalicActive, setIsItalicActive] = useState(false);
   const [isUnderlineActive, setIsUnderlineActive] = useState(false);
@@ -143,6 +146,7 @@ export default function CreatePostPage() {
       selection.addRange(range);
 
       setHasBodyContent(Boolean(editor.innerText?.trim()));
+      setContentHtml(editor.innerHTML || "");
     });
   }, [exec]);
 
@@ -165,6 +169,11 @@ export default function CreatePostPage() {
       }
 
     insertImage(file);
+    
+    // update stored content
+    requestAnimationFrame(() => {
+      setContentHtml(editorRef.current?.innerHTML || "");
+    });
     e.target.value = null;
   };
 
@@ -243,6 +252,22 @@ export default function CreatePostPage() {
     };
   }, [deleteImage]);
 
+  // Sync stored content into editor when switching from preview to edit or on mount
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    if (!isPreview) {
+      // restore saved HTML into the editor
+      if (contentHtml && editor.innerHTML !== contentHtml) {
+        editor.innerHTML = contentHtml;
+      }
+    } else {
+      // when entering preview, capture current editor HTML
+      setContentHtml(editor.innerHTML || "");
+    }
+  }, [isPreview, contentHtml]);
+
 
   const addTag = () => {
     const t = newTag.trim();
@@ -259,13 +284,34 @@ export default function CreatePostPage() {
   const handleSave = async () => {
     if (isSubmitting) return;
 
-    const contentHtml = editorRef.current?.innerHTML || "";
-    const contentText = editorRef.current?.innerText?.trim() || "";
+    if (!user || !user._id) {
+      setSubmitError("Please log in to create a post.");
+      return;
+    }
+
+    // Always use the current editor DOM as the source of truth
+    const editorEl = editorRef.current;
+    const contentHtmlVal = editorEl?.innerHTML ?? contentHtml ?? "";
+
+    // Convert editor HTML -> plain text for validation/excerpt
+    const tmp = document.createElement("div");
+    tmp.innerHTML = contentHtmlVal;
+    const rawText = tmp.innerText?.replace(/\u00A0/g, " ") ?? "";
+    let contentText = rawText.trim();
+
+    // If user never wrote anything, contentText may include placeholder text.
+    // Treat placeholder-ish content as empty.
+    const isPlaceholderOnly =
+      !contentText ||
+      contentText.length < 20 ||
+      /start writing\.+/i.test(contentText) ||
+      /^start writing\.*$/i.test(contentText);
+
     const normalizedTitle = title.trim();
     const fallbackTitle = normalizedTitle || "Untitled";
 
-    if (contentText.length < 20) {
-      setSubmitError("Please add more content before continuing.");
+    if (isPlaceholderOnly) {
+      setSubmitError("Please add your post content before continuing.");
       return;
     }
 
@@ -275,31 +321,20 @@ export default function CreatePostPage() {
     try {
       const payloadTitle = fallbackTitle;
       const payloadExcerpt = subtitle.trim() || contentText.slice(0, 180);
-      const payloadContent = [
-        `<p><strong>Tags:</strong> ${tags.join(", ") || "none"}</p>`,
-        contentHtml,
-      ].join("");
+    // Ensure we only submit real editor content (typed by the user)
+    // Use the same sanitized HTML we validated above.
+    const payloadContent = [
+      `<p><strong>Tags:</strong> ${tags.join(", ") || "none"}</p>`,
+      contentHtmlVal,
+    ].join("");
 
-      const created = await blogAPI.create(
-  payloadTitle,
-  payloadContent,
-  payloadExcerpt
-);
+      const created = await blogAPI.create(payloadTitle, payloadContent, payloadExcerpt, user._id);
+      const nextSlug = created?.slug || created?._id || created?.id;
 
-console.log(created);
-
-const nextSlug =
-  created?.slug ||
-  created?._id ||
-  created?.id ||
-  created?.post?.slug ||
-  created?.post?._id ||
-  created?.post?.id;
-
-if (nextSlug) {
-  router.push(`/blog/${nextSlug}`);
-  return;
-}
+      if (nextSlug) {
+        router.push(`/blog/${nextSlug}`);
+        return;
+      }
 
       router.push("/blog");
     } catch (error) {
@@ -452,6 +487,7 @@ if (nextSlug) {
                     suppressContentEditableWarning
                     onInput={(e) => {
                       setHasBodyContent(Boolean(e.currentTarget.textContent?.trim()));
+                      setContentHtml(e.currentTarget.innerHTML || "");
                       requestAnimationFrame(updateFormatStates);
                     }}
                     className="min-h-45 outline-none"

@@ -2,6 +2,8 @@ import Link from "next/link";
 import PostActions from "@/components/PostActions";
 import CommentSection from "@/components/CommentSection";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+
 
   const posts = [
   {
@@ -267,15 +269,37 @@ export async function generateStaticParams() {
   }));
 } 
 
+async function fetchPostFromBackend(slug) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts/${encodeURIComponent(slug)}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Failed to fetch post from backend:", error);
+    return null;
+  }
+}
+
 export default async function SinglePostPage({ params }) {
   const resolvedParams = await params;
   const slug = decodeURIComponent(resolvedParams?.slug || ""); 
 
-  const post = posts.find(
+  let post = posts.find(
     (item) =>
       item.slug.trim().toLowerCase() ===
       slug.trim().toLowerCase()
   );
+
+  if (!post) {
+    post = await fetchPostFromBackend(slug);
+  }
+
   if (!post) {
     return (
       <main className="min-h-screen bg-[#090909] p-10 text-white">
@@ -285,39 +309,35 @@ export default async function SinglePostPage({ params }) {
   } 
 
   return (
-  <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-10">
-    <div className="mx-auto max-w-2xl">
+  <main className="min-h-screen bg-[#090909] text-zinc-100 px-4 py-8">
+    <div className="mx-auto max-w-3xl">
 
       {/* Back */}
       <Link
-  href="/"
-  className="inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-white"
->
-        ←
+        href="/"
+        className="text-sm text-zinc-400 transition hover:text-white"
+      >
+        ← Back to Home
       </Link>
 
       {/* Main Article */}
-      <section className="mt-8 overflow-hidden rounded-[32px] border border-white/10 bg-[#111111] p-6 shadow-[0_30px_80px_-40px_rgba(0,0,0,0.95)]">
+      <section className="mt-8">
 
         {/* Author Header */}
-        <div className="flex items-start justify-between gap-5">
+        <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
             <div
-  className={`h-12 w-12 shrink-0 rounded-full bg-gradient-to-br shadow-[0_12px_35px_-14px_rgba(255,255,255,0.25)] ${post.avatarClass}`}
-/>
+              className={`h-12 w-12 rounded-full bg-linear-to-br ${post.avatarClass}`}
+            />
 
             <div>
-              <h3 className="text-[15px] font-semibold text-white">
+              <h3 className="font-semibold text-white">
                 {post.name}
               </h3>
 
-              <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
-  <span>{post.handle}</span>
-  <span>·</span>
-  <span>{post.time}</span>
-  <span>·</span>
-  <span>{post.category}</span>
-</div>
+              <p className="text-sm text-zinc-500">
+                {post.handle} • {post.time}
+              </p>
             </div>
           </div>
 
@@ -333,97 +353,47 @@ export default async function SinglePostPage({ params }) {
 
         {/* Article Content */}
         <div className="mt-8 space-y-6 text-[17px] leading-8 text-zinc-300">
-          <p>{post.text}</p>
-          <div className="overflow-hidden rounded-[28px] border border-white/10 bg-zinc-800">
-  <div className="flex h-[420px] items-center justify-center text-sm text-zinc-500">
-    Featured Visual
-  </div>
-</div>
+          {post.content ? (
+            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+          ) : (
+            <p>{post.text}</p>
+          )}
 
-          <p>
-            Long-term success comes from trust, consistency, and strong
-            systems. Professionals win by building what lasts instead of
-            chasing temporary hype.
-          </p>
-
-          <p>
-            In the digital world, consistency creates trust. People remember
-            those who continue showing up and delivering value over time.
-          </p>
-
-          <div className="rounded-[28px] border border-orange-500/20 bg-orange-500/5 px-6 py-6">
-  <p className="text-[22px] italic leading-10 text-zinc-100">
-    “The goal is not perfection. The goal is momentum.”
-  </p>
-</div>
-
-          <p>
-            Start small. Improve fast. Let your work compound over time.
-            Consistency always beats temporary hype.
-          </p>
         </div>
 
         {/* Actions */}
-         
-          <div className="mt-8 flex flex-wrap items-center gap-2 border-t border-white/10 pt-6 text-sm text-zinc-500">
+        <div className="mt-10 flex items-center gap-8 border-y border-white/10 py-5 text-sm text-zinc-400">
+          <button className="transition hover:text-red-400">
+            ♡ {post.likes}
+          </button>
 
-  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
-    ❤️ {post.likes}
-  </button>
+          <button className="transition hover:text-white">
+            💬 {post.comments}
+          </button>
 
-  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
-    💬 {post.comments}
-  </button>
+          <button className="transition hover:text-white">
+            ↻ 4
+          </button>
 
-  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
-    🔁 4
-  </button>
+          <button className="transition hover:text-white">
+            ↗ Share
+          </button>
+        </div>
 
-  <button className="rounded-full border border-white/10 px-4 py-2 transition hover:border-orange-500/40 hover:text-orange-400">
-    Share
-  </button>
+        {/* Stats Row */}
+        <div className="mt-6 flex flex-wrap justify-between gap-4 border-b border-white/10 pb-6 text-sm text-zinc-500">
+          <div>
+            {post.likes} Likes • {post.comments} Replies • 4 Restacks
+          </div>
 
-</div>
-
-        
+          <div>
+            Apr 27 at 7:26 PM
+          </div>
+        </div>
 
         {/* Comments (client) */}
-        <div className="mt-12 border-t border-white/10 pt-8">
-
-  <div className="mb-6">
-    <h3 className="text-xl font-semibold text-white">
-      Discussion
-    </h3>
-
-    <p className="mt-1 text-sm text-zinc-500">
-      Join the conversation around this post.
-    </p>
-  </div>
-
-  <CommentSection postId={post.slug} />
-
-</div>
-
-        {/* Demo Reply */}
-        <div className="mt-10 border-t border-white/10 pt-8">
-          <div className="flex gap-3">
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-zinc-500 to-zinc-700" />
-
-            <div>
-              <h4 className="font-semibold text-white">
-                Reader Comment
-              </h4>
-
-              <p className="text-sm text-zinc-500">
-                2h ago
-              </p>
-
-              <p className="mt-3 leading-7 text-zinc-300">
-                This article was excellent. Consistency really is the
-                competitive advantage for long-term growth.
-              </p>
-            </div>
-          </div>
+        <div className="mt-8">
+          <CommentSection postId={post.slug} />
         </div>
 
       </section>

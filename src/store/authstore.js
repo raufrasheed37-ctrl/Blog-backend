@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { API_URL } from "@/lib/api";
 import { clearAuthTokenCookie, readAuthTokenCookie, setAuthTokenCookie } from '@/utils/auth-cookie';
 
 const useAuthStore = create((set) => ({
@@ -15,21 +14,24 @@ const useAuthStore = create((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
+  // Determine backend API base URL
+  _apiBase: (typeof window !== 'undefined' && process.env.NEXT_PUBLIC_API_URL) || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000',
+
   // Login action
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
+      const apiBase = useAuthStore.getState()._apiBase;
+      const res = await fetch(`${apiBase}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message || 'Login failed');
 
       set({ user: data.user, token: data.token, isLoading: false });
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
       setAuthTokenCookie(data.token);
     } catch (error) {
       set({ error: error.message, isLoading: false });
@@ -40,13 +42,14 @@ const useAuthStore = create((set) => ({
   register: async (email, password, name) => {
     set({ isLoading: true, error: null });
     try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
+      const apiBase = useAuthStore.getState()._apiBase;
+      const res = await fetch(`${apiBase}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, name }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message);
+      if (!res.ok) throw new Error(data.message || 'Registration failed');
 
       set({ user: data.user, token: data.token, isLoading: false });
       localStorage.setItem('token', data.token);
@@ -58,30 +61,17 @@ const useAuthStore = create((set) => ({
 
   // Logout action
   logout: () => {
-  set({ user: null, token: null });
-
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-
-  clearAuthTokenCookie();
-},
+    set({ user: null, token: null });
+    localStorage.removeItem('token');
+    clearAuthTokenCookie();
+  },
 
   // Load from localStorage on app start
   hydrate: () => {
-  const token =
-    localStorage.getItem('token') || readAuthTokenCookie();
-
-  const user = JSON.parse(localStorage.getItem('user'));
-
-  if (token) {
-    set({
-      token,
-      user,
-    });
-
-    setAuthTokenCookie(token);
-  }
-},
+    const token = localStorage.getItem('token') || readAuthTokenCookie();
+    if (token) set({ token });
+    if (token) setAuthTokenCookie(token);
+  },
 }));
 
 export default useAuthStore;
