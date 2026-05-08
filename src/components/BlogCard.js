@@ -57,11 +57,14 @@ const [restacked, setRestacked] =
 
   try {
     const res = await fetch(
-      `${API_URL}/api/posts/${post._id}/like`,
-      {
-        method: "POST",
-      }
-    );
+  `${API_URL}/api/posts/${post._id}/like`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
     const updatedPost =
       await res.json();
@@ -82,11 +85,14 @@ const handleRestack = async () => {
 
   try {
     const res = await fetch(
-      `${API_URL}/api/posts/${post._id}/restack`,
-      {
-        method: "POST",
-      }
-    );
+  `${API_URL}/api/posts/${post._id}/restack`,
+  {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
     const updatedPost =
       await res.json();
