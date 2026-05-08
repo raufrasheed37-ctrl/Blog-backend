@@ -58,6 +58,8 @@ export const getContacts = async (req, res) => {
       message: "Failed to fetch contacts",
     });
   }
+};
+
 export const sendContactEmail = async (req, res) => {
 	try {
 		const { name, email, subject, message } = req.body;
