@@ -56,18 +56,24 @@ const [restacked, setRestacked] =
   if (!requireAuth()) return;
 
   try {
+    const currentToken =
+      token ||
+      localStorage.getItem("token");
+
     const res = await fetch(
-  `${API_URL}/api/posts/${post._id}/like`,
-  {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
+      `${API_URL}/api/posts/${post._id}/like`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      }
+    );
 
     const updatedPost =
       await res.json();
+
+    alert(JSON.stringify(updatedPost));
 
     setLikes(updatedPost.likes);
 
@@ -76,26 +82,30 @@ const [restacked, setRestacked] =
     console.log(err);
   }
 };
-
-  // REAL RESTACK
   
   // REAL RESTACK
 const handleRestack = async () => {
   if (!requireAuth()) return;
 
   try {
+    const currentToken =
+      token ||
+      localStorage.getItem("token");
+
     const res = await fetch(
-  `${API_URL}/api/posts/${post._id}/restack`,
-  {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
+      `${API_URL}/api/posts/${post._id}/restack`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+        },
+      }
+    );
 
     const updatedPost =
       await res.json();
+
+    alert(JSON.stringify(updatedPost));
 
     setRestacks(
       updatedPost.restacks
