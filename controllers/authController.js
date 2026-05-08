@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
+import crypto from "crypto";
+
 
 const createToken = (userId) =>
   jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -112,3 +114,114 @@ export const getMe = async (req, res) => {
   }
 };
 
+export const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email || !email.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    const user = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Generate reset token
+    const resetToken = crypto
+      .randomBytes(20)
+      .toString("hex");
+
+    // Save token to DB
+    user.resetPasswordToken = resetToken;
+
+    // 15 mins
+    user.resetPasswordExpire =
+      Date.now() + 15 * 60 * 1000;
+
+    await user.save();
+
+    const resetLink = `http://localhost:5000/api/auth/reset-password/${resetToken}`;
+
+    // TODO: Send email here using nodemailer
+
+    res.json({
+      success: true,
+      message: "Password reset link generated",
+      resetLink, // remove in production
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must be at least 6 characters",
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: req.params.token,
+      resetPasswordExpire: {
+        $gt: Date.now(),
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
+
+    // Update password
+    user.password = hashedPassword;
+
+    // Clear reset fields
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Password reset successful",
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
