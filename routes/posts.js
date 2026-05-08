@@ -23,22 +23,22 @@ router.get('/', getAllPosts);
 // GET FEATURED POSTS
 router.get('/featured/list', getFeaturedPosts);
 
-// GET POST BY ID OR SLUG
-router.get('/:id', getPostById);
+// LIKE POST
+router.post("/:id/like", authMiddleware, likePost);
+
+// RESTACK POST
+router.post("/:id/restack", authMiddleware, restackPost);
 
 // GET POSTS BY AUTHOR
 router.get('/author/:authorId', getPostsByAuthor);
+
+// GET POST BY ID OR SLUG
+router.get('/:id', getPostById);
 
 // UPDATE POST
 router.put('/:id', updatePost);
 
 // DELETE POST
 router.delete('/:id', deletePost);
-
-  // LIKE POST
-router.post("/:id/like", authMiddleware, likePost);
-
-// RESTACK POST
-router.post("/:id/restack", authMiddleware, restackPost);
 
 export default router;
