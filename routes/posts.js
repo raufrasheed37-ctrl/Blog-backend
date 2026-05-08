@@ -8,6 +8,8 @@ import {
   deletePost,
   getPostsByAuthor,
   getFeaturedPosts,
+  likePost,
+  restackPost,
 } from '../controllers/postController.js';
 
 const router = express.Router();
