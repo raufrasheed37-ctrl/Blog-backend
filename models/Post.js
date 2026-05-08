@@ -49,20 +49,35 @@ const postSchema = new mongoose.Schema(
 			default: false,
 		},
 
-		likes: {
+       likes: {
   type: Number,
   default: 0,
 },
+
+likedBy: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+],
 
 restacks: {
   type: Number,
   default: 0,
 },
 
+restackedBy: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+],
+
 commentCount: {
   type: Number,
   default: 0,
 },
+   		
 		publishedAt: {
 			type: Date,
 		},
