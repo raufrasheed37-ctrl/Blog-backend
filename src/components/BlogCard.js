@@ -53,6 +53,7 @@ const [restacked, setRestacked] =
 
   // REAL LIKE
   const handleLike = async () => {
+    alert("Alert Clicked");
   if (!requireAuth()) return;
 
   try {
@@ -85,6 +86,7 @@ const [restacked, setRestacked] =
   
   // REAL RESTACK
 const handleRestack = async () => {
+  alert("Alert Clicked");
   if (!requireAuth()) return;
 
   try {
