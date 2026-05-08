@@ -53,57 +53,50 @@ const [restacked, setRestacked] =
 
   // REAL LIKE
   const handleLike = async () => {
-    if (!requireAuth()) return;
+  if (!requireAuth()) return;
 
-    if (liked) return;
+  try {
+    const res = await fetch(
+      `${API_URL}/api/posts/${post._id}/like`,
+      {
+        method: "POST",
+      }
+    );
 
-    try {
-      const res = await fetch(
-        `${API_URL}/api/posts/${post._id}/like`,
-        {
-          method: "POST",
-        }
-      );
+    const updatedPost =
+      await res.json();
 
-      const updatedPost =
-        await res.json();
+    setLikes(updatedPost.likes);
 
-      setLikes(updatedPost.likes);
-
-setLiked(updatedPost.liked);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    setLiked(updatedPost.liked);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   // REAL RESTACK
-  const handleRestack = async () => {
-    if (!requireAuth()) return;
+  
+  const handleLike = async () => {
+  if (!requireAuth()) return;
 
-    if (restacked) return;
+  try {
+    const res = await fetch(
+      `${API_URL}/api/posts/${post._id}/like`,
+      {
+        method: "POST",
+      }
+    );
 
-    try {
-      const res = await fetch(
-        `${API_URL}/api/posts/${post._id}/restack`,
-        {
-          method: "POST",
-        }
-      );
+    const updatedPost =
+      await res.json();
 
-      const updatedPost =
-        await res.json();
+    setLikes(updatedPost.likes);
 
-      setRestacks(
-  updatedPost.restacks
-);
-
-setRestacked(
-  updatedPost.restacked
-);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    setLiked(updatedPost.liked);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
   return (
     <article className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-[#111111] p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/20 hover:bg-[#151515] hover:shadow-[0_30px_80px_-40px_rgba(0,0,0,0.98)]">
