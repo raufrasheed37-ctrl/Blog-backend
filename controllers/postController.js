@@ -193,17 +193,53 @@ export const getFeaturedPosts = async (req, res) => {
 };
 
    // ✅ LIKE POST
-export const likePost = async (req, res) => {
+    export const likePost = async (
+  req,
+  res
+) => {
   try {
-    const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        $inc: { likes: 1 },
-      },
-      { new: true }
+    const post = await Post.findById(
+      req.params.id
     );
 
-    res.json(post);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyLiked =
+      post.likedBy.some(
+        (id) =>
+          id.toString() === userId
+      );
+
+    // UNLIKE
+    if (alreadyLiked) {
+      post.likes -= 1;
+
+      post.likedBy =
+        post.likedBy.filter(
+          (id) =>
+            id.toString() !== userId
+        );
+    }
+
+    // LIKE
+    else {
+      post.likes += 1;
+
+      post.likedBy.push(userId);
+    }
+
+    await post.save();
+
+    res.json({
+      likes: post.likes,
+      liked: !alreadyLiked,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -212,17 +248,53 @@ export const likePost = async (req, res) => {
 };
 
 // ✅ RESTACK POST
-export const restackPost = async (req, res) => {
+  export const restackPost = async (
+  req,
+  res
+) => {
   try {
-    const post = await Post.findByIdAndUpdate(
-      req.params.id,
-      {
-        $inc: { restacks: 1 },
-      },
-      { new: true }
+    const post = await Post.findById(
+      req.params.id
     );
 
-    res.json(post);
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyRestacked =
+      post.restackedBy.some(
+        (id) =>
+          id.toString() === userId
+      );
+
+    // UNRESTACK
+    if (alreadyRestacked) {
+      post.restacks -= 1;
+
+      post.restackedBy =
+        post.restackedBy.filter(
+          (id) =>
+            id.toString() !== userId
+        );
+    }
+
+    // RESTACK
+    else {
+      post.restacks += 1;
+
+      post.restackedBy.push(userId);
+    }
+
+    await post.save();
+
+    res.json({
+      restacks: post.restacks,
+      restacked: !alreadyRestacked,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
