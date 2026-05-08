@@ -11,12 +11,20 @@ export default function BlogCard({ post }) {
   const pathname = usePathname();
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
-  const [actions, setActions] = useState({
-    liked: false,
-    commented: false,
-    restacked: false,
-    subscribed: false,
-  });
+    const [liked, setLiked] = useState(false);
+
+const [restacked, setRestacked] =
+  useState(false);
+
+const [subscribed, setSubscribed] =
+  useState(false);
+
+const [likes, setLikes] = useState(
+  post.likes || 0
+);
+
+const [restacks, setRestacks] =
+  useState(post.restacks || 0);
 
   const requireAuth = () => {
     if (token || isClientAuthenticated()) {
