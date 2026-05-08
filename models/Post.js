@@ -86,7 +86,11 @@ postSchema.pre('validate', function (next) {
 		this.publishedAt = undefined;
 	}
 
-	next();
+	if (typeof next === 'function') {
+		return next();
+	}
+
+	console.error('postSchema pre-validate: next is not a function', typeof next);
 });
 
 export default mongoose.model('Post', postSchema);
