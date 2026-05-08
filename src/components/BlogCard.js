@@ -308,6 +308,7 @@ const handleRestack = async () => {
         </div>
 
       </div>
+            </div>
 
     </article>
   );
