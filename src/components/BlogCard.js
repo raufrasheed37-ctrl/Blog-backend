@@ -72,12 +72,14 @@ export default function BlogCard({ post }) {
         }
       );
 
-      const updatedPost =
-        await res.json();
+    const updatedPost =
+  await res.json();
 
-      setLikes(updatedPost.likes);
+alert(JSON.stringify(updatedPost));
 
-      setLiked(updatedPost.liked);
+setLikes(updatedPost.likes);
+
+setLiked(updatedPost.liked);
     } catch (err) {
       console.log(err);
     }
@@ -105,15 +107,17 @@ export default function BlogCard({ post }) {
       );
 
       const updatedPost =
-        await res.json();
+  await res.json();
 
-      setRestacks(
-        updatedPost.restacks
-      );
+alert(JSON.stringify(updatedPost));
 
-      setRestacked(
-        updatedPost.restacked
-      );
+setRestacks(
+  updatedPost.restacks
+);
+
+setRestacked(
+  updatedPost.restacked
+);
     } catch (err) {
       console.log(err);
     }
