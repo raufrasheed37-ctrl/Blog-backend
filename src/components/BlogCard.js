@@ -18,10 +18,10 @@ export default function BlogCard({ post }) {
   );
 
   const [liked, setLiked] =
-    useState(false);
+  useState(post.liked || false);
 
-  const [restacked, setRestacked] =
-    useState(false);
+const [restacked, setRestacked] =
+  useState(post.restacked || false);
 
   const [subscribed, setSubscribed] =
     useState(false);
