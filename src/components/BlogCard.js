@@ -111,14 +111,8 @@ export default function BlogCard({ post }) {
         <div className="flex flex-1 gap-3">
 
           {/* AVATAR */}
-          <div
-            className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br shadow-[0_10px_30px_-12px_rgba(255,255,255,0.25)] ${
-              post.avatarClass ||
-              "from-orange-400 to-amber-500"
-            }`}
-          />
 
-             <div
+       <div
   className={`h-11 w-11 shrink-0 rounded-full bg-linear-to-br shadow-[0_10px_30px_-12px_rgba(255,255,255,0.25)] ${
     post.avatarClass ||
     "from-orange-400 to-amber-500"
