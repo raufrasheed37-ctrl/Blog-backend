@@ -1,5 +1,5 @@
-// Contact controller
 import Contact from '../models/Contact.js';
+import sendEmail from "../utils/sendEmail.js";
 
 
 
@@ -58,4 +58,49 @@ export const getContacts = async (req, res) => {
       message: "Failed to fetch contacts",
     });
   }
+};
+
+export const sendContactEmail = async (req, res) => {
+	try {
+		const { name, email, subject, message } = req.body;
+
+		if (!name || !name.trim()) {
+			return res.status(400).json({ message: "Name is required" });
+		}
+
+		if (!email || !email.trim()) {
+			return res.status(400).json({ message: "Email is required" });
+		}
+
+		if (!message || !message.trim()) {
+			return res.status(400).json({ message: "Message is required" });
+		}
+
+		const normalizedSubject = subject?.trim() || "New contact form message";
+		const normalizedName = name.trim();
+		const normalizedEmail = email.toLowerCase().trim();
+		const normalizedMessage = message.trim();
+
+		const html = `
+			<h2>New Contact Form Submission</h2>
+			<p><strong>Name:</strong> ${normalizedName}</p>
+			<p><strong>Email:</strong> ${normalizedEmail}</p>
+			<p><strong>Subject:</strong> ${normalizedSubject}</p>
+			<p><strong>Message:</strong></p>
+			<p>${normalizedMessage.replace(/\n/g, "<br />")}</p>
+		`;
+
+		await sendEmail({
+			to: process.env.EMAIL_USER,
+			subject: normalizedSubject,
+			html,
+			replyTo: normalizedEmail,
+		});
+
+		return res.status(200).json({
+			message: "Your message has been sent successfully",
+		});
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
 };

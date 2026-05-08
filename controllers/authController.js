@@ -2,13 +2,12 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
-import crypto from "crypto";
-
 
 const createToken = (userId) =>
   jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
 const buildUserResponse = (user) => ({
+  _id: user._id,
   id: user._id,
   name: user.name,
   email: user.email,
@@ -49,6 +48,20 @@ export const register = async (req, res) => {
       email: normalizedEmail,
       password: hashedPassword,
     });
+
+    try {
+      await sendEmail({
+        to: normalizedEmail,
+        subject: "Welcome to the blog",
+        html: `
+          <h2>Welcome, ${name.trim()}!</h2>
+          <p>Your account has been created successfully.</p>
+          <p>You can now log in and start using the blog platform.</p>
+        `,
+      });
+    } catch (emailError) {
+      console.error("Welcome email failed:", emailError.message);
+    }
 
     const token = createToken(user._id);
 
@@ -99,16 +112,17 @@ export const getMe = async (req, res) => {
     const user = await User.findById(req.user.id);
 
     const contact = await Contact.findOne({
-    userId: req.user.id,
-});
+      userId: req.user.id,
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json(buildUserResponse(user), 
-    contact
-  );
+    res.json({
+      user: buildUserResponse(user),
+      contact,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

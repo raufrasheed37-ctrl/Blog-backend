@@ -8,11 +8,13 @@ import {
   getPostsByAuthor,
   getFeaturedPosts,
 } from '../controllers/postController.js';
+import { upload } from '../utils/multerConfig.js';
+import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// CREATE POST
-router.post('/', createPost);
+// CREATE POST (requires auth)
+router.post('/', authMiddleware, upload.single('coverImage'), createPost);
 
 // GET ALL POSTS (published)
 router.get('/', getAllPosts);
@@ -29,7 +31,7 @@ router.get('/author/:authorId', getPostsByAuthor);
 // UPDATE POST
 router.put('/:id', updatePost);
 
-// DELETE POST
-router.delete('/:id', deletePost);
+// DELETE POST (requires auth)
+router.delete('/:id', authMiddleware, deletePost);
 
 export default router;

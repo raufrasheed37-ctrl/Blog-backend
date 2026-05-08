@@ -1,10 +1,34 @@
+import mongoose from "mongoose";
 import Post from "../models/Post.js";
+import User from "../models/User.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 // ✅ CREATE POST
 export const createPost = async (req, res) => {
   try {
-    const { title, content, excerpt, coverImage, tags, author, published } =
-      req.body;
+    let coverImageUrl = req.body.coverImage;
+
+    // Validate author id early
+    const { author } = req.body;
+    if (!author || !mongoose.Types.ObjectId.isValid(author)) {
+      return res.status(400).json({ message: "Invalid author id" });
+    }
+
+    // Optional: ensure referenced user exists
+    const userExists = await User.findById(author).select("_id");
+    if (!userExists) {
+      return res.status(400).json({ message: "Author not found" });
+    }
+
+    // If file is uploaded, upload to Cloudinary
+    if (req.file) {
+      coverImageUrl = await uploadToCloudinary(
+        req.file.buffer,
+        `blog-${Date.now()}`
+      );
+    }
+
+    const { title, content, excerpt, tags, published } = req.body;
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
@@ -22,10 +46,10 @@ export const createPost = async (req, res) => {
       title,
       content,
       excerpt,
-      coverImage,
+      coverImage: coverImageUrl,
       tags: tags || [],
       author,
-      published: published || false,
+      published: published !== undefined ? published : true,
     });
 
     await post.populate("author", "name email");
@@ -119,15 +143,21 @@ export const updatePost = async (req, res) => {
   }
 };
 
-// ✅ DELETE POST
+// ✅ DELETE POST (only author can delete)
 export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.user.id;
 
     const post = await Post.findById(id);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if the user is the author
+    if (post.author.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this post" });
     }
 
     await post.deleteOne();
