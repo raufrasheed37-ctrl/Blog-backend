@@ -36,9 +36,9 @@ router.put('/:id', updatePost);
 router.delete('/:id', deletePost);
 
   // LIKE POST
-router.post("/:id/like", likePost);
+router.post("/:id/like", authMiddleware, likePost);
 
 // RESTACK POST
-router.post("/:id/restack", restackPost);
+router.post("/:id/restack", authMiddleware, restackPost);
 
 export default router;
