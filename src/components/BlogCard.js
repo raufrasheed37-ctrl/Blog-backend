@@ -70,7 +70,7 @@ const [restacked, setRestacked] =
 
       setLikes(updatedPost.likes);
 
-      setLiked(true);
+setLiked(updatedPost.liked);
     } catch (err) {
       console.log(err);
     }
@@ -94,10 +94,12 @@ const [restacked, setRestacked] =
         await res.json();
 
       setRestacks(
-        updatedPost.restacks
-      );
+  updatedPost.restacks
+);
 
-      setRestacked(true);
+setRestacked(
+  updatedPost.restacked
+);
     } catch (err) {
       console.log(err);
     }
