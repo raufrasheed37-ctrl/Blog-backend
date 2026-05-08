@@ -76,12 +76,13 @@ const [restacked, setRestacked] =
 
   // REAL RESTACK
   
-  const handleLike = async () => {
+  // REAL RESTACK
+const handleRestack = async () => {
   if (!requireAuth()) return;
 
   try {
     const res = await fetch(
-      `${API_URL}/api/posts/${post._id}/like`,
+      `${API_URL}/api/posts/${post._id}/restack`,
       {
         method: "POST",
       }
@@ -90,9 +91,13 @@ const [restacked, setRestacked] =
     const updatedPost =
       await res.json();
 
-    setLikes(updatedPost.likes);
+    setRestacks(
+      updatedPost.restacks
+    );
 
-    setLiked(updatedPost.liked);
+    setRestacked(
+      updatedPost.restacked
+    );
   } catch (err) {
     console.log(err);
   }
