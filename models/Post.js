@@ -60,7 +60,7 @@ const postSchema = new mongoose.Schema(
 postSchema.index({ published: 1, createdAt: -1 });
 postSchema.index({ author: 1, createdAt: -1 });
 
-postSchema.pre('validate', function (next) {
+postSchema.pre('validate', function () {
 	if (!this.slug && this.title) {
 		this.slug = this.title
 			.toLowerCase()
@@ -85,12 +85,6 @@ postSchema.pre('validate', function (next) {
 	if (!this.published) {
 		this.publishedAt = undefined;
 	}
-
-	if (typeof next === 'function') {
-		return next();
-	}
-
-	console.error('postSchema pre-validate: next is not a function', typeof next);
 });
 
 export default mongoose.model('Post', postSchema);

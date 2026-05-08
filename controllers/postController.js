@@ -7,9 +7,11 @@ import { uploadToCloudinary } from "../utils/cloudinary.js";
 export const createPost = async (req, res) => {
   try {
     let coverImageUrl = req.body.coverImage;
+    const authenticatedUserId = req.user?.id;
 
-    // Validate author id early
-    const { author } = req.body;
+    // Use the authenticated user as the author when available.
+    const author = authenticatedUserId || req.body.author;
+
     if (!author || !mongoose.Types.ObjectId.isValid(author)) {
       return res.status(400).json({ message: "Invalid author id" });
     }
@@ -119,11 +121,20 @@ export const updatePost = async (req, res) => {
     const { id } = req.params;
     const { title, content, excerpt, coverImage, tags, published, featured } =
       req.body;
+    const userId = req.user?.id;
 
     const post = await Post.findById(id);
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    if (post.author.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to update this post" });
     }
 
     if (title) post.title = title;
