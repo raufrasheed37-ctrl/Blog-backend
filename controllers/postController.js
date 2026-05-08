@@ -191,3 +191,41 @@ export const getFeaturedPosts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+   // ✅ LIKE POST
+export const likePost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc: { likes: 1 },
+      },
+      { new: true }
+    );
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// ✅ RESTACK POST
+export const restackPost = async (req, res) => {
+  try {
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc: { restacks: 1 },
+      },
+      { new: true }
+    );
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
