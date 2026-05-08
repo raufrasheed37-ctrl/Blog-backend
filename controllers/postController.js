@@ -62,15 +62,39 @@ export const getAllPosts = async (req, res) => {
       .limit(parseInt(limit))
       .skip(parseInt(skip))
       .populate("author", "name email");
+      .lean();
 
-    const total = await Post.countDocuments(query);
+       const total = await Post.countDocuments(query);
 
-    res.json({
-      posts,
-      total,
-      limit: parseInt(limit),
-      skip: parseInt(skip),
-    });
+const userId = req.user?.id;
+
+const updatedPosts = posts.map(
+  (post) => ({
+    ...post,
+
+    liked: userId
+      ? post.likedBy?.some(
+          (id) =>
+            id.toString() === userId
+        )
+      : false,
+
+    restacked: userId
+      ? post.restackedBy?.some(
+          (id) =>
+            id.toString() === userId
+        )
+      : false,
+  })
+);
+
+res.json({
+  posts: updatedPosts,
+  total,
+  limit: parseInt(limit),
+  skip: parseInt(skip),
+});
+    
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
