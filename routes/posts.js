@@ -35,4 +35,10 @@ router.put('/:id', updatePost);
 // DELETE POST
 router.delete('/:id', deletePost);
 
+  // LIKE POST
+router.post("/:id/like", likePost);
+
+// RESTACK POST
+router.post("/:id/restack", restackPost);
+
 export default router;
