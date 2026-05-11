@@ -6,6 +6,8 @@ import { uploadToCloudinary } from "../utils/cloudinary.js";
 // ✅ CREATE POST
 export const createPost = async (req, res) => {
   try {
+    console.log("🔵 CreatePost called - Auth User:", req.user);
+    console.log("📦 Request body:", req.body);
     let coverImageUrl = req.body.coverImage;
     const authenticatedUserId = req.user?.id;
 
@@ -58,6 +60,7 @@ export const createPost = async (req, res) => {
 
     res.status(201).json(post);
   } catch (error) {
+    console.error("❌ Error creating post:", error);
     res.status(500).json({ message: error.message });
   }
 };

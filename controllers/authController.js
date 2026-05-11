@@ -4,8 +4,13 @@ import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
 import crypto from "crypto";
 
-const createToken = (userId) =>
-  jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: "7d" });
+const createToken = (user) =>
+  jwt.sign(
+    { id: user._id, name: user.name, email: user.email },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
 
 const buildUserResponse = (user) => ({
   _id: user._id,
@@ -64,12 +69,13 @@ export const register = async (req, res) => {
       console.error("Welcome email failed:", emailError.message);
     }
 
-    const token = createToken(user._id);
+    const token = createToken(user);
 
     res.status(201).json({
       token,
       user: buildUserResponse(user),
     });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -97,12 +103,13 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = createToken(user._id);
+    const token = createToken(user);
 
     res.json({
       token,
       user: buildUserResponse(user),
     });
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -121,8 +128,14 @@ export const getMe = async (req, res) => {
     }
 
     res.json({
+      // keep existing shape
       user: buildUserResponse(user),
       contact,
+
+      // redundant fields for frontend compatibility (prevents fallback to literal "user")
+      name: user.name,
+      userName: user.name,
+      username: user.name,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
