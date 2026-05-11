@@ -1,9 +1,24 @@
-// Email utility
-// Add your email sending logic here
+import nodemailer from "nodemailer";
 
-// Example function:
-// const nodemailer = require('nodemailer');
-// exports.sendEmail = async (to, subject, html) => {
-//   const transporter = nodemailer.createTransport({...});
-//   await transporter.sendMail({...});
-// };
+const createTransporter = () =>
+	nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.EMAIL_USER,
+			pass: process.env.EMAIL_PASSWORD,
+		},
+	});
+
+const sendEmail = async ({ to, subject, html, replyTo }) => {
+	const transporter = createTransporter();
+
+	await transporter.sendMail({
+		from: process.env.EMAIL_USER,
+		to,
+		subject,
+		html,
+		replyTo,
+	});
+};
+
+export default sendEmail;

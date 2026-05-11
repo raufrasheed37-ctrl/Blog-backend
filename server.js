@@ -5,6 +5,8 @@ import mongoose from "mongoose";
 import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
+import contactRoutes from "./routes/contact.js";
+import subscribeRoutes from "./routes/subscribe.js";
 
 dotenv.config();
 
@@ -13,9 +15,17 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+// Debug middleware - log all requests
+app.use((req, res, next) => {
+  console.log(`📨 ${req.method} ${req.path}`);
+  next();
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/posts", postRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/subscribe", subscribeRoutes);
 
 const PORT = process.env.PORT || 5000;
 

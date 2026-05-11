@@ -1,5 +1,4 @@
 import express from 'express';
-import authMiddleware from "../middleware/authMiddleware.js";
 import {
   createPost,
   getAllPosts,
@@ -8,14 +7,14 @@ import {
   deletePost,
   getPostsByAuthor,
   getFeaturedPosts,
-  likePost,
-  restackPost,
 } from '../controllers/postController.js';
+import { upload } from '../utils/multerConfig.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// CREATE POST
-router.post('/', authMiddleware, createPost);
+// CREATE POST (requires auth)
+router.post('/', protect, upload.single('coverImage'), createPost);
 
 // GET ALL POSTS (published)
 router.get('/', getAllPosts);
@@ -23,22 +22,16 @@ router.get('/', getAllPosts);
 // GET FEATURED POSTS
 router.get('/featured/list', getFeaturedPosts);
 
-// LIKE POST
-router.post("/:id/like", authMiddleware, likePost);
-
-// RESTACK POST
-router.post("/:id/restack", authMiddleware, restackPost);
-
 // GET POSTS BY AUTHOR
 router.get('/author/:authorId', getPostsByAuthor);
 
 // GET POST BY ID OR SLUG
 router.get('/:id', getPostById);
 
-// UPDATE POST
-router.put('/:id', updatePost);
+// UPDATE POST (requires auth)
+router.put('/:id', protect, updatePost);
 
-// DELETE POST
-router.delete('/:id', deletePost);
+// DELETE POST (requires auth)
+router.delete('/:id', protect, deletePost);
 
 export default router;

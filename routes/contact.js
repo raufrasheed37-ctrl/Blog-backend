@@ -1,8 +1,16 @@
-const express = require('express');
+import express from 'express';
+import { saveContact, getContacts, sendContactEmail } from '../controllers/contactController.js';
+import authMiddleware from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-// const contactController = require('../controllers/contactController');
 
-// Define your contact routes here
-// router.post('/', contactController.sendContactEmail);
+// Public contact form email endpoint
+router.post("/", sendContactEmail);
 
-module.exports = router;
+// Authenticated contact book endpoints
+router.post("/save", authMiddleware, saveContact);
+
+// Get logged-in user's contacts (dashboard)
+router.get("/", authMiddleware, getContacts);
+
+export default router;
