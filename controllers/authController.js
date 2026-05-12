@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
 import crypto from "crypto";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 const createToken = (user) =>
   jwt.sign(
@@ -18,6 +19,12 @@ const buildUserResponse = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
+  bio: user.bio,
+  avatar: user.avatar,
+  coverImage: user.coverImage,
+  location: user.location,
+  website: user.website,
+  socialLinks: user.socialLinks,
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
 });
@@ -136,6 +143,68 @@ export const getMe = async (req, res) => {
       name: user.name,
       userName: user.name,
       username: user.name,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const updateMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const {
+      name,
+      bio,
+      location,
+      website,
+      socialLinks,
+    } = req.body;
+
+    const avatarFile = req.files?.avatar?.[0];
+    const coverImageFile = req.files?.coverImage?.[0];
+
+    let avatar = req.body.avatar;
+    let coverImage = req.body.coverImage;
+
+    if (avatarFile) {
+      avatar = await uploadToCloudinary(
+        avatarFile.buffer,
+        `profile-avatar-${req.user.id}-${Date.now()}`
+      );
+    }
+
+    if (coverImageFile) {
+      coverImage = await uploadToCloudinary(
+        coverImageFile.buffer,
+        `profile-cover-${req.user.id}-${Date.now()}`
+      );
+    }
+
+    if (name !== undefined) {
+      if (!name || !name.trim()) {
+        return res.status(400).json({ message: "Name cannot be empty" });
+      }
+
+      user.name = name.trim();
+    }
+
+    if (bio !== undefined) user.bio = bio;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (coverImage !== undefined) user.coverImage = coverImage;
+    if (location !== undefined) user.location = location;
+    if (website !== undefined) user.website = website;
+    if (socialLinks !== undefined) user.socialLinks = socialLinks;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: buildUserResponse(user),
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -7,6 +7,8 @@ import {
   deletePost,
   getPostsByAuthor,
   getFeaturedPosts,
+  toggleLikePost,
+  toggleRestackPost,
 } from '../controllers/postController.js';
 import { upload } from '../utils/multerConfig.js';
 import { protect } from '../middleware/authMiddleware.js';
@@ -27,6 +29,12 @@ router.get('/author/:authorId', getPostsByAuthor);
 
 // GET POST BY ID OR SLUG
 router.get('/:id', getPostById);
+
+// LIKE POST
+router.put('/:id/like', protect, toggleLikePost);
+
+// RESTACK POST
+router.put('/:id/restack', protect, toggleRestackPost);
 
 // UPDATE POST (requires auth)
 router.put('/:id', protect, updatePost);

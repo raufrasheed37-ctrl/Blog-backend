@@ -49,6 +49,8 @@ export const createComment = async (
 
     res.status(201).json(comment);
   } catch (error) {
+    console.error("Error creating comment:", error);
+
     res.status(500).json({
       message: error.message,
     });
@@ -120,6 +122,17 @@ export const deleteComment = async (
       });
     }
 
+    if (
+      comment.user.toString() !==
+      req.user.id
+    ) {
+      return res.status(403).json({
+        message:
+          "Not authorized",
+      });
+      
+    }
+
     // DECREASE POST COMMENT COUNT
     await Post.findByIdAndUpdate(
       comment.postId,
@@ -168,11 +181,69 @@ export const updateComment = async (
       });
     }
 
+    if (
+      comment.user.toString() !==
+      req.user.id
+    ) {
+      return res.status(403).json({
+        message:
+          "Not authorized",
+      });
+      
+    }
+
     comment.text = text;
 
     await comment.save();
 
     res.json(comment);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+
+// TOGGLE COMMENT LIKE
+export const toggleCommentLike = async (req, res) => {
+  try {
+    const comment = await Comment.findById(req.params.id);
+
+    if (!comment) {
+      return res.status(404).json({
+        message: "Comment not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    // create likedBy if it doesn't exist
+    if (!comment.likedBy) {
+      comment.likedBy = [];
+    }
+
+    const alreadyLiked = comment.likedBy.some(
+      (id) => id.toString() === userId
+    );
+
+    if (alreadyLiked) {
+      comment.likedBy = comment.likedBy.filter(
+        (id) => id.toString() !== userId
+      );
+
+      comment.likes = Math.max(0, comment.likes - 1);
+    } else {
+      comment.likedBy.push(userId);
+      comment.likes += 1;
+    }
+
+    await comment.save();
+
+    res.json({
+      likes: comment.likes,
+      liked: !alreadyLiked,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,

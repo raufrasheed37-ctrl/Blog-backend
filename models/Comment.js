@@ -33,6 +33,13 @@ const commentSchema = new mongoose.Schema(
       default: 0,
     },
 
+    likedBy: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+],
+
     // reply count
     replyCount: {
       type: Number,
