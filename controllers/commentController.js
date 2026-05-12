@@ -2,54 +2,48 @@ import Comment from "../models/Comment.js";
 import Post from "../models/Post.js";
 
 //  CREATE COMMENT
-export const createComment = async (
-  req,
-  res
-) => {
+export const createComment = async (req, res) => {
   try {
-    const {
-      text,
-      postId,
-      parentComment,
-    } = req.body;
+    const { text, postId, parentComment } = req.body;
 
     if (!text || !text.trim()) {
       return res.status(400).json({
-        message:
-          "Comment cannot be empty",
+        message: "Comment cannot be empty",
       });
     }
 
-    const comment =
-      await Comment.create({
-        text,
-        postId,
-        user: req.user.id,
-        parentComment:
-          parentComment || null,
+    if (!postId) {
+      return res.status(400).json({
+        message: "Post ID required",
       });
-
-    // INCREASE REPLY COUNT
-    if (parentComment) {
-      await Comment.findByIdAndUpdate(
-        parentComment,
-        {
-          $inc: { replyCount: 1 },
-        }
-      );
     }
 
-    // INCREASE POST COMMENT COUNT
-    await Post.findByIdAndUpdate(
+    const comment = await Comment.create({
+      text,
       postId,
-      {
-        $inc: { commentCount: 1 },
-      }
-    );
+      user: req.user.id,
+      parentComment: parentComment || null,
+    });
+
+    // populate user
+    await comment.populate("user", "name email");
+
+    // increase reply count
+    if (parentComment) {
+      await Comment.findByIdAndUpdate(parentComment, {
+        $inc: { replyCount: 1 },
+      });
+    }
+
+    // increase post comment count
+    await Post.findByIdAndUpdate(postId, {
+      $inc: { commentCount: 1 },
+    });
 
     res.status(201).json(comment);
+
   } catch (error) {
-    console.error("Error creating comment:", error);
+    console.log("CREATE COMMENT ERROR:", error);
 
     res.status(500).json({
       message: error.message,
