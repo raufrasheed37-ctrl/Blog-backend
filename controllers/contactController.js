@@ -59,10 +59,6 @@ export const updateUserProfile = async (req, res) => {
   }
 };
 
-/* =========================================
-   GET CURRENT USER PROFILE
-========================================= */
-
 export const getCurrentUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
