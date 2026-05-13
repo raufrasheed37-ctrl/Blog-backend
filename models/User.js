@@ -18,20 +18,17 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    website: {
-      type: String,
-      trim: true,
-      default: "",
-    },
     phoneNo: {
       type: String,
       required: true,
       trim: true,
+      default: "",
     },
     address: {
       type: String,
       required: true,
       trim: true,
+      default: "",
     },
     // OPTIONAL
     bio: {
