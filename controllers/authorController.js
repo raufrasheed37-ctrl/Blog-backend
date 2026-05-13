@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import Post from "../models/Post.js";
 
 const PUBLIC_AUTHOR_FIELDS =
-  "name bio avatar coverImage location website socialLinks createdAt updatedAt";
+  "name bio avatar coverImage location website socialLinks subscribers subscribersList createdAt updatedAt";
 
 export const getPublicAuthorProfile = async (req, res) => {
   try {
