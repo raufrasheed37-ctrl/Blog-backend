@@ -8,12 +8,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: [100, "Name cannot exceed 100 characters"],
     },
-    bio: {
-      type: String,
-      trim: true,
-      maxlength: [500, "Bio cannot exceed 500 characters"],
-      default: "",
-    },
     avatar: {
       type: String,
       trim: true,
@@ -24,38 +18,33 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-    location: {
-      type: String,
-      trim: true,
-      maxlength: [120, "Location cannot exceed 120 characters"],
-      default: "",
-    },
     website: {
       type: String,
       trim: true,
       default: "",
     },
-    socialLinks: {
-      twitter: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-      linkedin: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-      github: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-      instagram: {
-        type: String,
-        trim: true,
-        default: "",
-      },
+    phoneNo: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    // OPTIONAL
+    bio: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+
+    // OPTIONAL
+    website: {
+      type: String,
+      default: "",
+      trim: true,
     },
     email: {
       type: String,

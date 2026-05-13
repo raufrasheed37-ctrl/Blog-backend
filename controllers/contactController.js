@@ -1,8 +1,6 @@
 import User from "../models/User.js";
 import sendEmail from "../utils/sendEmail.js";
 
-
-
 export const updateUserProfile = async (req, res) => {
   try {
     const {
@@ -84,9 +82,6 @@ export const getCurrentUserProfile = async (req, res) => {
   }
 };
 
-/* =========================================
-   CONTACT EMAIL
-========================================= */
 
 export const sendContactEmail = async (req, res) => {
   try {
