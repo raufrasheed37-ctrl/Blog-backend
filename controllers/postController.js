@@ -272,9 +272,21 @@ export const toggleLikePost = async (req, res) => {
 
       post.likes = Math.max(0, post.likes - 1);
     } else {
-      post.likedBy.push(userId);
-      post.likes += 1;
-    }
+  post.likedBy.push(userId);
+  post.likes += 1;
+
+  if (
+    post.author.toString() !==
+    userId
+  ) {
+    await Activity.create({
+      user: post.author,
+      actor: userId,
+      type: "like",
+      post: post._id,
+    });
+  }
+}
 
     await post.save();
 
