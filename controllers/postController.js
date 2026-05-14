@@ -330,9 +330,21 @@ export const toggleRestackPost = async (req, res) => {
         post.restacks - 1
       );
     } else {
-      post.restackedBy.push(userId);
-      post.restacks += 1;
-    }
+  post.restackedBy.push(userId);
+  post.restacks += 1;
+
+  if (
+    post.author.toString() !==
+    userId
+  ) {
+    await Activity.create({
+      user: post.author,
+      actor: userId,
+      type: "restack",
+      post: post._id,
+    });
+  }
+}
 
     await post.save();
 
