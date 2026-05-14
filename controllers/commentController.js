@@ -69,7 +69,7 @@ if (parentComment) {
     });
   }
 }
-}
+
 
     // populate user
     await comment.populate("user", "name email");
