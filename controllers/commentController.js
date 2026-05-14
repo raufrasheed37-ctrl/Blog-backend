@@ -47,6 +47,26 @@ if (!post) {
     post: post._id,
     content: comment.text,
   });
+      if (parentComment) {
+  const parent =
+    await Comment.findById(
+      parentComment
+    );
+
+  if (
+    parent &&
+    parent.user.toString() !==
+      req.user.id.toString()
+  ) {
+    await Activity.create({
+      user: parent.user,
+      actor: req.user.id,
+      type: "reply",
+      post: post._id,
+      content: comment.text,
+    });
+  }
+}
 }
 
     // populate user
