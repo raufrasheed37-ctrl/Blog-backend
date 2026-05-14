@@ -47,7 +47,9 @@ if (!post) {
     post: post._id,
     content: comment.text,
   });
-      if (parentComment) {
+}
+
+if (parentComment) {
   const parent =
     await Comment.findById(
       parentComment
