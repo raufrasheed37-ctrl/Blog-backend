@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import Activity from "../models/Activity.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 // ✅ CREATE POST
@@ -276,6 +277,19 @@ export const toggleLikePost = async (req, res) => {
     }
 
     await post.save();
+
+if (
+  !alreadyLiked &&
+  post.author.toString() !==
+    userId.toString()
+) {
+  await Activity.create({
+    user: post.author,
+    actor: userId,
+    type: "like",
+    post: post._id,
+  });
+}
 
     res.json({
       liked: !alreadyLiked,
