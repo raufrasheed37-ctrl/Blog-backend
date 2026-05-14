@@ -80,7 +80,10 @@ export const getAllPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(parseInt(skip))
-      .populate("author", "name email");
+      .populate(
+  "author",
+  "name email subscribers subscribersList"
+);
 
     const total = await Post.countDocuments(query);
 
@@ -105,7 +108,10 @@ export const getPostById = async (req, res) => {
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
       post = await Post.findById(id).populate("author", "name email");
     } else {
-      post = await Post.findOne({ slug: id }).populate("author", "name email");
+      post = await Post.findOne({ slug: id }).populate(
+  "author",
+  "name email subscribers subscribersList"
+);
     }
 
     if (!post) {
@@ -149,7 +155,10 @@ export const updatePost = async (req, res) => {
     if (featured !== undefined) post.featured = featured;
 
     await post.save();
-    await post.populate("author", "name email");
+    await post.populate(
+  "author",
+  "name email subscribers subscribersList"
+);
 
     res.json(post);
   } catch (error) {
@@ -192,7 +201,10 @@ export const getPostsByAuthor = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
       .skip(parseInt(skip))
-      .populate("author", "name email");
+      .populate(
+  "author",
+  "name email subscribers subscribersList"
+);
 
     const total = await Post.countDocuments({
       author: authorId,
@@ -218,7 +230,10 @@ export const getFeaturedPosts = async (req, res) => {
     const posts = await Post.find({ published: true, featured: true })
       .sort({ createdAt: -1 })
       .limit(parseInt(limit))
-      .populate("author", "name email");
+      .populate(
+  "author",
+  "name email subscribers subscribersList"
+);
 
     res.json(posts);
   } catch (error) {
