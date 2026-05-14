@@ -13,10 +13,7 @@ export const getPublicAuthorProfile = async (req, res) => {
       return res.status(400).json({ message: "Invalid author id" });
     }
 
-    const author = await User.findById(authorId)
-      .select(PUBLIC_AUTHOR_FIELDS)
-      .lean();
-
+    const author = await User.findById(authorId).lean();
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
