@@ -290,19 +290,6 @@ export const toggleLikePost = async (req, res) => {
 
     await post.save();
 
-if (
-  !alreadyLiked &&
-  post.author.toString() !==
-    userId.toString()
-) {
-  await Activity.create({
-    user: post.author,
-    actor: userId,
-    type: "like",
-    post: post._id,
-  });
-}
-
     res.json({
       liked: !alreadyLiked,
       likes: post.likes,
