@@ -19,6 +19,16 @@ export const createComment = async (req, res) => {
       });
     }
 
+      const post = await Post.findById(
+  postId
+);
+
+if (!post) {
+  return res.status(404).json({
+    message: "Post not found",
+  });
+}
+    
     const comment = await Comment.create({
       text,
       postId,
@@ -35,7 +45,7 @@ export const createComment = async (req, res) => {
     actor: req.user.id,
     type: "comment",
     post: post._id,
-    content: comment.content,
+    content: comment.text,
   });
 }
 
