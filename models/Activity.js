@@ -4,13 +4,15 @@ const activitySchema =
   new mongoose.Schema(
     {
       user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:
+          mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
 
       actor: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:
+          mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
       },
@@ -19,18 +21,18 @@ const activitySchema =
         type: String,
         enum: [
           "like",
-          "reply",
           "comment",
+          "reply",
+          "mention",
           "subscribe",
           "restack",
-          "mention",
-          "post",
         ],
         required: true,
       },
 
       post: {
-        type: mongoose.Schema.Types.ObjectId,
+        type:
+          mongoose.Schema.Types.ObjectId,
         ref: "Post",
       },
 
