@@ -15,18 +15,6 @@ const postSchema = new mongoose.Schema(
 			lowercase: true,
 			trim: true,
 		},
-
-		restacks: {
-  type: Number,
-  default: 0,
-},
-
-restackedBy: [
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-],
 		excerpt: {
 			type: String,
 			trim: true,
