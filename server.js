@@ -8,6 +8,7 @@ import postRoutes from "./routes/posts.js";
 import contactRoutes from "./routes/contact.js";
 import subscribeRoutes from "./routes/subscribe.js";
 import authorRoutes from "./routes/authors.js";
+import activityRoutes from "./routes/activityRoutes.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/subscribe", subscribeRoutes);
 app.use("/api/authors", authorRoutes);
+app.use("/api/activity", activityRoutes);
 
 const PORT = process.env.PORT || 5000;
 
