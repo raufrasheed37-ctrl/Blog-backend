@@ -1,5 +1,6 @@
 import Comment from "../models/Comment.js";
 import Post from "../models/Post.js";
+import Activity from "../models/Activity.js";
 
 //  CREATE COMMENT
 export const createComment = async (req, res) => {
@@ -24,6 +25,19 @@ export const createComment = async (req, res) => {
       user: req.user.id,
       parentComment: parentComment || null,
     });
+
+    if (
+  post.author.toString() !==
+  req.user.id.toString()
+) {
+  await Activity.create({
+    user: post.author,
+    actor: req.user.id,
+    type: "comment",
+    post: post._id,
+    content: comment.content,
+  });
+}
 
     // populate user
     await comment.populate("user", "name email");
