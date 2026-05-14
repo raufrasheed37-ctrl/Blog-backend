@@ -67,9 +67,23 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
   },
+
+    subscribers: {
+  type: Number,
+  default: 0,
+},
+
+subscribersList: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+],
+  
   {
     timestamps: true,
   }
+  
 );
 
 export default mongoose.model("User", userSchema);
