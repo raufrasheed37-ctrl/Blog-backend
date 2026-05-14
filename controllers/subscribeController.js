@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import User from '../models/User.js';
+import Activity from "../models/Activity.js";
 
 export const toggleSubscribe = async (req, res) => {
   try {
@@ -21,15 +22,36 @@ export const toggleSubscribe = async (req, res) => {
     const already = author.subscribersList?.some((id) => id.toString() === subscriberId);
 
     if (already) {
-      // unsubscribe
-      author.subscribersList = (author.subscribersList || []).filter((id) => id.toString() !== subscriberId);
-      author.subscribers = Math.max(0, (author.subscribers || 1) - 1);
-    } else {
-      // subscribe
-      author.subscribersList = author.subscribersList || [];
-      author.subscribersList.push(subscriberId);
-      author.subscribers = (author.subscribers || 0) + 1;
-    }
+  // unsubscribe
+  author.subscribersList =
+    (author.subscribersList || []).filter(
+      (id) =>
+        id.toString() !==
+        subscriberId
+    );
+
+  author.subscribers = Math.max(
+    0,
+    (author.subscribers || 1) - 1
+  );
+} else {
+  // subscribe
+  author.subscribersList =
+    author.subscribersList || [];
+
+  author.subscribersList.push(
+    subscriberId
+  );
+
+  author.subscribers =
+    (author.subscribers || 0) + 1;
+
+  await Activity.create({
+    user: author._id,
+    actor: subscriberId,
+    type: "subscribe",
+  });
+}
 
     await author.save();
 
