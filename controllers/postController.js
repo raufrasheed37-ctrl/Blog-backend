@@ -56,7 +56,10 @@ export const createPost = async (req, res) => {
       published: published !== undefined ? published : true,
     });
 
-    await post.populate("author", "name email");
+    await post.populate(
+  "author",
+  "name email subscribers subscribersList"
+);
 
     res.status(201).json(post);
   } catch (error) {
@@ -106,7 +109,10 @@ export const getPostById = async (req, res) => {
     let post;
 
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      post = await Post.findById(id).populate("author", "name email");
+      post = await Post.findById(id).populate(
+  "author",
+  "name email subscribers subscribersList"
+);
     } else {
       post = await Post.findOne({ slug: id }).populate(
   "author",
