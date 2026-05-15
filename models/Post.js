@@ -28,7 +28,7 @@ const postSchema = new mongoose.Schema(
 
 		category: {
        type: String, 
-       default: "Explore ",
+       default: "Explore",
 },
 		
 		coverImage: {
