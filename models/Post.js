@@ -25,6 +25,12 @@ const postSchema = new mongoose.Schema(
 			required: [true, 'Content is required'],
 			trim: true,
 		},
+
+		category: {
+       type: String, 
+       default: "Explore ",
+},
+		
 		coverImage: {
 			type: String,
 			trim: true,
