@@ -33,7 +33,7 @@ export const createPost = async (req, res) => {
       );
     }
 
-    const { title, content, excerpt, tags, published } = req.body;
+    const { title, content, excerpt, tags, published, category } = req.body;
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
