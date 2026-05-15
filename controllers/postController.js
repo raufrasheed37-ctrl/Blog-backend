@@ -52,6 +52,7 @@ export const createPost = async (req, res) => {
       content,
       excerpt,
       coverImage: coverImageUrl,
+      category,
       tags: tags || [],
       author,
       published: published !== undefined ? published : true,
