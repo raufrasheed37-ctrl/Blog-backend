@@ -22,6 +22,8 @@ const buildUserResponse = (user) => ({
   bio: user.bio,
   avatar: user.avatar,
   coverImage: user.coverImage,
+  phoneNo: user.phoneNo,
+  address: user.address,
   location: user.location,
   website: user.website,
   socialLinks: user.socialLinks,
