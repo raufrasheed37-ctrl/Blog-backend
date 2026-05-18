@@ -97,6 +97,21 @@ if (parentComment) {
   }
 };
 
+const getReplies = async (parentId) => {
+  const replies = await Comment.find({
+    parentComment: parentId,
+  })
+    .populate("user", "name")
+    .sort({ createdAt: 1 });
+
+  return Promise.all(
+    replies.map(async (reply) => ({
+      ...reply.toObject(),
+      replies: await getReplies(reply._id),
+    }))
+  );
+};
+
 // GET COMMENTS BY POST
 export const getComments = async (
   req,
