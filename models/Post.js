@@ -79,6 +79,23 @@ restackedBy: [
   },
 ],
 
+isRestack: {
+  type: Boolean,
+  default: false,
+},
+
+originalPost: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Post",
+  default: null,
+},
+
+restackedFrom: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  default: null,
+},
+
 commentCount: {
   type: Number,
   default: 0,
