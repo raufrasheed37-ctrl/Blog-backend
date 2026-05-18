@@ -321,6 +321,7 @@ export const toggleRestackPost = async (req, res) => {
       );
 
     if (alreadyRestacked) {
+
       post.restackedBy =
         post.restackedBy.filter(
           (id) => id.toString() !== userId
@@ -330,42 +331,40 @@ export const toggleRestackPost = async (req, res) => {
         0,
         post.restacks - 1
       );
+
     } else {
-  post.restackedBy.push(userId);
-  post.restacks += 1;
 
-      } else {
-  post.restackedBy.push(userId);
-  post.restacks += 1;
+      post.restackedBy.push(userId);
+      post.restacks += 1;
 
-  await Post.create({
-    title: post.title,
-    content: post.content,
-    excerpt: post.excerpt,
-    coverImage: post.coverImage,
-    tags: post.tags,
-    category: post.category,
-    author: userId,
+      await Post.create({
+        title: post.title,
+        content: post.content,
+        excerpt: post.excerpt,
+        coverImage: post.coverImage,
+        tags: post.tags,
+        category: post.category,
+        author: userId,
 
-    isRestack: true,
-    originalPost: post._id,
-    restackedFrom: post.author,
+        isRestack: true,
+        originalPost: post._id,
+        restackedFrom: post.author,
 
-    published: true,
-  });
+        published: true,
+      });
 
-  if (
-    post.author.toString() !==
-    userId
-  ) {
-    await Activity.create({
-      user: post.author,
-      actor: userId,
-      type: "restack",
-      post: post._id,
-    });
-  }
-}
+      if (
+        post.author.toString() !==
+        userId
+      ) {
+        await Activity.create({
+          user: post.author,
+          actor: userId,
+          type: "restack",
+          post: post._id,
+        });
+      }
+    }
 
     await post.save();
 
@@ -373,9 +372,15 @@ export const toggleRestackPost = async (req, res) => {
       restacked: !alreadyRestacked,
       restacks: post.restacks,
     });
+
   } catch (error) {
     res.status(500).json({
       message: error.message,
     });
   }
 };
+    
+
+    
+
+  
