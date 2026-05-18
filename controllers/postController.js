@@ -334,6 +334,26 @@ export const toggleRestackPost = async (req, res) => {
   post.restackedBy.push(userId);
   post.restacks += 1;
 
+      } else {
+  post.restackedBy.push(userId);
+  post.restacks += 1;
+
+  await Post.create({
+    title: post.title,
+    content: post.content,
+    excerpt: post.excerpt,
+    coverImage: post.coverImage,
+    tags: post.tags,
+    category: post.category,
+    author: userId,
+
+    isRestack: true,
+    originalPost: post._id,
+    restackedFrom: post.author,
+
+    published: true,
+  });
+
   if (
     post.author.toString() !==
     userId
