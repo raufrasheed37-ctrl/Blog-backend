@@ -127,29 +127,16 @@ export const getComments = async (
         .sort({ createdAt: -1 });
 
     const commentsWithReplies =
-      await Promise.all(
-        comments.map(
-          async (comment) => {
-            const replies =
-              await Comment.find({
-                parentComment:
-                  comment._id,
-              })
-                .populate(
-                  "user",
-                  "name"
-                )
-                .sort({
-                  createdAt: 1,
-                });
-
-            return {
-              ...comment.toObject(),
-              replies,
-            };
-          }
-        )
-      );
+  await Promise.all(
+    comments.map(
+      async (comment) => ({
+        ...comment.toObject(),
+        replies: await getReplies(
+          comment._id
+        ),
+      })
+    )
+  );
 
     res.json(commentsWithReplies);
   } catch (error) {
