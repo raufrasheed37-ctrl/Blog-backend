@@ -89,6 +89,8 @@ export const getAllPosts = async (req, res) => {
     "author",
     "name email subscribers subscribersList"
   )
+  
+  .populate("restackedFrom", "name email")
   .populate({
     path: "originalPost",
     populate: {
@@ -139,6 +141,7 @@ export const getPostById = async (req, res) => {
       "author",
       "name email subscribers subscribersList"
     )
+    .populate("restackedFrom", "name email")
     .populate({
       path: "originalPost",
       populate: {
@@ -240,6 +243,7 @@ export const getPostsByAuthor = async (req, res) => {
     "author",
     "name email subscribers subscribersList"
   )
+     .populate("restackedFrom", "name email")
   .populate({
     path: "originalPost",
     populate: {
