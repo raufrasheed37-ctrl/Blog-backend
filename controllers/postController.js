@@ -1,0 +1,427 @@
+import mongoose from "mongoose";
+import Post from "../models/Post.js";
+import User from "../models/User.js";
+import Activity from "../models/Activity.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
+
+// ✅ CREATE POST
+export const createPost = async (req, res) => {
+  try {
+    console.log("🔵 CreatePost called - Auth User:", req.user);
+    console.log("📦 Request body:", req.body);
+    let coverImageUrl = req.body.coverImage;
+    const authenticatedUserId = req.user?.id;
+
+    // Use the authenticated user as the author when available.
+    const author = authenticatedUserId || req.body.author;
+
+    if (!author || !mongoose.Types.ObjectId.isValid(author)) {
+      return res.status(400).json({ message: "Invalid author id" });
+    }
+
+    // Optional: ensure referenced user exists
+    const userExists = await User.findById(author).select("_id");
+    if (!userExists) {
+      return res.status(400).json({ message: "Author not found" });
+    }
+
+    // If file is uploaded, upload to Cloudinary
+    if (req.file) {
+      coverImageUrl = await uploadToCloudinary(
+        req.file.buffer,
+        `blog-${Date.now()}`
+      );
+    }
+
+    const { title, content, excerpt, tags, published, category } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: "Title is required" });
+    }
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({ message: "Content is required" });
+    }
+
+    if (!author) {
+      return res.status(400).json({ message: "Author is required" });
+    }
+
+    const post = await Post.create({
+      title,
+      content,
+      excerpt,
+      coverImage: coverImageUrl,
+      category,
+      tags: tags || [],
+      author,
+      published: published !== undefined ? published : true,
+    });
+
+    await post.populate(
+  "author",
+  "name email subscribers subscribersList"
+);
+
+    res.status(201).json(post);
+  } catch (error) {
+    console.error("❌ Error creating post:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET ALL PUBLISHED POSTS
+export const getAllPosts = async (req, res) => {
+  try {
+    const { limit = 10, skip = 0, featured } = req.query;
+
+    let query = { published: true };
+
+    if (featured === "true") {
+      query.featured = true;
+    }
+
+    const posts = await Post.find(query)
+  .sort({ createdAt: -1 })
+  .limit(parseInt(limit))
+  .skip(parseInt(skip))
+  .populate(
+    "author",
+    "name email subscribers subscribersList"
+  )
+  .populate({
+    path: "originalPost",
+    populate: {
+      path: "author",
+      select: "name email",
+    },
+  });
+
+    const total = await Post.countDocuments(query);
+
+    res.json({
+      posts,
+      total,
+      limit: parseInt(limit),
+      skip: parseInt(skip),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET POST BY ID OR SLUG
+export const getPostById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    let post;
+
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+
+  post = await Post.findById(id)
+    .populate(
+      "author",
+      "name email subscribers subscribersList"
+    )
+    .populate({
+      path: "originalPost",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    });
+
+} else {
+
+  post = await Post.findOne({ slug: id })
+    .populate(
+      "author",
+      "name email subscribers subscribersList"
+    )
+    .populate({
+      path: "originalPost",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    });
+
+}
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ UPDATE POST
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, excerpt, coverImage, tags, published, featured } =
+      req.body;
+    const userId = req.user?.id;
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+
+    if (post.author.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to update this post" });
+    }
+
+    if (title) post.title = title;
+    if (content) post.content = content;
+    if (excerpt !== undefined) post.excerpt = excerpt;
+    if (coverImage !== undefined) post.coverImage = coverImage;
+    if (tags) post.tags = tags;
+    if (published !== undefined) post.published = published;
+    if (featured !== undefined) post.featured = featured;
+
+    await post.save();
+    await post.populate(
+  "author",
+  "name email subscribers subscribersList"
+);
+
+    res.json(post);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ DELETE POST (only author can delete)
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // Check if the user is the author
+    if (post.author.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to delete this post" });
+    }
+
+    await post.deleteOne();
+
+    res.json({ message: "Post deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET POSTS BY AUTHOR
+export const getPostsByAuthor = async (req, res) => {
+  try {
+    const { authorId } = req.params;
+    const { limit = 10, skip = 0 } = req.query;
+
+   const posts = await Post.find({ author: authorId, published: true })
+  .sort({ createdAt: -1 })
+  .limit(parseInt(limit))
+  .skip(parseInt(skip))
+  .populate(
+    "author",
+    "name email subscribers subscribersList"
+  )
+  .populate({
+    path: "originalPost",
+    populate: {
+      path: "author",
+      select: "name email",
+    },
+  });
+    
+    const total = await Post.countDocuments({
+      author: authorId,
+      published: true,
+    });
+
+    res.json({
+      posts,
+      total,
+      limit: parseInt(limit),
+      skip: parseInt(skip),
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ GET FEATURED POSTS
+export const getFeaturedPosts = async (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+
+    const posts = await Post.find({ published: true, featured: true })
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .populate(
+  "author",
+  "name email subscribers subscribersList"
+);
+
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ✅ TOGGLE LIKE POST
+export const toggleLikePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyLiked = post.likedBy.some(
+      (id) => id.toString() === userId
+    );
+
+    if (alreadyLiked) {
+      post.likedBy = post.likedBy.filter(
+        (id) => id.toString() !== userId
+      );
+
+      post.likes = Math.max(0, post.likes - 1);
+    } else {
+  post.likedBy.push(userId);
+  post.likes += 1;
+
+  if (
+    post.author.toString() !==
+    userId
+  ) {
+    await Activity.create({
+      user: post.author,
+      actor: userId,
+      type: "like",
+      post: post._id,
+    });
+  }
+}
+
+    await post.save();
+
+    res.json({
+      liked: !alreadyLiked,
+      likes: post.likes,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// ✅ TOGGLE RESTACK
+export const toggleRestackPost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const userId = req.user.id;
+
+    const alreadyRestacked =
+      post.restackedBy.some(
+        (id) => id.toString() === userId
+      );
+
+    if (alreadyRestacked) {
+
+      post.restackedBy =
+        post.restackedBy.filter(
+          (id) => id.toString() !== userId
+        );
+
+      post.restacks = Math.max(
+        0,
+        post.restacks - 1
+      );
+
+      await Post.findOneAndDelete({
+  author: userId,
+  originalPost: post._id,
+  isRestack: true,
+});
+
+    } else {
+
+      post.restackedBy.push(userId);
+      post.restacks += 1;
+
+      await Post.create({
+        title: post.title,
+        slug: `${post.slug}-restack-${Date.now()}`,
+        content: post.content,
+        excerpt: post.excerpt,
+        coverImage: post.coverImage,
+        tags: post.tags,
+        category: post.category,
+        author: userId,
+
+        isRestack: true,
+        originalPost: post._id,
+        restackedFrom: post.author,
+
+        published: true,
+      });
+
+      if (
+        post.author.toString() !==
+        userId
+      ) {
+        await Activity.create({
+          user: post.author,
+          actor: userId,
+          type: "restack",
+          post: post._id,
+        });
+      }
+    }
+
+    await post.save();
+
+    res.json({
+      restacked: !alreadyRestacked,
+      restacks: post.restacks,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+    
+
+    
+
+  
