@@ -82,13 +82,20 @@ export const getAllPosts = async (req, res) => {
     }
 
     const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
-      .skip(parseInt(skip))
-      .populate(
-  "author",
-  "name email subscribers subscribersList"
-);
+  .sort({ createdAt: -1 })
+  .limit(parseInt(limit))
+  .skip(parseInt(skip))
+  .populate(
+    "author",
+    "name email subscribers subscribersList"
+  )
+  .populate({
+    path: "originalPost",
+    populate: {
+      path: "author",
+      select: "name email",
+    },
+  });
 
     const total = await Post.countDocuments(query);
 
@@ -111,16 +118,36 @@ export const getPostById = async (req, res) => {
     let post;
 
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
-      post = await Post.findById(id).populate(
-  "author",
-  "name email subscribers subscribersList"
-);
-    } else {
-      post = await Post.findOne({ slug: id }).populate(
-  "author",
-  "name email subscribers subscribersList"
-);
-    }
+
+  post = await Post.findById(id)
+    .populate(
+      "author",
+      "name email subscribers subscribersList"
+    )
+    .populate({
+      path: "originalPost",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    });
+
+} else {
+
+  post = await Post.findOne({ slug: id })
+    .populate(
+      "author",
+      "name email subscribers subscribersList"
+    )
+    .populate({
+      path: "originalPost",
+      populate: {
+        path: "author",
+        select: "name email",
+      },
+    });
+
+}
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -205,15 +232,22 @@ export const getPostsByAuthor = async (req, res) => {
     const { authorId } = req.params;
     const { limit = 10, skip = 0 } = req.query;
 
-    const posts = await Post.find({ author: authorId, published: true })
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
-      .skip(parseInt(skip))
-      .populate(
-  "author",
-  "name email subscribers subscribersList"
-);
-
+   const posts = await Post.find({ author: authorId, published: true })
+  .sort({ createdAt: -1 })
+  .limit(parseInt(limit))
+  .skip(parseInt(skip))
+  .populate(
+    "author",
+    "name email subscribers subscribersList"
+  )
+  .populate({
+    path: "originalPost",
+    populate: {
+      path: "author",
+      select: "name email",
+    },
+  });
+    
     const total = await Post.countDocuments({
       author: authorId,
       published: true,
