@@ -332,6 +332,12 @@ export const toggleRestackPost = async (req, res) => {
         post.restacks - 1
       );
 
+      await Post.findOneAndDelete({
+  author: userId,
+  originalPost: post._id,
+  isRestack: true,
+});
+
     } else {
 
       post.restackedBy.push(userId);
