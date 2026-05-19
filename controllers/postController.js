@@ -339,6 +339,7 @@ export const toggleRestackPost = async (req, res) => {
 
       await Post.create({
         title: post.title,
+        slug: `${post.slug}-restack-${Date.now()}`,
         content: post.content,
         excerpt: post.excerpt,
         coverImage: post.coverImage,
