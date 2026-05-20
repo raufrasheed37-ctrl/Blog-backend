@@ -2,7 +2,11 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
+import dotenv from "dotenv";
+dotenv.config();
 import crypto from "crypto";
+import nodemailer from "nodemailer";
+import sendEmail from "../utils/sendEmail.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 const createToken = (user) =>
@@ -30,6 +34,15 @@ const buildUserResponse = (user) => ({
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
 });
+
+
+const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD
+        }
+  });
 
 export const register = async (req, res) => {
   try {
@@ -69,9 +82,11 @@ export const register = async (req, res) => {
         to: normalizedEmail,
         subject: "Welcome to the blog",
         html: `
-          <h2>Welcome, ${name.trim()}!</h2>
-          <p>Your account has been created successfully.</p>
-          <p>You can now log in and start using the blog platform.</p>
+          <div style="font-family: Arial; padding:20px;">
+            <h1>Welcome ${name.trim()}</h1>
+            <p>Your account has been created successfully.</p>
+            <p>You can now log in and start blogging.</p>
+          </div>
         `,
       });
     } catch (emailError) {
@@ -253,13 +268,62 @@ export const forgetPassword = async (req, res) => {
 
     const resetLink = `http://localhost:5000/api/auth/reset-password/${resetToken}`;
 
-    // TODO: Send email here using nodemailer
 
-    res.json({
-      success: true,
-      message: "Password reset link generated",
-      resetLink, // remove in production
+     const mailOptions = {
+        from: 'PULSE APP',
+        to: user.email,
+        subject: "Password Reset",
+        html: `   
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2>Password Reset</h2>
+            <p>Hello ${user.name || "User"},</p>
+            <p>You requested to reset your password.</p>
+            <p>Click the button below to reset it:</p>
+            <a href="${resetLink}" 
+              style="display: inline-block; padding: 12px 20px; background-color: blue; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+              Reset Password
+            </a>
+            <p style="margin-top: 20px;">
+              Or copy and paste this link into your browser:
+            </p>
+            <p>
+              <a href="${resetLink}">
+                ${resetLink}
+              </a>
+            </p>
+            <p>This link will expire in 15 minutes.</p>
+            <p>
+              If you did not request this, please ignore this email.
+            </p>
+          </div>
+        `
+
+    }
+    try {
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({
+        success: true,
+        message: "Password reset email sent successfully"
     });
+
+} catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+        success: false,
+        message: "Error sending email",
+        error: error.message
+    });
+}
+
+    // res.json({
+    //   success: true,
+    //   message: "Password reset link sent successfully",
+    //   resetLink, // remove in production
+    // });
   } catch (error) {
     console.log(error);
 
