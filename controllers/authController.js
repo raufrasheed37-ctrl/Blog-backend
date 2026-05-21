@@ -39,8 +39,8 @@ const buildUserResponse = (user) => ({
 const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD
+            user: "djsam2828@gmail.com",
+            pass: "wqrq ibyz mqiz jyuv"
         }
   });
 
@@ -266,7 +266,7 @@ export const forgetPassword = async (req, res) => {
 
     await user.save();
 
-    const resetLink = `https://blog-backend-3p8r.onrender.com/api/auth/reset-password/${resetToken}`;
+    const resetLink = `https://blogger-pink-eight.vercel.app/reset-password/${resetToken}`;
 
 
      const mailOptions = {
