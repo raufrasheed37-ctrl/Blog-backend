@@ -276,9 +276,21 @@ export const toggleCommentLike = async (req, res) => {
 
       comment.likes = Math.max(0, comment.likes - 1);
     } else {
-      comment.likedBy.push(userId);
-      comment.likes += 1;
-    }
+  comment.likedBy.push(userId);
+  comment.likes += 1;
+
+  if (
+    comment.user.toString() !==
+    req.user.id.toString()
+  ) {
+    await Activity.create({
+      user: comment.user,
+      actor: req.user.id,
+      type: "like",
+      post: comment.postId,
+    });
+  }
+}
 
     await comment.save();
 
