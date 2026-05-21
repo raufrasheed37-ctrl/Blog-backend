@@ -266,7 +266,7 @@ export const forgetPassword = async (req, res) => {
 
     await user.save();
 
-    const resetLink = `http://localhost:5000/api/auth/reset-password/${resetToken}`;
+    const resetLink = `https://blog-backend-3p8r.onrender.com/api/auth/reset-password/${resetToken}`;
 
 
      const mailOptions = {
