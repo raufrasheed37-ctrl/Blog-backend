@@ -41,8 +41,19 @@ const transporter = nodemailer.createTransport({
         auth: {
             user: "djsam2828@gmail.com",
             pass: "wqrq ibyz mqiz jyuv"
-        }
+        }, 
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
   });
+
+  transporter.verify((error, success)=> {
+    if (error) {
+      console.log("Transporter Error: ", error);
+    } else {
+      console.log("Server is ready to send emails")
+    }
+  })
 
 export const register = async (req, res) => {
   try {
