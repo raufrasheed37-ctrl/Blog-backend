@@ -23,18 +23,18 @@ export const updateUserProfile = async (req, res) => {
     }
 
     // VALIDATION
-    if (!name || !phoneNo || !email || !address) {
+    if (!name || !email) {
       return res.status(400).json({
         success: false,
-        message: "All required fields must be filled",
+        message: "Name and email are required",
       });
     }
 
     // UPDATE USER
     user.name = name;
-    user.phoneNo = phoneNo;
+    user.phoneNo = phoneNo || "";
     user.email = email;
-    user.address = address;
+    user.address = address || "";
     user.bio = bio || "";
     user.website = website || "";
 
