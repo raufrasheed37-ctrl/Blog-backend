@@ -39,21 +39,21 @@ const buildUserResponse = (user) => ({
 const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: "djsam2828@gmail.com",
-            pass: "wqrq ibyz mqiz jyuv"
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
         }, 
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 10000,
   });
 
-  transporter.verify((error, success)=> {
-    if (error) {
-      console.log("Transporter Error: ", error);
-    } else {
-      console.log("Server is ready to send emails")
-    }
-  })
+  // transporter.verify((error, success)=> {
+  //   if (error) {
+  //     console.log("Transporter Error: ", error);
+  //   } else {
+  //     console.log("Server is ready to send emails")
+  //   }
+  // })
 
 export const register = async (req, res) => {
   try {
@@ -67,10 +67,34 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
+    // if (!password || password.length < 6) {
+    //   return res
+    //     .status(400)
+    //     .json({ message: "Password must be at least 6 characters" });
+    // }
     if (!password || password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "Password must be at least 6 characters" });
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+    });
+    }
+
+    // Strong password check
+    const strongPassword =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#])/;
+
+    if (!strongPassword.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must contain uppercase, lowercase, number and special character",
+      });
+    }
+
+    // Prevent repeated characters
+    if (/(.)\1{4,}/.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password cannot contain repeated characters like 11111 or aaaaa",
+      });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -79,6 +103,16 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+
+    const existingUsername = await User.findOne({
+      name: name.trim(),
+    });
+
+    if (existingUsername) {
+      return res.status(400).json({
+      message: "Username already exists",
+    });
+}
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
