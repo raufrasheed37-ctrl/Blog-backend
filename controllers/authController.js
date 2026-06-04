@@ -270,13 +270,11 @@ export const updateMe = async (req, res) => {
     // }
 
     //3
-    const profileImageFile = req.files?.profileImage?.[0];
-
     let profileImage = req.body.profileImage;
 
-    if (profileImageFile) {
-      profileImage = profileImageFile.path;
-    }
+if (req.file) {
+  profileImage = req.file.path;
+}
      //3-
 
 
