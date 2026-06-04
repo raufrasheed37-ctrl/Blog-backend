@@ -15,6 +15,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+              
+    profileImage: {
+      type: String,
+      trim: true,
+      default: "",
+    },
 
     coverImage: {
       type: String,

@@ -7,7 +7,28 @@ dotenv.config();
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import sendEmail from "../utils/sendEmail.js";
-import { uploadToCloudinary } from "../utils/cloudinary.js";
+// import { uploadToCloudinary } from "../utils/cloudinary.js";
+
+//1
+import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+
+cloudinary.config({
+    cloud_name: "dqmer4kx5",
+    api_key: 334727573964611,
+    api_secret: "yZYTFS2bbuwIIqOtfaKZChhBy48"
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "Blog-Profile",
+        allowed_formats: ["jpg", "jpeg", "png", "webp"]
+    }
+})
+
+const upload = multer({ storage }); // 1-
 
 const createToken = (user) =>
   jwt.sign(
@@ -24,8 +45,9 @@ const buildUserResponse = (user) => ({
   email: user.email,
   role: user.role,
   bio: user.bio,
-  avatar: user.avatar,
-  coverImage: user.coverImage,
+  // avatar: user.avatar,
+  // coverImage: user.coverImage,
+  profileImage: user.profileImage, //2
   phoneNo: user.phoneNo,
   address: user.address,
   location: user.location,
@@ -227,25 +249,36 @@ export const updateMe = async (req, res) => {
       socialLinks,
     } = req.body;
 
-    const avatarFile = req.files?.avatar?.[0];
-    const coverImageFile = req.files?.coverImage?.[0];
+    // const avatarFile = req.files?.avatar?.[0];
+    // const coverImageFile = req.files?.coverImage?.[0];
 
-    let avatar = req.body.avatar;
-    let coverImage = req.body.coverImage;
+    // let avatar = req.body.avatar;
+    // let coverImage = req.body.coverImage;
 
-    if (avatarFile) {
-      avatar = await uploadToCloudinary(
-        avatarFile.buffer,
-        `profile-avatar-${req.user.id}-${Date.now()}`
-      );
+    // if (avatarFile) {
+    //   avatar = await uploadToCloudinary(
+    //     avatarFile.buffer,
+    //     `profile-avatar-${req.user.id}-${Date.now()}`
+    //   );
+    // }
+
+    // if (coverImageFile) {
+    //   coverImage = await uploadToCloudinary(
+    //     coverImageFile.buffer,
+    //     `profile-cover-${req.user.id}-${Date.now()}`
+    //   );
+    // }
+
+    //3
+    const profileImageFile = req.files?.profileImage?.[0];
+
+    let profileImage = req.body.profileImage;
+
+    if (profileImageFile) {
+      profileImage = profileImageFile.path;
     }
+     //3-
 
-    if (coverImageFile) {
-      coverImage = await uploadToCloudinary(
-        coverImageFile.buffer,
-        `profile-cover-${req.user.id}-${Date.now()}`
-      );
-    }
 
     if (name !== undefined) {
       if (!name || !name.trim()) {
@@ -256,8 +289,9 @@ export const updateMe = async (req, res) => {
     }
 
     if (bio !== undefined) user.bio = bio;
-    if (avatar !== undefined) user.avatar = avatar;
-    if (coverImage !== undefined) user.coverImage = coverImage;
+    // if (avatar !== undefined) user.avatar = avatar;
+    if (profileImage != undefined) user.profileImage = profileImage; //4
+    // if (coverImage !== undefined) user.coverImage = coverImage;
     if (location !== undefined) user.location = location;
     if (website !== undefined) user.website = website;
     if (socialLinks !== undefined) user.socialLinks = socialLinks;
