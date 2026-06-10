@@ -51,6 +51,12 @@ export const toggleSubscribe = async (req, res) => {
     actor: subscriberId,
     type: "subscribe",
   });
+
+      await Activity.create({
+  user: subscriberId,
+  actor: subscriberId,
+  type: "my_subscribe",
+});
 }
 
     await author.save();
