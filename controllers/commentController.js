@@ -47,6 +47,14 @@ if (!post) {
     post: post._id,
     content: comment.text,
   });
+
+      await Activity.create({
+  user: req.user.id,
+  actor: req.user.id,
+  type: "my_comment",
+  post: post._id,
+  content: comment.text,
+});
 }
 
 if (parentComment) {
@@ -67,6 +75,14 @@ if (parentComment) {
       post: post._id,
       content: comment.text,
     });
+
+    await Activity.create({
+  user: req.user.id,
+  actor: req.user.id,
+  type: "my_reply",
+  post: post._id,
+  content: comment.text,
+});
   }
 }
 
