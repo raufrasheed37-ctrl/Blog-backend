@@ -324,6 +324,13 @@ export const toggleLikePost = async (req, res) => {
       type: "like",
       post: post._id,
     });
+
+    await Activity.create({
+  user: userId,
+  actor: userId,
+  type: "my_like",
+  post: post._id,
+});
   }
 }
 
@@ -408,6 +415,13 @@ export const toggleRestackPost = async (req, res) => {
           type: "restack",
           post: post._id,
         });
+
+        await Activity.create({
+  user: userId,
+  actor: userId,
+  type: "my_restack",
+  post: post._id,
+});
       }
     }
 
