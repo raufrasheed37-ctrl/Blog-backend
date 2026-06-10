@@ -20,13 +20,19 @@ const activitySchema =
       type: {
         type: String,
         enum: [
-          "like",
-          "comment",
-          "reply",
-          "mention",
-          "subscribe",
-          "restack",
-        ],
+  "like",
+  "comment",
+  "reply",
+  "mention",
+  "subscribe",
+  "restack",
+
+  "my_like",
+  "my_comment",
+  "my_reply",
+  "my_subscribe",
+  "my_restack",
+],
         required: true,
       },
 
