@@ -96,6 +96,117 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+
+    socialLinks: {
+  twitter: {
+    type: String,
+    default: "",
+  },
+
+  instagram: {
+    type: String,
+    default: "",
+  },
+
+  facebook: {
+    type: String,
+    default: "",
+  },
+
+  linkedin: {
+    type: String,
+    default: "",
+  },
+
+  github: {
+    type: String,
+    default: "",
+  },
+
+  youtube: {
+    type: String,
+    default: "",
+  },
+},
+
+occupation: {
+  type: String,
+  default: "",
+},
+
+company: {
+  type: String,
+  default: "",
+},
+
+privacy: {
+  phoneNo: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "only_me",
+  },
+
+  email: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "only_me",
+  },
+
+  address: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "subscribers",
+  },
+
+  website: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "everyone",
+  },
+
+  followersList: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "everyone",
+  },
+
+  subscriptionsList: {
+    type: String,
+    enum: [
+      "only_me",
+      "mutuals",
+      "subscribers",
+      "everyone",
+    ],
+    default: "everyone",
+  },
+},
+
   },
   {
     timestamps: true,
