@@ -26,3 +26,29 @@ export const getActivities =
       });
     }
   };
+
+export const getPersonalActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find({
+      user: req.user.id,
+      type: {
+        $in: [
+          "my_like",
+          "my_comment",
+          "my_reply",
+          "my_restack",
+          "my_subscribe",
+        ],
+      },
+    })
+      .populate("actor", "name email")
+      .populate("post", "title slug")
+      .sort({ createdAt: -1 });
+
+    res.json(activities);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
