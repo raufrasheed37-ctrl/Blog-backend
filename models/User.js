@@ -108,6 +108,16 @@ const userSchema = new mongoose.Schema(
     default: "",
   },
 
+      whatsapp: {
+  type: String,
+  default: "",
+},
+
+      telegram: {
+  type: String,
+  default: "",
+},
+
   facebook: {
     type: String,
     default: "",
