@@ -4,13 +4,17 @@ import sendEmail from "../utils/sendEmail.js";
 export const updateUserProfile = async (req, res) => {
   try {
     const {
-      name,
-      phoneNo,
-      email,
-      address,
-      bio,
-      website,
-    } = req.body;
+  name,
+  phoneNo,
+  email,
+  address,
+  bio,
+  website,
+  occupation,
+  company,
+  socialLinks,
+  privacy,
+} = req.body;
 
     // Find authenticated user
     const user = await User.findById(req.user.id);
@@ -32,11 +36,32 @@ export const updateUserProfile = async (req, res) => {
 
     // UPDATE USER
     user.name = name;
-    user.phoneNo = phoneNo || "";
-    user.email = email;
-    user.address = address || "";
-    user.bio = bio || "";
-    user.website = website || "";
+user.phoneNo = phoneNo || "";
+user.email = email;
+user.address = address || "";
+user.bio = bio || "";
+user.website = website || "";
+
+user.occupation = occupation || "";
+user.company = company || "";
+
+user.socialLinks = {
+  twitter: socialLinks?.twitter || "",
+  instagram: socialLinks?.instagram || "",
+  facebook: socialLinks?.facebook || "",
+  linkedin: socialLinks?.linkedin || "",
+  github: socialLinks?.github || "",
+  youtube: socialLinks?.youtube || "",
+};
+
+user.privacy = {
+  phoneNo: privacy?.phoneNo || "only_me",
+  email: privacy?.email || "only_me",
+  address: privacy?.address || "subscribers",
+  website: privacy?.website || "everyone",
+  followersList: privacy?.followersList || "everyone",
+  subscriptionsList: privacy?.subscriptionsList || "everyone",
+};
 
     // SAVE UPDATED USER
     const updatedUser = await user.save();
