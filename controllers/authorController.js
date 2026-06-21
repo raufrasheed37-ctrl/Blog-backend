@@ -1,9 +1,25 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
-import Post from "../models/Post.js";
+import Post from "../models/Post.js ";
 
 const PUBLIC_AUTHOR_FIELDS =
-  "name bio avatar coverImage location website socialLinks subscribers subscribersList createdAt updatedAt";
+  `
+name
+bio
+avatar
+profileImage
+coverImage
+phoneNo
+address
+occupation
+company
+website
+socialLinks
+subscribers
+subscribersList
+createdAt
+updatedAt
+`;
 
 export const getPublicAuthorProfile = async (req, res) => {
   try {
@@ -13,7 +29,9 @@ export const getPublicAuthorProfile = async (req, res) => {
       return res.status(400).json({ message: "Invalid author id" });
     }
 
-    const author = await User.findById(authorId).lean();
+    const author = await User.findById(authorId)
+  .select(PUBLIC_AUTHOR_FIELDS)
+  .lean();
     if (!author) {
       return res.status(404).json({ message: "Author not found" });
     }
