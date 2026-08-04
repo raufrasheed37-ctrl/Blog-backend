@@ -187,7 +187,7 @@ export const forgotPassword = async (req, res) => {
 
     await sendEmail({
   to: user.email,
-  subject: "Reset Your Blogger Password",
+  subject: "Reset Your Pulse Blogger Password",
   html: `
     <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
 
