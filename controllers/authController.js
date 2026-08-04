@@ -142,7 +142,7 @@ export const getMe = async (req, res) => {
   }
 };
 
-export const forgetPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -180,7 +180,7 @@ export const forgetPassword = async (req, res) => {
 
     await user.save();
 
-    const resetLink = `http://localhost:5000/api/auth/reset-password/${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     // TODO: Send email here using nodemailer
 
