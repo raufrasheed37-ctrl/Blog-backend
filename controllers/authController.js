@@ -253,8 +253,10 @@ res.json({
 });
   } catch (error) {
   console.error("Forgot Password Error:", error);
+  console.error("Error message:", error.message);
+  console.error("Stack:", error.stack);
 
-  res.status(500).json({
+  return res.status(500).json({
     success: false,
     message: error.message,
   });
