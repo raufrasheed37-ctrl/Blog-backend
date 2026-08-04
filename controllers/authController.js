@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
 import crypto from "crypto";
+import sendEmail from "../utils/sendEmail.js";
 
 const createToken = (user) =>
   jwt.sign(
@@ -184,11 +185,72 @@ export const forgotPassword = async (req, res) => {
 
     // TODO: Send email here using nodemailer
 
-    res.json({
-      success: true,
-      message: "Password reset link generated",
-      resetLink, // remove in production
-    });
+    await sendEmail({
+  to: user.email,
+  subject: "Reset Your Blogger Password",
+  html: `
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
+
+      <div style="background:#7c6ff7;padding:24px;text-align:center;">
+        <h1 style="margin:0;color:#ffffff;font-size:28px;">Blogger</h1>
+        <p style="margin-top:8px;color:#ede9fe;font-size:15px;">
+          Password Reset Request
+        </p>
+      </div>
+
+      <div style="padding:32px;color:#374151;line-height:1.7;">
+
+        <h2 style="margin-top:0;color:#111827;">
+          Hello ${user.name},
+        </h2>
+
+        <p>
+          We received a request to reset the password for your <strong>Blogger</strong> account.
+        </p>
+
+        <p>
+          Click the button below to create a new password. This link will expire in <strong>15 minutes</strong>.
+        </p>
+
+        <div style="text-align:center;margin:35px 0;">
+          <a
+            href="${resetLink}"
+            style="
+              display:inline-block;
+              background:#7c6ff7;
+              color:#ffffff;
+              text-decoration:none;
+              padding:14px 32px;
+              border-radius:10px;
+              font-size:16px;
+              font-weight:600;
+            "
+          >
+            Reset Password
+          </a>
+        </div>
+
+        <p>
+          If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged.
+        </p>
+
+        <hr style="margin:32px 0;border:none;border-top:1px solid #e5e7eb;">
+
+        <p style="font-size:14px;color:#6b7280;">
+          Thanks,<br>
+          <strong>The Blogger Team</strong>
+        </p>
+
+      </div>
+
+    </div>
+  `,
+});
+
+res.json({
+  success: true,
+  message: "Password reset link sent successfully.",
+});
   } catch (error) {
     console.log(error);
 
