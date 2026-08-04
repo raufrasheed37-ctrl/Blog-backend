@@ -252,13 +252,14 @@ res.json({
   message: "Password reset link sent successfully.",
 });
   } catch (error) {
-    console.log(error);
+  console.error("Forgot Password Error:", error);
 
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+  res.status(500).json({
+    success: false,
+    message: error.message,
+  });
   }
+  
 };
 
 export const resetPassword = async (req, res) => {
