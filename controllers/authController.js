@@ -59,7 +59,7 @@ export const register = async (req, res) => {
     try {
       await sendEmail({
         to: normalizedEmail,
-        subject: "Welcome to the blog",
+        subject: "Pulse Blogger",
         html: `
           <h2>Welcome, ${name.trim()}!</h2>
           <p>Your account has been created successfully.</p>
@@ -161,11 +161,12 @@ export const forgotPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+  return res.json({
+    success: true,
+    message:
+      "If an account with that email exists, a password reset link has been sent.",
+  });
+}
 
     // Generate reset token
     const resetToken = crypto
@@ -182,8 +183,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-    // TODO: Send email here using nodemailer
+    
 
     await sendEmail({
   to: user.email,
@@ -192,7 +192,7 @@ export const forgotPassword = async (req, res) => {
     <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
 
       <div style="background:#7c6ff7;padding:24px;text-align:center;">
-        <h1 style="margin:0;color:#ffffff;font-size:28px;">Blogger</h1>
+        <h1 style="margin:0;color:#ffffff;font-size:28px;">Pulse Blogger</h1>
         <p style="margin-top:8px;color:#ede9fe;font-size:15px;">
           Password Reset Request
         </p>
@@ -205,7 +205,7 @@ export const forgotPassword = async (req, res) => {
         </h2>
 
         <p>
-          We received a request to reset the password for your <strong>Blogger</strong> account.
+          We received a request to reset the password for your <strong>Pulse Blogger</strong> account.
         </p>
 
         <p>
@@ -238,7 +238,7 @@ export const forgotPassword = async (req, res) => {
 
         <p style="font-size:14px;color:#6b7280;">
           Thanks,<br>
-          <strong>The Blogger Team</strong>
+          <strong>The Pulse Blogger Team</strong>
         </p>
 
       </div>
