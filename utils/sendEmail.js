@@ -1,25 +1,26 @@
-import nodemailer from "nodemailer";
 
-const createTransporter = () =>
-  nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 2525,
-    secure: false,
-    auth: {
-      user: process.env.BREVO_USER,
-      pass: process.env.BREVO_SMTP_KEY,
+import brevo from "@getbrevo/brevo";
+
+const apiInstance = new brevo.TransactionalEmailsApi();
+
+apiInstance.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY
+);
+
+const sendEmail = async ({ to, subject, html }) => {
+  await apiInstance.sendTransacEmail({
+    sender: {
+      name: "Pulse Blogger",
+      email: "pulseblogger01@gmail.com"
     },
-  });
-
-const sendEmail = async ({ to, subject, html, replyTo }) => {
-  const transporter = createTransporter();
-
-  await transporter.sendMail({
-    from: `"Pulse Blogger" <${process.env.BREVO_USER}>`,
-    to,
+    to: [
+      {
+        email: to,
+      },
+    ],
     subject,
-    html,
-    replyTo,
+    htmlContent: html,
   });
 };
 
