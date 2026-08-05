@@ -24,7 +24,7 @@ router.put(
   upload.single("profileImage"),
   updateMe
 );
-router.post("/forgot-password", forgottPassword);
+router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 
 export default router;
