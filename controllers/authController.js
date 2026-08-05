@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
 import crypto from "crypto";
 import sendEmail from "../utils/sendEmail.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 const createToken = (user) =>
   jwt.sign(
@@ -315,6 +316,63 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Server error",
+    });
+  }
+};
+
+
+export const updateMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const {
+      name,
+      bio,
+      phoneNo,
+      address,
+      website,
+      occupation,
+      company,
+    } = req.body;
+
+    if (name) user.name = name;
+    if (bio) user.bio = bio;
+    if (phoneNo) user.phoneNo = phoneNo;
+    if (address) user.address = address;
+    if (website) user.website = website;
+    if (occupation) user.occupation = occupation;
+    if (company) user.company = company;
+
+    // Upload profile image
+    if (req.file) {
+      const imageUrl = await uploadToCloudinary(
+        req.file.buffer,
+        `profile-${user._id}-${Date.now()}`
+      );
+
+      user.profileImage = imageUrl;
+      user.avatar = imageUrl;
+    }
+
+    await user.save();
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
