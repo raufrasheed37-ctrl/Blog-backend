@@ -16,6 +16,16 @@ export const updateUserProfile = async (req, res) => {
   privacy,
 } = req.body;
 
+    const parsedSocialLinks =
+  typeof socialLinks === "string"
+    ? JSON.parse(socialLinks)
+    : socialLinks || {};
+
+const parsedPrivacy =
+  typeof privacy === "string"
+    ? JSON.parse(privacy)
+    : privacy || {};
+
     // Find authenticated user
     const user = await User.findById(req.user.id);
 
@@ -46,22 +56,34 @@ user.occupation = occupation || "";
 user.company = company || "";
 
 user.socialLinks = {
-  twitter: socialLinks?.twitter || "",
-  instagram: socialLinks?.instagram || "",
-  facebook: socialLinks?.facebook || "",
-  linkedin: socialLinks?.linkedin || "",
-  github: socialLinks?.github || "",
-  youtube: socialLinks?.youtube || "",
+  twitter: parsedSocialLinks.twitter || "",
+  instagram: parsedSocialLinks.instagram || "",
+  facebook: parsedSocialLinks.facebook || "",
+  linkedin: parsedSocialLinks.linkedin || "",
+  github: parsedSocialLinks.github || "",
+  youtube: parsedSocialLinks.youtube || "",
 };
 
-user.privacy = {
-  phoneNo: privacy?.phoneNo || "only_me",
-  email: privacy?.email || "only_me",
-  address: privacy?.address || "subscribers",
-  website: privacy?.website || "everyone",
-  followersList: privacy?.followersList || "everyone",
-  subscriptionsList: privacy?.subscriptionsList || "everyone",
+    user.privacy = {
+  phoneNo: parsedPrivacy.phoneNo || "only_me",
+  email: parsedPrivacy.email || "only_me",
+  address: parsedPrivacy.address || "subscribers",
+  website: parsedPrivacy.website || "everyone",
+  followersList: parsedPrivacy.followersList || "everyone",
+  subscriptionsList: parsedPrivacy.subscriptionsList || "everyone",
+
+  bio: parsedPrivacy.bio || "everyone",
+  occupation: parsedPrivacy.occupation || "everyone",
+  company: parsedPrivacy.company || "everyone",
+
+  twitter: parsedPrivacy.twitter || "everyone",
+  instagram: parsedPrivacy.instagram || "everyone",
+  facebook: parsedPrivacy.facebook || "everyone",
+  linkedin: parsedPrivacy.linkedin || "everyone",
+  github: parsedPrivacy.github || "everyone",
+  youtube: parsedPrivacy.youtube || "everyone",
 };
+
 
     // SAVE UPDATED USER
     const updatedUser = await user.save();
