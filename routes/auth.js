@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register, getMe, updateMe, forgotPassword, resetPassword } from "../controllers/authController.js";
+import { login, register, getMe, forgotPassword, resetPassword } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../utils/multerConfig.js";
 
@@ -18,12 +18,12 @@ router.get("/me", protect, getMe);
 // 	]),
 // 	updateMe
 // );
-router.put(
+/*router.put(
   "/me",
   protect,
   upload.single("profileImage"),
   updateMe
-);
+);*/
 router.post("/forgot-password", forgotPassword);
 router.put("/reset-password/:token", resetPassword);
 
