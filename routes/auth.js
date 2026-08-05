@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register, getMe, updateMe, forgetPassword, resetPassword } from "../controllers/authController.js";
+import { login, register, getMe, updateMe, forgotPassword, resetPassword } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import { upload } from "../utils/multerConfig.js";
 
@@ -24,7 +24,7 @@ router.put(
   upload.single("profileImage"),
   updateMe
 );
-router.post("/forgot-password", forgetPassword);
+router.post("/forgot-password", forgottPassword);
 router.put("/reset-password/:token", resetPassword);
 
 export default router;
