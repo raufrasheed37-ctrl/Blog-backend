@@ -20,6 +20,15 @@ const buildUserResponse = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
+  avatar: user.avatar,
+  profileImage: user.profileImage,
+  coverImage: user.coverImage,
+  bio: user.bio,
+  phoneNo: user.phoneNo,
+  address: user.address,
+  website: user.website,
+  occupation: user.occupation,
+  company: user.company,
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
 });
@@ -363,10 +372,10 @@ export const updateMe = async (req, res) => {
     await user.save();
 
     res.json({
-      success: true,
-      message: "Profile updated successfully",
-      user,
-    });
+  success: true,
+  message: "Profile updated successfully",
+  user: buildUserResponse(user),
+});
   } catch (error) {
     console.error(error);
 
