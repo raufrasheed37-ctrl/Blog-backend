@@ -159,6 +159,60 @@ privacy: {
       "everyone",
     ],
     default: "only_me",
+
+    bio: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+occupation: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+company: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+twitter: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+instagram: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+facebook: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+linkedin: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+github: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
+
+youtube: {
+  type: String,
+  enum: ["only_me", "mutuals", "subscribers", "everyone"],
+  default: "everyone",
+},
   },
 
   email: {
