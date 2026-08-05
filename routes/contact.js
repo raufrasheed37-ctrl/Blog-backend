@@ -1,6 +1,7 @@
 import express from 'express';
 import {  updateUserProfile, getCurrentUserProfile, sendContactEmail, } from '../controllers/contactController.js';
 import authMiddleware from "../middleware/authMiddleware.js";
+import { upload } from "../middleware/upload.js";
 
 const router = express.Router();
 
@@ -8,7 +9,12 @@ const router = express.Router();
 router.post("/send-email", sendContactEmail);
 
 // Update logged-in user profile
-router.put("/profile", authMiddleware, updateUserProfile);
+router.put(
+  "/profile",
+  authMiddleware,
+  upload.single("profileImage"),
+  updateUserProfile
+);
 
 // Get logged-in user profile
 router.get("/profile", authMiddleware, getCurrentUserProfile);
