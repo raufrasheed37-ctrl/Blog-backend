@@ -2,33 +2,8 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Contact from "../models/Contact.js"
-import dotenv from "dotenv";
-dotenv.config();
 import crypto from "crypto";
-import nodemailer from "nodemailer";
 import sendEmail from "../utils/sendEmail.js";
-// import { uploadToCloudinary } from "../utils/cloudinary.js";
-
-//1
-import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-
-cloudinary.config({
-    cloud_name: "dqmer4kx5",
-    api_key: 334727573964611,
-    api_secret: "yZYTFS2bbuwIIqOtfaKZChhBy48"
-});
-
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "Blog-Profile",
-        allowed_formats: ["jpg", "jpeg", "png", "webp"]
-    }
-})
-
-const upload = multer({ storage }); // 1-
 
 const createToken = (user) =>
   jwt.sign(
@@ -44,38 +19,9 @@ const buildUserResponse = (user) => ({
   name: user.name,
   email: user.email,
   role: user.role,
-  bio: user.bio,
-  // avatar: user.avatar,
-  // coverImage: user.coverImage,
-  profileImage: user.profileImage, //2
-  phoneNo: user.phoneNo,
-  address: user.address,
-  location: user.location,
-  website: user.website,
-  socialLinks: user.socialLinks,
   createdAt: user.createdAt,
   updatedAt: user.updatedAt,
 });
-
-
-const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        }, 
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 10000,
-  });
-
-  // transporter.verify((error, success)=> {
-  //   if (error) {
-  //     console.log("Transporter Error: ", error);
-  //   } else {
-  //     console.log("Server is ready to send emails")
-  //   }
-  // })
 
 export const register = async (req, res) => {
   try {
@@ -89,34 +35,10 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // if (!password || password.length < 6) {
-    //   return res
-    //     .status(400)
-    //     .json({ message: "Password must be at least 6 characters" });
-    // }
     if (!password || password.length < 6) {
-      return res.status(400).json({
-        message: "Password must be at least 6 characters",
-    });
-    }
-
-    // Strong password check
-    const strongPassword =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#])/;
-
-    if (!strongPassword.test(password)) {
-      return res.status(400).json({
-        message:
-          "Password must contain uppercase, lowercase, number and special character",
-      });
-    }
-
-    // Prevent repeated characters
-    if (/(.)\1{4,}/.test(password)) {
-      return res.status(400).json({
-        message:
-          "Password cannot contain repeated characters like 11111 or aaaaa",
-      });
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters" });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
@@ -125,16 +47,6 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
-
-    const existingUsername = await User.findOne({
-      name: name.trim(),
-    });
-
-    if (existingUsername) {
-      return res.status(400).json({
-      message: "Username already exists",
-    });
-}
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -147,13 +59,11 @@ export const register = async (req, res) => {
     try {
       await sendEmail({
         to: normalizedEmail,
-        subject: "Welcome to the blog",
+        subject: "Pulse Blogger",
         html: `
-          <div style="font-family: Arial; padding:20px;">
-            <h1>Welcome ${name.trim()}</h1>
-            <p>Your account has been created successfully.</p>
-            <p>You can now log in and start blogging.</p>
-          </div>
+          <h2>Welcome, ${name.trim()}!</h2>
+          <p>Your account has been created successfully.</p>
+          <p>You can now log in and start using the blog platform.</p>
         `,
       });
     } catch (emailError) {
@@ -233,79 +143,7 @@ export const getMe = async (req, res) => {
   }
 };
 
-export const updateMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const {
-      name,
-      bio,
-      location,
-      website,
-      socialLinks,
-    } = req.body;
-
-    // const avatarFile = req.files?.avatar?.[0];
-    // const coverImageFile = req.files?.coverImage?.[0];
-
-    // let avatar = req.body.avatar;
-    // let coverImage = req.body.coverImage;
-
-    // if (avatarFile) {
-    //   avatar = await uploadToCloudinary(
-    //     avatarFile.buffer,
-    //     `profile-avatar-${req.user.id}-${Date.now()}`
-    //   );
-    // }
-
-    // if (coverImageFile) {
-    //   coverImage = await uploadToCloudinary(
-    //     coverImageFile.buffer,
-    //     `profile-cover-${req.user.id}-${Date.now()}`
-    //   );
-    // }
-
-    //3
-    let profileImage = req.body.profileImage;
-
-if (req.file) {
-  profileImage = req.file.path;
-}
-     //3-
-
-
-    if (name !== undefined) {
-      if (!name || !name.trim()) {
-        return res.status(400).json({ message: "Name cannot be empty" });
-      }
-
-      user.name = name.trim();
-    }
-
-    if (bio !== undefined) user.bio = bio;
-    // if (avatar !== undefined) user.avatar = avatar;
-    if (profileImage != undefined) user.profileImage = profileImage; //4
-    // if (coverImage !== undefined) user.coverImage = coverImage;
-    if (location !== undefined) user.location = location;
-    if (website !== undefined) user.website = website;
-    if (socialLinks !== undefined) user.socialLinks = socialLinks;
-
-    await user.save();
-
-    res.json({
-      message: "Profile updated successfully",
-      user: buildUserResponse(user),
-    });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-export const forgetPassword = async (req, res) => {
+export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -323,11 +161,12 @@ export const forgetPassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
+  return res.json({
+    success: true,
+    message:
+      "If an account with that email exists, a password reset link has been sent.",
+  });
+}
 
     // Generate reset token
     const resetToken = crypto
@@ -343,72 +182,86 @@ export const forgetPassword = async (req, res) => {
 
     await user.save();
 
-    const resetLink = `https://blogger-pink-eight.vercel.app/reset-password/${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    
 
+    await sendEmail({
+  to: user.email,
+  subject: "Reset Your Pulse Blogger Password",
+  html: `
+    <div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;">
 
-     const mailOptions = {
-        from: 'PULSE APP',
-        to: user.email,
-        subject: "Password Reset",
-        html: `   
-          <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>Password Reset</h2>
-            <p>Hello ${user.name || "User"},</p>
-            <p>You requested to reset your password.</p>
-            <p>Click the button below to reset it:</p>
-            <a href="${resetLink}" 
-              style="display: inline-block; padding: 12px 20px; background-color: blue; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">
-              Reset Password
-            </a>
-            <p style="margin-top: 20px;">
-              Or copy and paste this link into your browser:
-            </p>
-            <p>
-              <a href="${resetLink}">
-                ${resetLink}
-              </a>
-            </p>
-            <p>This link will expire in 15 minutes.</p>
-            <p>
-              If you did not request this, please ignore this email.
-            </p>
-          </div>
-        `
+      <div style="background:#7c6ff7;padding:24px;text-align:center;">
+        <h1 style="margin:0;color:#ffffff;font-size:28px;">Pulse Blogger</h1>
+        <p style="margin-top:8px;color:#ede9fe;font-size:15px;">
+          Password Reset Request
+        </p>
+      </div>
 
-    }
-    try {
+      <div style="padding:32px;color:#374151;line-height:1.7;">
 
-    await transporter.sendMail(mailOptions);
+        <h2 style="margin-top:0;color:#111827;">
+          Hello ${user.name},
+        </h2>
 
-    res.status(200).json({
-        success: true,
-        message: "Password reset email sent successfully"
-    });
+        <p>
+          We received a request to reset the password for your <strong>Pulse Blogger</strong> account.
+        </p>
 
-} catch (error) {
+        <p>
+          Click the button below to create a new password. This link will expire in <strong>15 minutes</strong>.
+        </p>
 
-    console.log(error);
+        <div style="text-align:center;margin:35px 0;">
+          <a
+            href="${resetLink}"
+            style="
+              display:inline-block;
+              background:#7c6ff7;
+              color:#ffffff;
+              text-decoration:none;
+              padding:14px 32px;
+              border-radius:10px;
+              font-size:16px;
+              font-weight:600;
+            "
+          >
+            Reset Password
+          </a>
+        </div>
 
-    res.status(500).json({
-        success: false,
-        message: "Error sending email",
-        error: error.message
-    });
-}
+        <p>
+          If you didn't request this password reset, you can safely ignore this email. Your password will remain unchanged.
+        </p>
 
-    // res.json({
-    //   success: true,
-    //   message: "Password reset link sent successfully",
-    //   resetLink, // remove in production
-    // });
+        <hr style="margin:32px 0;border:none;border-top:1px solid #e5e7eb;">
+
+        <p style="font-size:14px;color:#6b7280;">
+          Thanks,<br>
+          <strong>The Pulse Blogger Team</strong>
+        </p>
+
+      </div>
+
+    </div>
+  `,
+});
+
+res.json({
+  success: true,
+  message: "Password reset link sent successfully.",
+});
   } catch (error) {
-    console.log(error);
+  console.error("Forgot Password Error:", error);
+  console.error("Error message:", error.message);
+  console.error("Stack:", error.stack);
 
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+  return res.status(500).json({
+    success: false,
+    message: error.message,
+  });
   }
+  
 };
 
 export const resetPassword = async (req, res) => {
