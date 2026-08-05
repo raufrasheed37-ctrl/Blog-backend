@@ -36,6 +36,10 @@ const parsedPrivacy =
       });
     }
 
+    if (req.file) {
+  console.log(req.file);
+}
+
     // VALIDATION
     if (!name || !email) {
       return res.status(400).json({
