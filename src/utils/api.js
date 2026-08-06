@@ -53,6 +53,17 @@ export const blogAPI = {
 
   getMyDrafts: () => api.get("/posts/my-drafts"),
 
+publish: (id) =>
+  api.put(`/posts/${id}`, {
+    published: true,
+  }),
+
+saveDraft: (id, payload) =>
+  api.put(`/posts/${id}`, {
+    ...payload,
+    published: false,
+  }),
+
   getByAuthor: (authorId) => api.get(`/posts/author/${authorId}`),
 
   create: (title, content, excerpt, author) =>
