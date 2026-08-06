@@ -268,6 +268,26 @@ export const getPostsByAuthor = async (req, res) => {
   }
 };
 
+//   DRAFT 
+export const getMyDrafts = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const drafts = await Post.find({
+      author: userId,
+      published: false,
+    })
+      .sort({ updatedAt: -1 })
+      .populate("author", "name email");
+
+    res.json(drafts);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 // ✅ GET FEATURED POSTS
 export const getFeaturedPosts = async (req, res) => {
   try {
