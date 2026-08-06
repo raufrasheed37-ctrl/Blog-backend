@@ -51,6 +51,8 @@ export const blogAPI = {
 
   getById: (id) => api.get(`/posts/${id}`),
 
+  getMyDrafts: () => api.get("/posts/my-drafts"),
+
   getByAuthor: (authorId) => api.get(`/posts/author/${authorId}`),
 
   create: (title, content, excerpt, author) =>
