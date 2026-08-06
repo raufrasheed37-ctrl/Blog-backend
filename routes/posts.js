@@ -5,6 +5,7 @@ import {
   getPostById,
   updatePost,
   deletePost,
+  getMyDrafts,
   getPostsByAuthor,
   getFeaturedPosts,
   toggleLikePost,
@@ -26,6 +27,9 @@ router.get('/featured/list', getFeaturedPosts);
 
 // GET POSTS BY AUTHOR
 router.get('/author/:authorId', getPostsByAuthor);
+
+// GET DRAFT
+router.get("/my-drafts", protect, getMyDrafts);
 
 // GET POST BY ID OR SLUG
 router.get('/:id', getPostById);
