@@ -76,12 +76,13 @@ export const getAllPosts = async (req, res) => {
       query.featured = true;
     }
 
-    const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit))
-      .skip(parseInt(skip))
-      .populate("author", "name email");
-
+    
+const posts = await Post.find(query)
+  .sort({ featured: -1, publishedAt: -1, createdAt: -1 })
+  .limit(parseInt(limit))
+  .skip(parseInt(skip))
+  .populate("author", "name email avatar profileImage");
+    
     const total = await Post.countDocuments(query);
 
     res.json({
