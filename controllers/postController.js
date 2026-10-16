@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Post from "../models/Post.js";
 import User from "../models/User.js";
+import PostInteraction from "../models/PostInteraction.js";
+import Activity from "../models/Activity.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 // CREATE POST
