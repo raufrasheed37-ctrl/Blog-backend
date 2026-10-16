@@ -6,6 +6,7 @@ import commentRoutes from "./routes/comments.js";
 import authRoutes from "./routes/auth.js";
 import postRoutes from "./routes/posts.js";
 import contactRoutes from "./routes/contact.js";
+import activityRoutes from "./routes/activity.js";
 import subscribeRoutes from "./routes/subscribe.js";
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/activity", activityRoutes);
 app.use("/api/subscribe", subscribeRoutes);
 
 const PORT = process.env.PORT || 5000;
