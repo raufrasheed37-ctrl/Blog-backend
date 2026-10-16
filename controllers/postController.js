@@ -277,3 +277,183 @@ export const getFeaturedPosts = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+// TOGGLE LIKE
+export const toggleLike = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Authentication required",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({
+        message: "Invalid user",
+      });
+    }
+
+    const post = mongoose.Types.ObjectId.isValid(id)
+      ? await Post.findById(id)
+      : await Post.findOne({ slug: id });
+
+    if (!post || !post.published) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const existingInteraction = await PostInteraction.findOne({
+      post: post._id,
+      user: userId,
+      type: "like",
+    });
+
+    let liked;
+
+    if (existingInteraction) {
+      await existingInteraction.deleteOne();
+
+      await Activity.deleteOne({
+        recipient: post.author,
+        actor: userId,
+        post: post._id,
+        type: "like",
+      });
+
+      liked = false;
+    } else {
+      try {
+        await PostInteraction.create({
+          post: post._id,
+          user: userId,
+          type: "like",
+        });
+
+        liked = true;
+
+        if (post.author.toString() !== userId.toString()) {
+          await Activity.create({
+            recipient: post.author,
+            actor: userId,
+            post: post._id,
+            type: "like",
+          });
+        }
+      } catch (error) {
+        if (error.code !== 11000) throw error;
+        liked = true;
+      }
+    }
+
+    const likes = await PostInteraction.countDocuments({
+      post: post._id,
+      type: "like",
+    });
+
+    return res.json({
+      likes,
+      liked,
+    });
+  } catch (error) {
+    console.error("Toggle like error:", error);
+
+    return res.status(500).json({
+      message: "Failed to update like",
+    });
+  }
+};
+
+
+// TOGGLE RESTACK
+export const toggleRestack = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Authentication required",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(401).json({
+        message: "Invalid user",
+      });
+    }
+
+    const post = mongoose.Types.ObjectId.isValid(id)
+      ? await Post.findById(id)
+      : await Post.findOne({ slug: id });
+
+    if (!post || !post.published) {
+      return res.status(404).json({
+        message: "Post not found",
+      });
+    }
+
+    const existingInteraction = await PostInteraction.findOne({
+      post: post._id,
+      user: userId,
+      type: "restack",
+    });
+
+    let restacked;
+
+    if (existingInteraction) {
+      await existingInteraction.deleteOne();
+
+      await Activity.deleteOne({
+        recipient: post.author,
+        actor: userId,
+        post: post._id,
+        type: "restack",
+      });
+
+      restacked = false;
+    } else {
+      try {
+        await PostInteraction.create({
+          post: post._id,
+          user: userId,
+          type: "restack",
+        });
+
+        restacked = true;
+
+        if (post.author.toString() !== userId.toString()) {
+          await Activity.create({
+            recipient: post.author,
+            actor: userId,
+            post: post._id,
+            type: "restack",
+          });
+        }
+      } catch (error) {
+        if (error.code !== 11000) throw error;
+        restacked = true;
+      }
+    }
+
+    const restacks = await PostInteraction.countDocuments({
+      post: post._id,
+      type: "restack",
+    });
+
+    return res.json({
+      restacks,
+      restacked,
+    });
+  } catch (error) {
+    console.error("Toggle restack error:", error);
+
+    return res.status(500).json({
+      message: "Failed to update restack",
+    });
+  }
+};
