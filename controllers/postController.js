@@ -32,7 +32,36 @@ export const createPost = async (req, res) => {
       );
     }
 
-    const { title, content, excerpt, tags, published } = req.body;
+    const {
+  title,
+  content,
+  excerpt,
+  tags,
+  published,
+  featured,
+} = req.body;
+
+let parsedTags = [];
+
+try {
+  if (Array.isArray(tags)) {
+    parsedTags = tags;
+  } else if (typeof tags === "string" && tags.trim()) {
+    const parsed = JSON.parse(tags);
+
+    if (Array.isArray(parsed)) {
+      parsedTags = parsed;
+    } else {
+      return res.status(400).json({
+        message: "Tags must be an array",
+      });
+    }
+  }
+} catch {
+  return res.status(400).json({
+    message: "Invalid tags format",
+  });
+}
 
     if (!title || !title.trim()) {
       return res.status(400).json({ message: "Title is required" });
@@ -51,9 +80,10 @@ export const createPost = async (req, res) => {
       content,
       excerpt,
       coverImage: coverImageUrl,
-      tags: tags || [],
+      tags: parsedTags,
       author,
       published: published !== undefined ? published : true,
+      featured: featured === true || featured === "true",
     });
 
     await post.populate("author", "name email");
