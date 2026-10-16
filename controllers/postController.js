@@ -3,95 +3,114 @@ import Post from "../models/Post.js";
 import User from "../models/User.js";
 import { uploadToCloudinary } from "../utils/cloudinary.js";
 
-// ✅ CREATE POST
+// CREATE POST
 export const createPost = async (req, res) => {
   try {
-    console.log("🔵 CreatePost called - Auth User:", req.user);
-    console.log("📦 Request body:", req.body);
-    let coverImageUrl = req.body.coverImage;
     const authenticatedUserId = req.user?.id;
-
-    // Use the authenticated user as the author when available.
     const author = authenticatedUserId || req.body.author;
 
     if (!author || !mongoose.Types.ObjectId.isValid(author)) {
-      return res.status(400).json({ message: "Invalid author id" });
+      return res.status(400).json({
+        message: "Invalid author id",
+      });
     }
 
-    // Optional: ensure referenced user exists
     const userExists = await User.findById(author).select("_id");
+
     if (!userExists) {
-      return res.status(400).json({ message: "Author not found" });
+      return res.status(400).json({
+        message: "Author not found",
+      });
     }
 
-    // If file is uploaded, upload to Cloudinary
+    const {
+      title,
+      content,
+      excerpt,
+      tags,
+      published,
+      featured,
+    } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({
+        message: "Title is required",
+      });
+    }
+
+    if (!content || !content.trim()) {
+      return res.status(400).json({
+        message: "Content is required",
+      });
+    }
+
+    // Parse tags from JSON when submitted through FormData.
+    let parsedTags = [];
+
+    try {
+      if (Array.isArray(tags)) {
+        parsedTags = tags;
+      } else if (typeof tags === "string" && tags.trim()) {
+        const parsed = JSON.parse(tags);
+
+        if (!Array.isArray(parsed)) {
+          return res.status(400).json({
+            message: "Tags must be an array",
+          });
+        }
+
+        parsedTags = parsed;
+      }
+    } catch {
+      return res.status(400).json({
+        message: "Invalid tags format",
+      });
+    }
+
+    // Upload the actual file to Cloudinary.
+    let coverImageUrl = "";
+
     if (req.file) {
       coverImageUrl = await uploadToCloudinary(
         req.file.buffer,
         `blog-${Date.now()}`
       );
+    } else if (typeof req.body.coverImage === "string") {
+      // Allows an existing remote image URL to be supplied.
+      coverImageUrl = req.body.coverImage;
     }
 
-    const {
-  title,
-  content,
-  excerpt,
-  tags,
-  published,
-  featured,
-} = req.body;
+    const isPublished =
+      published === undefined
+        ? true
+        : published === true || published === "true";
 
-let parsedTags = [];
-
-try {
-  if (Array.isArray(tags)) {
-    parsedTags = tags;
-  } else if (typeof tags === "string" && tags.trim()) {
-    const parsed = JSON.parse(tags);
-
-    if (Array.isArray(parsed)) {
-      parsedTags = parsed;
-    } else {
-      return res.status(400).json({
-        message: "Tags must be an array",
-      });
-    }
-  }
-} catch {
-  return res.status(400).json({
-    message: "Invalid tags format",
-  });
-}
-
-    if (!title || !title.trim()) {
-      return res.status(400).json({ message: "Title is required" });
-    }
-
-    if (!content || !content.trim()) {
-      return res.status(400).json({ message: "Content is required" });
-    }
-
-    if (!author) {
-      return res.status(400).json({ message: "Author is required" });
-    }
+    const isFeatured =
+      featured === true || featured === "true";
 
     const post = await Post.create({
-      title,
+      title: title.trim(),
       content,
-      excerpt,
+      excerpt: excerpt || "",
       coverImage: coverImageUrl,
       tags: parsedTags,
       author,
-      published: published !== undefined ? published : true,
-      featured: featured === true || featured === "true",
+      published: isPublished,
+      featured: isFeatured,
     });
 
-    await post.populate("author", "name email");
+    await post.populate(
+      "author",
+      "name email avatar profileImage"
+    );
 
-    res.status(201).json(post);
+    return res.status(201).json(post);
   } catch (error) {
-    console.error("❌ Error creating post:", error);
-    res.status(500).json({ message: error.message });
+    console.error("Create post error:", error);
+
+    return res.status(500).json({
+      message: error.message || "Failed to create post",
+    });
   }
 };
 
