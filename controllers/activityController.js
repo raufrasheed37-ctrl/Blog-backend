@@ -40,14 +40,24 @@ export const getActivity = async (req, res) => {
       }),
     ]);
 
-    return res.json({
-      activities,
-      total,
-      unreadCount,
-      limit,
-      skip,
-      hasMore: skip + activities.length < total,
-    });
+    const response = {
+  activities,
+  total,
+  unreadCount,
+  limit,
+  skip,
+  hasMore: skip + activities.length < total,
+};
+
+console.log("ACTIVITY API RESPONSE:", {
+  isArray: Array.isArray(response),
+  keys: Object.keys(response),
+  total: response.total,
+  activitiesCount: response.activities.length,
+});
+
+return res.status(200).json(response);
+    
   } catch (error) {
     console.error("Get activity error:", error);
 
