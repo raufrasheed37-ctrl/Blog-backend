@@ -7,7 +7,9 @@ import {
   deletePost,
   getPostsByAuthor,
   getFeaturedPosts,
-} from '../controllers/postController.js';
+  toggleLike,
+  toggleRestack,
+} from "../controllers/postController.js";
 import { upload } from '../utils/multerConfig.js';
 import { protect } from '../middleware/authMiddleware.js';
 
@@ -18,6 +20,10 @@ router.post('/', protect, upload.single('coverImage'), createPost);
 
 // GET ALL POSTS (published)
 router.get('/', getAllPosts);
+
+router.put("/:id/like", protect, toggleLike);
+router.put("/:id/restack", protect, toggleRestack);
+
 
 // GET FEATURED POSTS
 router.get('/featured/list', getFeaturedPosts);
